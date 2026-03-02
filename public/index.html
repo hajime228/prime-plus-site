@@ -3,20 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <title>Прайм Плюс</title>
-<link rel="stylesheet" href="style.css">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #4f8190;
+    color: white;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+}
+
+.logo {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+nav a {
+    text-decoration: none;
+    color: #1f4e5a;
+    background: #f2e8c9;
+    padding: 10px 20px;
+    margin: 5px;
+    display: inline-block;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+nav a:hover {
+    background: #e6d9b3;
+}
+
+.main {
+    display: flex;
+    justify-content: space-between;
+    padding: 40px;
+}
+
+.left { width: 50%; }
+.right { width: 45%; }
+
+/* ---------- СЛОТЫ ---------- */
+
+.slots {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.slot {
+    background: #5d93b0;
+    height: 80px;
+    border: 2px solid #2f5d6a;
+    cursor: pointer;
+}
+
+.slot.busy {
+    background: #c94c4c;
+}
+
+/* ---------- КАРТА ---------- */
+
+.map-container {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border: 3px solid white;
+    position: relative;
+    background: #ddd;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;              /* авто масштаб под контейнер */
+    height: 100%;
+    object-fit: contain;      /* сохраняет пропорции */
+    transform-origin: 0 0;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* ---------- МОДАЛЬНОЕ ОКНО ---------- */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    color: black;
+    padding: 30px;
+    width: 400px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
 </head>
+
 <body>
 
 <header>
     <div class="logo">Прайм Плюс</div>
-    <button onclick="login()">Админ</button>
+    <nav>
+        <a onclick="openModal('about')">О компании</a>
+        <a onclick="openModal('prices')">Тарифы</a>
+        <a onclick="openModal('contacts')">Контакты</a>
+        <a onclick="adminLogin()">Админ</a>
+    </nav>
 </header>
 
 <div class="main">
 
 <div class="left">
-    <h2>16 рекламных слотов</h2>
-    <div class="slots" id="slots"></div>
+    <h2>Размещение рекламы внутри подъездов</h2>
+    <p>Продвигайте бизнес быстро и эффективно.</p>
+
+    <h3>Формат рекламы: 16 слотов формата А5</h3>
+
+    <div class="slots">
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div>
+        <div class="slot"></div><div class="slot"></div>
+    </div>
 </div>
 
 <div class="right">
@@ -28,6 +165,129 @@
 
 </div>
 
-<script src="script.js"></script>
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">X</span>
+        <div id="modal-text"></div>
+    </div>
+</div>
+
+<script>
+
+/* ----------- СЛОТЫ И АДМИН ----------- */
+
+let isAdmin = false;
+
+window.onload = function() {
+    const saved = JSON.parse(localStorage.getItem("slots"));
+    if(saved){
+        document.querySelectorAll('.slot').forEach((slot,i)=>{
+            if(saved[i]) slot.classList.add("busy");
+        });
+    }
+};
+
+function adminLogin(){
+    const pass = prompt("Введите пароль администратора:");
+    if(pass === "admin2024"){
+        isAdmin = true;
+        alert("Админ режим включен");
+    } else {
+        alert("Неверный пароль");
+    }
+}
+
+document.querySelectorAll('.slot').forEach((slot,i)=>{
+    slot.addEventListener("click",function(){
+        if(!isAdmin) return;
+        this.classList.toggle("busy");
+        saveSlots();
+    });
+});
+
+function saveSlots(){
+    const arr=[];
+    document.querySelectorAll('.slot').forEach(s=>{
+        arr.push(s.classList.contains("busy"));
+    });
+    localStorage.setItem("slots",JSON.stringify(arr));
+}
+
+/* ----------- МОДАЛЬНЫЕ ОКНА ----------- */
+
+function openModal(type){
+    const modal=document.getElementById("modal");
+    const text=document.getElementById("modal-text");
+
+    if(type==="about")
+        text.innerHTML="<h2>О компании</h2><p>Размещаем рекламу более 5 лет.</p>";
+
+    if(type==="prices")
+        text.innerHTML="<h2>Тарифы</h2><p>1 слот — 1000 руб/мес</p>";
+
+    if(type==="contacts")
+        text.innerHTML="<h2>Контакты</h2><p>+7 (999) 123-45-67</p>";
+
+    modal.style.display="flex";
+}
+
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+}
+
+window.onclick=function(e){
+    const modal=document.getElementById("modal");
+    if(e.target==modal) modal.style.display="none";
+};
+
+/* ----------- КАРТА ----------- */
+
+const map = document.getElementById("map");
+
+let scale = 1;
+let posX = 0;
+let posY = 0;
+let dragging = false;
+let startX, startY;
+
+map.addEventListener("wheel", function(e){
+    e.preventDefault();
+
+    if(e.deltaY < 0) scale += 0.1;
+    else scale -= 0.1;
+
+    if(scale < 1) scale = 1;
+
+    update();
+});
+
+map.addEventListener("mousedown", function(e){
+    dragging = true;
+    startX = e.clientX - posX;
+    startY = e.clientY - posY;
+    map.style.cursor="grabbing";
+});
+
+document.addEventListener("mouseup", function(){
+    dragging = false;
+    map.style.cursor="grab";
+});
+
+document.addEventListener("mousemove", function(e){
+    if(!dragging) return;
+
+    posX = e.clientX - startX;
+    posY = e.clientY - startY;
+
+    update();
+});
+
+function update(){
+    map.style.transform =
+        `translate(${posX}px, ${posY}px) scale(${scale})`;
+}
+
+</script>
+
 </body>
 </html>
