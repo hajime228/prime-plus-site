@@ -1,61 +1,54 @@
 let isAdmin = false;
 
-/* ---------- Проверка админа ---------- */
+/* Слоты */
 
-fetch('/check-admin')
-.then(res => res.json())
-.then(data => isAdmin = data.isAdmin);
-
-/* ---------- Загрузка слотов ---------- */
-
-fetch('/slots')
-.then(res => res.json())
-.then(slots => {
-
-    const container = document.getElementById("slots");
-
-    slots.forEach((busy, i) => {
-        const div = document.createElement("div");
-        div.className = "slot";
-        if(busy) div.classList.add("busy");
-
-        div.addEventListener("click", function(){
-            if(!isAdmin) return;
-
-            fetch('/toggle-slot', {
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({index:i})
-            }).then(()=>location.reload());
+window.onload = function() {
+    const saved = JSON.parse(localStorage.getItem("slots"));
+    if(saved){
+        document.querySelectorAll('.slot').forEach((slot,i)=>{
+            if(saved[i]) slot.classList.add("busy");
         });
+    }
+};
 
-        container.appendChild(div);
+document.querySelectorAll('.slot').forEach((slot,i)=>{
+    slot.addEventListener("click",function(){
+        if(!isAdmin) return;
+        this.classList.toggle("busy");
+        saveSlots();
     });
-
 });
 
-/* ---------- ЛОГИН ---------- */
-
-function adminLogin(){
-    const pass = prompt("Введите пароль администратора:");
-
-    fetch('/login',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({password:pass})
-    })
-    .then(res=>res.json())
-    .then(data=>{
-        if(data.success){
-            alert("Админ режим включен");
-            location.reload();
-        } else {
-            alert("Неверный пароль");
-        }
+function saveSlots(){
+    const arr=[];
+    document.querySelectorAll('.slot').forEach(s=>{
+        arr.push(s.classList.contains("busy"));
     });
+    localStorage.setItem("slots",JSON.stringify(arr));
 }
 
-/* ---------- МОДАЛЬНЫЕ ОКНА ---------- */
+/* Авторизация */
+
+async function adminLogin(){
+    const pass = prompt("Введите пароль администратора:");
+
+    const response = await fetch("/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pass })
+    });
+
+    const data = await response.json();
+
+    if(data.success){
+        isAdmin = true;
+        alert("Админ режим включен");
+    } else {
+        alert("Неверный пароль");
+    }
+}
+
+/* Модалки */
 
 function openModal(type){
     const modal=document.getElementById("modal");
@@ -70,6 +63,9 @@ function openModal(type){
     if(type==="contacts")
         text.innerHTML="<h2>Контакты</h2><p>+7 (999) 123-45-67</p>";
 
+    if(type==="homes")
+        text.innerHTML="<h2>Дома</h2><p>Список домов доступен по запросу.</p>";
+
     modal.style.display="flex";
 }
 
@@ -82,7 +78,7 @@ window.onclick=function(e){
     if(e.target==modal) modal.style.display="none";
 };
 
-/* ---------- КАРТА ---------- */
+/* Масштаб карты */
 
 const map = document.getElementById("map");
 
@@ -94,12 +90,8 @@ let startX, startY;
 
 map.addEventListener("wheel", function(e){
     e.preventDefault();
-
-    if(e.deltaY < 0) scale += 0.1;
-    else scale -= 0.1;
-
+    scale += e.deltaY < 0 ? 0.1 : -0.1;
     if(scale < 1) scale = 1;
-
     update();
 });
 
@@ -117,10 +109,8 @@ document.addEventListener("mouseup", function(){
 
 document.addEventListener("mousemove", function(e){
     if(!dragging) return;
-
     posX = e.clientX - startX;
     posY = e.clientY - startY;
-
     update();
 });
 

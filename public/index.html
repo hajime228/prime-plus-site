@@ -1,51 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Прайм Плюс</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
 <body>
 
 <header>
-    <h1>Прайм Плюс</h1>
+    <div>
+        <div class="logo">ПРАЙМ ПЛЮС</div>
+        <div class="subtitle">Размещение рекламы внутри подъездов</div>
+    </div>
     <nav>
-        <a href="#">О компании</a>
-        <a href="#">Тарифы</a>
-        <a href="#">Контакты</a>
-        <a href="#">Админ</a>
+        <a onclick="openModal('about')">О компании</a>
+        <a onclick="openModal('prices')">Тарифы</a>
+        <a onclick="openModal('contacts')">Контакты</a>
+        <a onclick="openModal('homes')">Дома</a>
+        <a onclick="adminLogin()">Админ</a>
     </nav>
 </header>
 
-<div class="container">
-    <div class="main">
+<div class="main">
 
-        <div class="left">
-            <h2>Размещение рекламы внутри подъездов</h2>
-            <p>Продвигайте бизнес быстро и эффективно.</p>
-            <p><strong>Формат рекламы: 16 слотов формата A5</strong></p>
+<div class="left">
+    <p>
+    Отличный способ заявить о себе и раскрутить свой бренд или товары.
+    Отличный способ продвинуть свои услуги быстро, широкой аудитории.
+    </p>
 
-            <div class="slots">
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-                <div class="slot"></div>
-            </div>
-        </div>
+    <h3>Формат рекламы: 16 слотов формата А5</h3>
 
-        <div class="right">
-            <h3 style="margin-bottom:15px;">Зона покрытия</h3>
-            <div class="map-wrapper">
-                <img src="img/map.png" alt="Карта">
-            </div>
-        </div>
-
+    <div class="slots">
+        ${"<div class='slot'></div>".repeat(16)}
     </div>
 </div>
 
+<div class="right">
+    <h3>Мы располагаемся более чем в 600 подъездах</h3>
+
+    <div class="map-container">
+        <img src="img/map.jpg" id="map" draggable="false">
+    </div>
+</div>
+
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">X</span>
+        <div id="modal-text"></div>
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
+</html>
