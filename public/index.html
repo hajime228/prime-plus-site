@@ -1,77 +1,95 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Прайм Плюс</title>
-<link rel="stylesheet" href="style.css">
-</head>
 
+<link rel="stylesheet" href="style.css">
+
+</head>
 <body>
 
 <header>
-    <div>
-        <div class="logo">ПРАЙМ ПЛЮС</div>
-        <div class="subtitle">Размещение рекламы внутри подъездов</div>
-    </div>
-    <nav>
-        <a onclick="openModal('about')">О компании</a>
-        <a onclick="openModal('prices')">Тарифы</a>
-        <a onclick="openModal('contacts')">Контакты</a>
-        <a onclick="openModal('homes')">Дома с щитами</a>
-        <a onclick="adminLogin()">Админ</a>
-    </nav>
+
+<img src="../logo.png" class="logo">
+
+<h1>Размещение рекламы внутри подъездов</h1>
+
+<div class="menu">
+
+<button onclick="showTab('about')">О компании</button>
+<button onclick="showTab('tarif')">Тарифы</button>
+<button onclick="showTab('contact')">Контакты</button>
+<button onclick="showTab('doma')">Дома с щитами</button>
+
+</div>
+
 </header>
+
+
+<div id="about" class="tab">
+
+<div class="box">
+
+ООО Прайм Плюс<br>
+Почта: Prime.plus.rt@gmail.com
+
+</div>
+
+</div>
+
+
+
+<div id="tarif" class="tab">
 
 <div class="main">
 
-<div class="left">
-    <p>
-    Отличный способ заявить о себе и раскрутить свой бренд или товары.
-    Отличный способ продвинуть свои услуги быстро, широкой аудитории.
-    </p>
+<img src="../rek.jpg" class="rek">
 
-    <h3>Формат рекламы: В наличии 16 слотов формата А5</h3>
+<div id="slots" class="slots"></div>
 
-    <div class="slots">
-    <div class="slot"></div>
-    <div class="slot"></div>
-    <div class="slot"></div>
-    <div class="slot"></div>
+<div class="text">
 
-    <div class="slot"></div>
-    <div class="slot"></div>
-    <div class="slot"></div>
-    <div class="slot"></div>
+A5 — 20 руб<br>
+A4 — 40 руб<br>
 
-    <div class="slot"></div>
-    <div class="slot"></div>
-    <div class="slot"></div>
-    <div class="slot"></div>
-
-    <div class="slot"></div>
-    <div class="slot"></div>
-    <div class="slot"></div>
-    <div class="slot"></div>
-</div>
 </div>
 
-<div class="right">
-    <h3>Мы располагаемся более чем в 600 подъездах</h3>
-
-    <div class="map-container">
-        <img src="img/map.jpg" id="map" draggable="false">
-    </div>
 </div>
 
 </div>
 
-<div class="modal" id="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">X</span>
-        <div id="modal-text"></div>
-    </div>
+
+
+<div id="contact" class="tab">
+
+<div class="box">
+
+Телефон: 8-93-93-74-23-24<br>
+Почта: Prime.plus.rt@gmail.com
+
 </div>
+
+</div>
+
+
+
+<div id="doma" class="tab">
+
+<table id="table"></table>
+
+</div>
+
+
+
+<div class="mapBox">
+
+<img id="map" src="../map.jpg">
+
+</div>
+
 
 <script src="script.js"></script>
+
 </body>
 </html>
