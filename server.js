@@ -1,25 +1,41 @@
-import express from "express";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-
-dotenv.config();
+const express = require("express");
+const fs = require("fs");
+const bodyParser = require("body-parser");
+const XLSX = require("xlsx");
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.json());
+app.use(express.static("public"));
 
-app.post("/admin-login", (req, res) => {
-    if (req.body.password === process.env.ADMIN_PASSWORD) {
-        res.json({ success: true });
-    } else {
-        res.json({ success: false });
+const PASSWORD = "admin123";
+
+app.get("/slots", (req, res) => {
+    const data = fs.readFileSync("slots.json");
+    res.json(JSON.parse(data));
+});
+
+app.post("/slots", (req, res) => {
+    if (req.body.password !== PASSWORD) {
+        return res.sendStatus(403);
     }
+
+    fs.writeFileSync(
+        "slots.json",
+        JSON.stringify(req.body.slots)
+    );
+
+    res.sendStatus(200);
+});
+
+app.get("/doma", (req, res) => {
+    const wb = XLSX.readFile("doma.xlsx");
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const data = XLSX.utils.sheet_to_json(sheet);
+
+    res.json(data);
 });
 
 app.listen(3000, () => {
-    console.log("Server started on http://localhost:3000");
+    console.log("Server started");
 });
