@@ -12,8 +12,6 @@ const slotsContainer = document.getElementById("slots");
 const adminHint = document.getElementById("adminHint");
 const adminButton = document.getElementById("adminButton");
 
-/* POPUPS */
-
 document.querySelectorAll(".nav__item[data-popup]").forEach((btn) => {
   btn.addEventListener("click", () => {
     openPopup(btn.dataset.popup);
@@ -41,13 +39,11 @@ function closeAllPopups() {
   document.body.classList.remove("modal-open");
 }
 
-document.addEventListener("keydown", async (e) => {
+document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeAllPopups();
   }
 });
-
-/* ADMIN */
 
 if (adminButton) {
   adminButton.addEventListener("click", async () => {
@@ -95,8 +91,6 @@ function updateAdminUI() {
       : "<span>Вход администратора</span>";
   }
 }
-
-/* SLOTS */
 
 async function initAdminStatus() {
   try {
@@ -148,8 +142,6 @@ async function saveSlots() {
     alert("Не удалось сохранить слоты");
   }
 }
-
-/* HOUSES */
 
 async function loadHouses() {
   const wrap = document.getElementById("housesColumns");
@@ -213,8 +205,6 @@ function splitIntoThree(arr) {
   ];
 }
 
-/* MAP */
-
 const mapFrame = document.getElementById("mapFrame");
 const mapImage = document.getElementById("mapImage");
 
@@ -269,28 +259,32 @@ function applyMapTransform() {
   mapImage.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
 }
 
-mapFrame.addEventListener("wheel", (e) => {
-  e.preventDefault();
+mapFrame.addEventListener(
+  "wheel",
+  (e) => {
+    e.preventDefault();
 
-  const rect = mapFrame.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
+    const rect = mapFrame.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
 
-  const prevScale = scale;
-  const factor = e.deltaY < 0 ? 1.12 : 0.88;
-  scale *= factor;
+    const prevScale = scale;
+    const factor = e.deltaY < 0 ? 1.12 : 0.88;
+    scale *= factor;
 
-  if (scale < minScale) scale = minScale;
-  if (scale > maxScale) scale = maxScale;
+    if (scale < minScale) scale = minScale;
+    if (scale > maxScale) scale = maxScale;
 
-  const worldX = (mouseX - posX) / prevScale;
-  const worldY = (mouseY - posY) / prevScale;
+    const worldX = (mouseX - posX) / prevScale;
+    const worldY = (mouseY - posY) / prevScale;
 
-  posX = mouseX - worldX * scale;
-  posY = mouseY - worldY * scale;
+    posX = mouseX - worldX * scale;
+    posY = mouseY - worldY * scale;
 
-  applyMapTransform();
-}, { passive: false });
+    applyMapTransform();
+  },
+  { passive: false }
+);
 
 mapFrame.addEventListener("mousedown", (e) => {
   dragging = true;
@@ -313,8 +307,6 @@ window.addEventListener("mousemove", (e) => {
 
 window.addEventListener("resize", setupMap);
 mapImage.addEventListener("load", setupMap);
-
-/* INIT */
 
 (async function init() {
   await initAdminStatus();

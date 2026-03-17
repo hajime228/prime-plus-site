@@ -11,7 +11,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
 if (!ADMIN_PASSWORD || !SESSION_SECRET) {
-  console.error("Не заданы ADMIN_PASSWORD и/или SESSION_SECRET в переменных окружения.");
+  console.error("Не заданы ADMIN_PASSWORD и/или SESSION_SECRET.");
   process.exit(1);
 }
 
@@ -20,6 +20,7 @@ const EXCEL_FILE = path.join(__dirname, "doma.xlsx");
 const PUBLIC_DIR = path.join(__dirname, "public");
 
 app.use(express.json({ limit: "1mb" }));
+
 app.use(
   session({
     secret: SESSION_SECRET,
@@ -41,11 +42,15 @@ function readSlots() {
     fs.writeFileSync(SLOTS_FILE, JSON.stringify(initial), "utf8");
     return initial;
   }
+
   try {
     const raw = fs.readFileSync(SLOTS_FILE, "utf8");
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length === 16) return parsed;
+    if (Array.isArray(parsed) && parsed.length === 16) {
+      return parsed;
+    }
   } catch (_) {}
+
   const fallback = Array(16).fill(0);
   fs.writeFileSync(SLOTS_FILE, JSON.stringify(fallback), "utf8");
   return fallback;
