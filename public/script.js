@@ -11,12 +11,11 @@ let isAdmin = false;
 const slotsContainer = document.getElementById("slots");
 const adminHint = document.getElementById("adminHint");
 
-/* ---------------- POPUPS ---------------- */
+/* POPUPS */
 
 document.querySelectorAll(".nav__item").forEach((btn) => {
   btn.addEventListener("click", () => {
-    const key = btn.dataset.popup;
-    openPopup(key);
+    openPopup(btn.dataset.popup);
   });
 });
 
@@ -27,10 +26,9 @@ document.querySelectorAll("[data-close]").forEach((el) => {
 function openPopup(key) {
   closeAllPopups();
   const popup = popupMap[key];
-  if (popup) {
-    popup.classList.add("is-open");
-    popup.setAttribute("aria-hidden", "false");
-  }
+  if (!popup) return;
+  popup.classList.add("is-open");
+  popup.setAttribute("aria-hidden", "false");
 }
 
 function closeAllPopups() {
@@ -68,7 +66,7 @@ document.addEventListener("keydown", async (e) => {
   }
 });
 
-/* ---------------- SLOTS ---------------- */
+/* SLOTS */
 
 async function initAdminStatus() {
   try {
@@ -78,7 +76,6 @@ async function initAdminStatus() {
     adminHint.hidden = !isAdmin;
   } catch (_) {
     isAdmin = false;
-    adminHint.hidden = true;
   }
 }
 
@@ -121,7 +118,7 @@ async function saveSlots() {
   }
 }
 
-/* ---------------- HOUSES / EXCEL ---------------- */
+/* HOUSES */
 
 async function loadHouses() {
   const wrap = document.getElementById("housesColumns");
@@ -185,7 +182,7 @@ function splitIntoThree(arr) {
   ];
 }
 
-/* ---------------- MAP PAN + ZOOM WITHOUT WHITE GAPS ---------------- */
+/* MAP */
 
 const mapFrame = document.getElementById("mapFrame");
 const mapImage = document.getElementById("mapImage");
@@ -195,7 +192,6 @@ let minScale = 1;
 let maxScale = 4;
 let posX = 0;
 let posY = 0;
-
 let dragging = false;
 let dragStartX = 0;
 let dragStartY = 0;
@@ -208,7 +204,7 @@ function setupMap() {
   const imgW = mapImage.naturalWidth;
   const imgH = mapImage.naturalHeight;
 
-  if (!imgW || !imgH || !frameW || !frameH) return;
+  if (!frameW || !frameH || !imgW || !imgH) return;
 
   minScale = Math.max(frameW / imgW, frameH / imgH);
   scale = minScale;
@@ -228,10 +224,10 @@ function clampMap() {
   const imgW = mapImage.naturalWidth * scale;
   const imgH = mapImage.naturalHeight * scale;
 
-  const minX = Math.min(0, frameW - imgW);
-  const minY = Math.min(0, frameH - imgH);
-  const maxX = Math.max(0, frameW - imgW);
-  const maxY = Math.max(0, frameH - imgH);
+  const minX = frameW - imgW;
+  const minY = frameH - imgH;
+  const maxX = 0;
+  const maxY = 0;
 
   posX = Math.min(maxX, Math.max(minX, posX));
   posY = Math.min(maxY, Math.max(minY, posY));
@@ -242,31 +238,28 @@ function applyMapTransform() {
   mapImage.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
 }
 
-mapFrame.addEventListener(
-  "wheel",
-  (e) => {
-    e.preventDefault();
+mapFrame.addEventListener("wheel", (e) => {
+  e.preventDefault();
 
-    const rect = mapFrame.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+  const rect = mapFrame.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
 
-    const prevScale = scale;
-    const delta = e.deltaY < 0 ? 1.12 : 0.88;
-    scale *= delta;
-    if (scale < minScale) scale = minScale;
-    if (scale > maxScale) scale = maxScale;
+  const prevScale = scale;
+  const factor = e.deltaY < 0 ? 1.12 : 0.88;
+  scale *= factor;
 
-    const worldX = (mouseX - posX) / prevScale;
-    const worldY = (mouseY - posY) / prevScale;
+  if (scale < minScale) scale = minScale;
+  if (scale > maxScale) scale = maxScale;
 
-    posX = mouseX - worldX * scale;
-    posY = mouseY - worldY * scale;
+  const worldX = (mouseX - posX) / prevScale;
+  const worldY = (mouseY - posY) / prevScale;
 
-    applyMapTransform();
-  },
-  { passive: false }
-);
+  posX = mouseX - worldX * scale;
+  posY = mouseY - worldY * scale;
+
+  applyMapTransform();
+}, { passive: false });
 
 mapFrame.addEventListener("mousedown", (e) => {
   dragging = true;
@@ -290,13 +283,11 @@ window.addEventListener("mousemove", (e) => {
 window.addEventListener("resize", setupMap);
 mapImage.addEventListener("load", setupMap);
 
-/* ---------------- INIT ---------------- */
+/* INIT */
 
 (async function init() {
   await initAdminStatus();
   await loadSlots();
   await loadHouses();
-  if (mapImage.complete) {
-    setupMap();
-  }
+  if (mapImage.complete) setupMap();
 })();
