@@ -256,8 +256,8 @@ body.modal-open {
 .showcase__right {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end; /* ключевое */
-  margin-top: 0; /* важно убрать подъем */
+  align-items: flex-end;
+  margin-bottom: 180px;
 }
 
 .map-frame {
