@@ -39,7 +39,7 @@ app.get("/doma", (req, res) => {
 
     const wb = XLSX.readFile("doma.xlsx");
 
-    const sheet = wb.Sheets[wb.SheetNames[0];
+    const sheet = wb.Sheets[wb.SheetNames[0]];
 
     const data = XLSX.utils.sheet_to_json(sheet);
 
