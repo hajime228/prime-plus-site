@@ -53,6 +53,9 @@ body.modal-open {
 .brand__logo {
   width: min(100%, 310px);
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 .topbar__right {
@@ -190,7 +193,7 @@ body.modal-open {
   display: grid;
   grid-template-columns: 1fr 0.96fr;
   gap: 34px;
-  align-items: start;
+  align-items: end;
   padding: 0 18px;
 }
 
@@ -210,6 +213,8 @@ body.modal-open {
 .mini-ad img {
   width: 100%;
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .slots-panel {
@@ -251,8 +256,7 @@ body.modal-open {
 .showcase__right {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-start;
-  margin-top: -230px;
+  align-items: flex-end;
 }
 
 .map-frame {
@@ -325,6 +329,7 @@ body.modal-open {
   width: min(980px, calc(100vw - 36px));
   height: min(560px, calc(100vh - 36px));
   overflow: hidden;
+  animation: popupFade 0.25s ease;
 }
 
 .popup__content {
@@ -338,6 +343,17 @@ body.modal-open {
 .popup__content div,
 .popup__content strong {
   text-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+
+@keyframes popupFade {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .popup__box--about,
@@ -534,7 +550,6 @@ body.modal-open {
   .showcase__right {
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: 0;
   }
 
   .map-frame {
@@ -696,7 +711,8 @@ body.modal-open {
   }
 
   .popup {
-    padding: 10px;
+    padding: 20px 12px;
+    align-items: flex-start;
   }
 
   .popup__box,
@@ -704,13 +720,19 @@ body.modal-open {
   .popup__box--contacts,
   .popup__box--tariffs,
   .popup__box--houses {
-    width: calc(100vw - 20px);
-    height: calc(100vh - 20px);
-    border-radius: 22px;
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    max-height: 85vh;
+    border-radius: 20px;
+    margin: 40px auto 0;
+    display: flex;
+    flex-direction: column;
   }
 
   .popup__content {
-    padding: 18px 14px 14px;
+    padding: 16px 14px;
+    overflow-y: auto;
   }
 
   .popup__content--about {
