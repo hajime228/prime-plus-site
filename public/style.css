@@ -246,7 +246,7 @@ body.modal-open {
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  margin-top: -180px;
+  margin-top: -230px;
 }
 
 .map-frame {
@@ -519,11 +519,11 @@ body.modal-open {
     align-items: start;
   }
 
-    .showcase__right {
+  .showcase__right {
     justify-content: flex-start;
     align-items: flex-start;
     margin-top: 0;
-    }
+  }
 
   .map-frame {
     width: 100%;
