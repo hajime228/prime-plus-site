@@ -193,14 +193,20 @@ body.modal-open {
   display: grid;
   grid-template-columns: 1fr 0.96fr;
   gap: 34px;
-  align-items: end; /* ключевое */
+  align-items: start;
   padding: 0 18px;
 }
 
 .showcase__left {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 20px;
+}
+
+.showcase__right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
 }
 
 .mini-ad {
@@ -208,6 +214,7 @@ body.modal-open {
   min-width: 160px;
   border: 3px solid rgba(255, 255, 255, 0.45);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  margin-top: 230px;
 }
 
 .mini-ad img {
@@ -549,7 +556,6 @@ body.modal-open {
   .showcase__right {
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: 0;
   }
 
   .map-frame {
