@@ -29,6 +29,7 @@ function openPopup(key) {
   if (!popup) return;
   popup.classList.add("is-open");
   popup.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
 }
 
 function closeAllPopups() {
@@ -36,6 +37,7 @@ function closeAllPopups() {
     popup.classList.remove("is-open");
     popup.setAttribute("aria-hidden", "true");
   });
+  document.body.classList.remove("modal-open");
 }
 
 document.addEventListener("keydown", async (e) => {
