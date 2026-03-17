@@ -10,10 +10,11 @@ let isAdmin = false;
 
 const slotsContainer = document.getElementById("slots");
 const adminHint = document.getElementById("adminHint");
+const adminButton = document.getElementById("adminButton");
 
 /* POPUPS */
 
-document.querySelectorAll(".nav__item").forEach((btn) => {
+document.querySelectorAll(".nav__item[data-popup]").forEach((btn) => {
   btn.addEventListener("click", () => {
     openPopup(btn.dataset.popup);
   });
@@ -44,29 +45,56 @@ document.addEventListener("keydown", async (e) => {
   if (e.key === "Escape") {
     closeAllPopups();
   }
-
-  if (e.key.toLowerCase() === "a") {
-    const password = prompt("Введите пароль администратора");
-    if (!password) return;
-
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ password })
-    });
-
-    if (res.ok) {
-      isAdmin = true;
-      adminHint.hidden = false;
-      renderSlots();
-      alert("Режим администратора включён");
-    } else {
-      alert("Неверный пароль");
-    }
-  }
 });
+
+/* ADMIN */
+
+if (adminButton) {
+  adminButton.addEventListener("click", async () => {
+    if (!isAdmin) {
+      const password = prompt("Введите пароль администратора");
+      if (!password) return;
+
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ password })
+      });
+
+      if (res.ok) {
+        isAdmin = true;
+        updateAdminUI();
+        renderSlots();
+        alert("Режим администратора включён");
+      } else {
+        alert("Неверный пароль");
+      }
+    } else {
+      const res = await fetch("/api/admin/logout", {
+        method: "POST"
+      });
+
+      if (res.ok) {
+        isAdmin = false;
+        updateAdminUI();
+        renderSlots();
+        alert("Режим администратора выключен");
+      }
+    }
+  });
+}
+
+function updateAdminUI() {
+  adminHint.hidden = !isAdmin;
+
+  if (adminButton) {
+    adminButton.innerHTML = isAdmin
+      ? "<span>Выйти из режима</span>"
+      : "<span>Вход администратора</span>";
+  }
+}
 
 /* SLOTS */
 
@@ -75,9 +103,10 @@ async function initAdminStatus() {
     const res = await fetch("/api/admin/status");
     const data = await res.json();
     isAdmin = !!data.isAdmin;
-    adminHint.hidden = !isAdmin;
+    updateAdminUI();
   } catch (_) {
     isAdmin = false;
+    updateAdminUI();
   }
 }
 
