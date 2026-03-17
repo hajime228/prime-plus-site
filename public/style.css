@@ -193,7 +193,7 @@ body.modal-open {
   display: grid;
   grid-template-columns: 1fr 0.96fr;
   gap: 34px;
-  align-items: end;
+  align-items: end; /* ключевое */
   padding: 0 18px;
 }
 
@@ -256,7 +256,8 @@ body.modal-open {
 .showcase__right {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end;
+  align-items: flex-end; /* ключевое */
+  margin-top: 0; /* важно убрать подъем */
 }
 
 .map-frame {
@@ -525,8 +526,6 @@ body.modal-open {
   font-size: 14px;
 }
 
-/* TABLET */
-
 @media (max-width: 1100px) {
   .topbar {
     grid-template-columns: 220px 1fr;
@@ -550,6 +549,7 @@ body.modal-open {
   .showcase__right {
     justify-content: flex-start;
     align-items: flex-start;
+    margin-top: 0;
   }
 
   .map-frame {
@@ -568,8 +568,6 @@ body.modal-open {
     grid-template-columns: 1fr;
   }
 }
-
-/* MOBILE */
 
 @media (max-width: 780px) {
   .page {
