@@ -21,9 +21,7 @@ app.get("/slots", (req, res) => {
 app.post("/slots", (req, res) => {
 
     if (req.body.password !== PASSWORD) {
-
         return res.sendStatus(403);
-
     }
 
     fs.writeFileSync(

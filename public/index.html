@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Прайм Плюс</title>
 
@@ -11,66 +12,55 @@
 
 </head>
 
+
 <body>
+
+
 
 <header>
 
+<div class="logoBox">
+
 <img src="logo.png" class="logo">
+
+</div>
+
 
 <div class="menu">
 
-<button onclick="tab('about')">О компании</button>
-<button onclick="tab('tarif')">Тарифы</button>
-<button onclick="tab('contact')">Контакты</button>
-<button onclick="tab('doma')">Дома</button>
+<button onclick="openPopup('about')">О компании</button>
+<button onclick="openPopup('tarif')">Тарифы</button>
+<button onclick="openPopup('contact')">Контакты</button>
+<button onclick="openPopup('doma')">Дома</button>
 
 </div>
 
 </header>
 
 
-<div id="about" class="tab">
 
-<h2>О компании</h2>
-
-<p>Размещение рекламы в подъездах</p>
-
-</div>
+<div class="main">
 
 
-<div id="tarif" class="tab">
 
-<div class="tarifBox">
+<div class="centerBox">
 
 <img src="rek.jpg" class="rek">
 
-<div id="slots"></div>
+
+<div id="slots" class="slots"></div>
+
 
 <div class="prices">
 
-A5 — 20  
-A4 — 40
-
-</div>
-
-</div>
+<div>A5 — 20 руб</div>
+<div>A4 — 40 руб</div>
 
 </div>
 
 
-<div id="contact" class="tab">
-
-Телефон  
-Почта
-
 </div>
 
-
-<div id="doma" class="tab">
-
-<table id="table"></table>
-
-</div>
 
 
 <div class="mapBox">
@@ -78,6 +68,82 @@ A4 — 40
 <img id="map" src="map.jpg">
 
 </div>
+
+
+
+</div>
+
+
+
+<!-- POPUPS -->
+
+
+<div id="about" class="popup">
+
+<div class="popupContent">
+
+<h2>О компании</h2>
+
+<p>
+Размещение рекламы в подъездах
+</p>
+
+<button onclick="closePopup()">Закрыть</button>
+
+</div>
+
+</div>
+
+
+
+<div id="tarif" class="popup">
+
+<div class="popupContent">
+
+<h2>Тарифы</h2>
+
+A5 — 20  
+A4 — 40
+
+<button onclick="closePopup()">Закрыть</button>
+
+</div>
+
+</div>
+
+
+
+<div id="contact" class="popup">
+
+<div class="popupContent">
+
+<h2>Контакты</h2>
+
+Телефон  
+Почта
+
+<button onclick="closePopup()">Закрыть</button>
+
+</div>
+
+</div>
+
+
+
+<div id="doma" class="popup">
+
+<div class="popupContent">
+
+<h2>Дома</h2>
+
+<table id="table"></table>
+
+<button onclick="closePopup()">Закрыть</button>
+
+</div>
+
+</div>
+
 
 
 <script src="script.js"></script>

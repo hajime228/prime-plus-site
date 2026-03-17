@@ -1,117 +1,141 @@
 body{
-
+margin:0;
+font-family:Arial, sans-serif;
 background:#0b3c4a;
-
 color:white;
-
-font-family:Arial;
-
 }
 
-
+/* HEADER */
 
 header{
-
 display:flex;
-
 justify-content:space-between;
-
+align-items:center;
+padding:10px;
+background:#062b34;
 }
-
-
 
 .logo{
-
-height:80px;
-
+height:70px;
 }
-
-
 
 .menu button{
-
 margin:5px;
-
+padding:8px 12px;
+cursor:pointer;
 }
 
+/* MAIN */
 
-
-.tab{
-
-display:none;
-
-}
-
-
-
-.tarifBox{
-
+.main{
 display:flex;
-
+justify-content:center;
+align-items:flex-start;
+gap:20px;
+padding:20px;
+flex-wrap:wrap;
 }
 
+/* CENTER */
 
+.centerBox{
+background:#1fa3c9;
+padding:20px;
+border-radius:20px;
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+/* REK */
 
 .rek{
-
-width:120px;
-
+width:100px;
+height:100px;
+object-fit:cover;
 }
 
+/* SLOTS */
 
-
-#slots{
-
+.slots{
 display:grid;
-
-grid-template-columns:repeat(4,80px);
-
+grid-template-columns:repeat(4,70px);
 gap:5px;
-
 }
-
-
 
 .slot{
-
-width:80px;
-
+width:70px;
 height:60px;
-
 background:#6ea0c8;
-
+cursor:pointer;
 }
-
-
 
 .busy{
-
 background:red;
-
 }
 
+/* PRICES */
 
+.prices{
+margin-left:10px;
+}
+
+/* MAP */
 
 .mapBox{
-
-position:absolute;
-
-right:10px;
-
-top:150px;
-
 width:400px;
-
 height:300px;
-
 overflow:hidden;
-
+border-radius:15px;
+position:relative;
 }
 
-
-
 #map{
+position:absolute;
+left:0;
+top:0;
+user-select:none;
+cursor:grab;
+}
 
+/* POPUP */
+
+.popup{
+position:fixed;
+left:0;
+top:0;
 width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.popupContent{
+background:#1fa3c9;
+padding:20px;
+border-radius:15px;
+max-height:80%;
+overflow:auto;
+}
+
+/* MOBILE */
+
+@media (max-width:800px){
+
+.main{
+flex-direction:column;
+align-items:center;
+}
+
+.mapBox{
+width:90%;
+height:250px;
+}
+
+.centerBox{
+flex-direction:column;
+}
 
 }
