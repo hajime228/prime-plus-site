@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <meta charset="UTF-8">
+
 <title>Прайм Плюс</title>
 
 <link rel="stylesheet" href="style.css">
 
 </head>
+
 <body>
 
 <header>
 
-<img src="../logo.png" class="logo">
-
-<h1>Размещение рекламы внутри подъездов</h1>
+<img src="logo.png" class="logo">
 
 <div class="menu">
 
-<button onclick="showTab('about')">О компании</button>
-<button onclick="showTab('tarif')">Тарифы</button>
-<button onclick="showTab('contact')">Контакты</button>
-<button onclick="showTab('doma')">Дома с щитами</button>
+<button onclick="tab('about')">О компании</button>
+<button onclick="tab('tarif')">Тарифы</button>
+<button onclick="tab('contact')">Контакты</button>
+<button onclick="tab('doma')">Дома</button>
 
 </div>
 
@@ -29,49 +31,39 @@
 
 <div id="about" class="tab">
 
-<div class="box">
+<h2>О компании</h2>
 
-ООО Прайм Плюс<br>
-Почта: Prime.plus.rt@gmail.com
-
-</div>
+<p>Размещение рекламы в подъездах</p>
 
 </div>
-
 
 
 <div id="tarif" class="tab">
 
-<div class="main">
+<div class="tarifBox">
 
-<img src="../rek.jpg" class="rek">
+<img src="rek.jpg" class="rek">
 
-<div id="slots" class="slots"></div>
+<div id="slots"></div>
 
-<div class="text">
+<div class="prices">
 
-A5 — 20 руб<br>
-A4 — 40 руб<br>
-
-</div>
+A5 — 20  
+A4 — 40
 
 </div>
 
 </div>
 
+</div>
 
 
 <div id="contact" class="tab">
 
-<div class="box">
-
-Телефон: 8-93-93-74-23-24<br>
-Почта: Prime.plus.rt@gmail.com
+Телефон  
+Почта
 
 </div>
-
-</div>
-
 
 
 <div id="doma" class="tab">
@@ -81,10 +73,9 @@ A4 — 40 руб<br>
 </div>
 
 
-
 <div class="mapBox">
 
-<img id="map" src="../map.jpg">
+<img id="map" src="map.jpg">
 
 </div>
 
@@ -92,4 +83,5 @@ A4 — 40 руб<br>
 <script src="script.js"></script>
 
 </body>
+
 </html>

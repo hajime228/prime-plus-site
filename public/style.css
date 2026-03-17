@@ -1,60 +1,117 @@
 body{
+
 background:#0b3c4a;
+
 color:white;
+
 font-family:Arial;
+
 }
+
+
+
+header{
+
+display:flex;
+
+justify-content:space-between;
+
+}
+
+
 
 .logo{
-width:120px;
+
+height:80px;
+
 }
+
+
 
 .menu button{
+
 margin:5px;
+
 }
+
+
 
 .tab{
+
 display:none;
+
 }
 
-.box{
-background:#1fa3c9;
-padding:20px;
-border-radius:20px;
-width:400px;
-}
 
-.main{
+
+.tarifBox{
+
 display:flex;
+
 }
+
+
 
 .rek{
-width:100px;
-height:100px;
+
+width:120px;
+
 }
 
-.slots{
+
+
+#slots{
+
 display:grid;
+
 grid-template-columns:repeat(4,80px);
+
 gap:5px;
+
 }
+
+
 
 .slot{
+
 width:80px;
+
 height:60px;
+
 background:#6ea0c8;
-cursor:pointer;
+
 }
+
+
 
 .busy{
+
 background:red;
+
 }
+
+
 
 .mapBox{
+
+position:absolute;
+
+right:10px;
+
+top:150px;
+
 width:400px;
+
 height:300px;
+
 overflow:hidden;
+
 }
 
+
+
 #map{
+
 width:100%;
+
 }
