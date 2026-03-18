@@ -3,10 +3,8 @@
   --bg-mid: #003a4a;
   --bg-bottom: #12a6df;
   --panel: #19aae4;
-  --panel-border: #4d7390;
   --slot: #5e98cd;
   --slot-border: #47769b;
-  --text-light: #f1f1f1;
   --white: #f5f5f5;
   --blue: #0e6bb4;
   --gold: #c59a19;
@@ -41,7 +39,7 @@ body.modal-open {
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
-/* HEADER */
+/* header */
 
 .topbar {
   display: grid;
@@ -116,7 +114,7 @@ body.modal-open {
   background: #e9f3ff;
 }
 
-/* HERO */
+/* hero */
 
 .hero {
   margin-top: 8px;
@@ -186,14 +184,14 @@ body.modal-open {
   text-align: left;
 }
 
-/* SHOWCASE */
+/* showcase */
 
 .showcase {
   margin-top: 8px;
   display: grid;
   grid-template-columns: 1fr 0.96fr;
   gap: 34px;
-  align-items: start;
+  align-items: end; /* низ карты = низу слотов */
   padding: 0 18px;
 }
 
@@ -208,7 +206,7 @@ body.modal-open {
   min-width: 160px;
   border: 3px solid rgba(255, 255, 255, 0.45);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-  margin-top: 220px;
+  margin-top: 220px; /* реклама ниже, как на макете */
 }
 
 .mini-ad img {
@@ -257,7 +255,7 @@ body.modal-open {
 .showcase__right {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-start;
+  align-items: flex-end; /* ключевое */
   margin: 0;
 }
 
@@ -286,7 +284,7 @@ body.modal-open {
   cursor: grabbing;
 }
 
-/* FOOTER */
+/* footer */
 
 .footer {
   margin-top: 22px;
@@ -298,7 +296,7 @@ body.modal-open {
   padding: 8px 18px 0;
 }
 
-/* POPUPS */
+/* popups */
 
 .popup {
   position: fixed;
@@ -527,6 +525,8 @@ body.modal-open {
   font-size: 14px;
 }
 
+/* tablet */
+
 @media (max-width: 1100px) {
   .topbar {
     grid-template-columns: 220px 1fr;
@@ -550,7 +550,6 @@ body.modal-open {
   .showcase__right {
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: 0;
   }
 
   .mini-ad {
@@ -574,15 +573,18 @@ body.modal-open {
   }
 }
 
+/* mobile */
+
 @media (max-width: 780px) {
   .page {
-    width: calc(100% - 8px);
-    padding: 10px 10px 16px;
+    width: calc(100% - 12px);
+    padding: 12px 12px 18px;
+    border-radius: 0;
   }
 
   .topbar {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 12px;
   }
 
   .brand {
@@ -591,19 +593,19 @@ body.modal-open {
   }
 
   .brand__logo {
-    width: min(100%, 270px);
+    width: min(100%, 240px);
   }
 
   .headline {
-    font-size: 17px;
-    line-height: 1.1;
+    font-size: 18px;
+    line-height: 1.15;
     padding: 10px 12px;
   }
 
   .nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 12px;
+    gap: 10px;
   }
 
   .nav__item {
@@ -615,8 +617,8 @@ body.modal-open {
 
   .hero {
     grid-template-columns: 1fr;
-    gap: 14px;
-    margin-top: 14px;
+    gap: 12px;
+    margin-top: 12px;
   }
 
   .hero__lead,
@@ -627,15 +629,15 @@ body.modal-open {
 
   .hero__lead {
     max-width: none;
-    font-size: 18px;
-    line-height: 1.22;
-    margin-bottom: 14px;
+    font-size: 20px;
+    line-height: 1.2;
+    margin-bottom: 12px;
   }
 
   .hero__subhead {
-    font-size: 17px;
+    font-size: 18px;
     line-height: 1.18;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .quick-contact {
@@ -655,26 +657,27 @@ body.modal-open {
   }
 
   .coverage__title {
-    font-size: 18px;
-    line-height: 1.15;
+    font-size: 20px;
+    line-height: 1.1;
   }
 
   .showcase {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 18px;
     padding: 0;
-    margin-top: 12px;
+    margin-top: 14px;
+    align-items: start;
   }
 
   .showcase__left {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
-    gap: 14px;
+    gap: 12px;
   }
 
   .mini-ad {
-    width: 120px;
-    min-width: 120px;
+    width: 110px;
+    min-width: 110px;
     margin-top: 0;
   }
 
@@ -691,32 +694,32 @@ body.modal-open {
 
   .slot {
     width: 100%;
-    aspect-ratio: 1 / 1;
-    min-height: 42px;
+    aspect-ratio: 1 / 0.9;
+    min-height: 40px;
   }
 
   .showcase__right {
-    margin-top: 0;
     justify-content: flex-start;
     align-items: flex-start;
+    margin: 0;
   }
 
   .map-frame {
     width: 100%;
-    aspect-ratio: 1 / 1;
-    min-height: 260px;
+    aspect-ratio: 1.15 / 1;
+    min-height: 220px;
   }
 
   .footer {
     flex-direction: column;
     gap: 6px;
     font-size: 13px;
-    padding: 8px 0 0;
+    padding: 10px 0 0;
   }
 
   .popup {
-    padding: 20px 12px;
-    align-items: flex-start;
+    padding: 16px 10px;
+    align-items: center;
   }
 
   .popup__box,
@@ -725,11 +728,11 @@ body.modal-open {
   .popup__box--tariffs,
   .popup__box--houses {
     width: 100%;
-    max-width: 500px;
+    max-width: 520px;
     height: auto;
-    max-height: 85vh;
+    max-height: 82vh;
     border-radius: 20px;
-    margin: 40px auto 0;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
   }
@@ -745,7 +748,7 @@ body.modal-open {
 
   .popup__content--contacts h3 {
     font-size: 22px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   .contact-grid {
@@ -760,7 +763,7 @@ body.modal-open {
       "grid"
       "top"
       "bottom";
-    gap: 16px;
+    gap: 14px;
   }
 
   .tariff-demo-grid {
