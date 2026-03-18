@@ -203,18 +203,12 @@ body.modal-open {
   gap: 20px;
 }
 
-.showcase__right {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-}
-
 .mini-ad {
   width: 160px;
   min-width: 160px;
   border: 3px solid rgba(255, 255, 255, 0.45);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-  margin-top: 230px;
+  margin-top: 220px;
 }
 
 .mini-ad img {
@@ -263,8 +257,8 @@ body.modal-open {
 .showcase__right {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end; /* ключевое */
-  margin-top: 0; /* важно убрать подъем */
+  align-items: flex-start;
+  margin: 0;
 }
 
 .map-frame {
@@ -556,6 +550,11 @@ body.modal-open {
   .showcase__right {
     justify-content: flex-start;
     align-items: flex-start;
+    margin-top: 0;
+  }
+
+  .mini-ad {
+    margin-top: 0;
   }
 
   .map-frame {
@@ -676,6 +675,7 @@ body.modal-open {
   .mini-ad {
     width: 120px;
     min-width: 120px;
+    margin-top: 0;
   }
 
   .slots-panel {
