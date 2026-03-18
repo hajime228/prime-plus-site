@@ -187,11 +187,11 @@ body.modal-open {
 /* showcase */
 
 .showcase {
-  margin-top: 8px;
+  margin-top: -120px;
   display: grid;
   grid-template-columns: 1fr 0.96fr;
   gap: 34px;
-  align-items: end; /* низ карты = низу слотов */
+  align-items: end;
   padding: 0 18px;
 }
 
@@ -255,7 +255,7 @@ body.modal-open {
 .showcase__right {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end; /* ключевое */
+  align-items: flex-end;
   margin: 0;
 }
 
@@ -531,6 +531,9 @@ body.modal-open {
   .topbar {
     grid-template-columns: 220px 1fr;
   }
+  .showcase {
+  margin-top: 12px;
+}
 
   .hero {
     grid-template-columns: 1fr;
@@ -581,6 +584,9 @@ body.modal-open {
     padding: 12px 12px 18px;
     border-radius: 0;
   }
+  .showcase {
+  margin-top: 12px;
+}
 
   .topbar {
     grid-template-columns: 1fr;
