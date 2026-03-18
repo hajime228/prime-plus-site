@@ -39,7 +39,7 @@ body.modal-open {
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
-/* header */
+/* HEADER */
 
 .topbar {
   display: grid;
@@ -114,7 +114,7 @@ body.modal-open {
   background: #e9f3ff;
 }
 
-/* hero */
+/* HERO */
 
 .hero {
   margin-top: 8px;
@@ -184,10 +184,10 @@ body.modal-open {
   text-align: left;
 }
 
-/* showcase */
+/* SHOWCASE */
 
 .showcase {
-  margin-top: -140px;
+  margin-top: -150px;
   display: grid;
   grid-template-columns: 1fr 0.96fr;
   gap: 34px;
@@ -206,7 +206,7 @@ body.modal-open {
   min-width: 160px;
   border: 3px solid rgba(255, 255, 255, 0.45);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-  margin-top: 220px; /* реклама ниже, как на макете */
+  margin-top: 220px;
 }
 
 .mini-ad img {
@@ -284,7 +284,7 @@ body.modal-open {
   cursor: grabbing;
 }
 
-/* footer */
+/* FOOTER */
 
 .footer {
   margin-top: 22px;
@@ -296,7 +296,7 @@ body.modal-open {
   padding: 8px 18px 0;
 }
 
-/* popups */
+/* POPUPS */
 
 .popup {
   position: fixed;
@@ -525,15 +525,12 @@ body.modal-open {
   font-size: 14px;
 }
 
-/* tablet */
+/* TABLET */
 
 @media (max-width: 1100px) {
   .topbar {
     grid-template-columns: 220px 1fr;
   }
-  .showcase {
-  margin-top: 12px;
-}
 
   .hero {
     grid-template-columns: 1fr;
@@ -547,7 +544,9 @@ body.modal-open {
 
   .showcase {
     grid-template-columns: 1fr;
+    gap: 18px;
     align-items: start;
+    margin-top: 12px;
   }
 
   .showcase__right {
@@ -576,17 +575,13 @@ body.modal-open {
   }
 }
 
-/* mobile */
+/* MOBILE */
 
 @media (max-width: 780px) {
   .page {
     width: calc(100% - 12px);
     padding: 12px 12px 18px;
-    border-radius: 0;
   }
-  .showcase {
-  margin-top: 12px;
-}
 
   .topbar {
     grid-template-columns: 1fr;
@@ -735,9 +730,9 @@ body.modal-open {
   .popup__box--houses {
     width: 100%;
     max-width: 520px;
-    height: auto;
-    max-height: 82vh;
-    border-radius: 20px;
+    height: auto !important;
+    max-height: 80vh;
+    border-radius: 18px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
