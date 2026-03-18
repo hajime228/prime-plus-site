@@ -39,7 +39,7 @@ body.modal-open {
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
-/* HEADER */
+/* header */
 
 .topbar {
   display: grid;
@@ -114,7 +114,7 @@ body.modal-open {
   background: #e9f3ff;
 }
 
-/* HERO */
+/* hero */
 
 .hero {
   margin-top: 8px;
@@ -184,7 +184,7 @@ body.modal-open {
   text-align: left;
 }
 
-/* SHOWCASE */
+/* showcase */
 
 .showcase {
   margin-top: -150px;
@@ -284,7 +284,7 @@ body.modal-open {
   cursor: grabbing;
 }
 
-/* FOOTER */
+/* footer */
 
 .footer {
   margin-top: 22px;
@@ -296,7 +296,7 @@ body.modal-open {
   padding: 8px 18px 0;
 }
 
-/* POPUPS */
+/* popups */
 
 .popup {
   position: fixed;
@@ -525,7 +525,7 @@ body.modal-open {
   font-size: 14px;
 }
 
-/* TABLET */
+/* tablet */
 
 @media (max-width: 1100px) {
   .topbar {
@@ -575,7 +575,7 @@ body.modal-open {
   }
 }
 
-/* MOBILE */
+/* mobile */
 
 @media (max-width: 780px) {
   .page {
@@ -719,8 +719,8 @@ body.modal-open {
   }
 
   .popup {
-    padding: 16px 10px;
-    align-items: center;
+    padding: 28px 10px !important;
+    align-items: flex-start !important;
   }
 
   .popup__box,
@@ -728,19 +728,27 @@ body.modal-open {
   .popup__box--contacts,
   .popup__box--tariffs,
   .popup__box--houses {
-    width: 100%;
-    max-width: 520px;
+    width: calc(100vw - 20px) !important;
+    max-width: 460px !important;
     height: auto !important;
-    max-height: 80vh;
-    border-radius: 18px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
+    max-height: 72vh !important;
+    min-height: 0 !important;
+    margin: 18px auto 0 !important;
+    border-radius: 18px !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
-  .popup__content {
-    padding: 16px 14px;
-    overflow-y: auto;
+  .popup__content,
+  .popup__content--about,
+  .popup__content--contacts,
+  .popup__content--tariffs,
+  .popup__content--houses {
+    height: auto !important;
+    max-height: 72vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 14px 12px !important;
   }
 
   .popup__content--about {
@@ -809,44 +817,5 @@ body.modal-open {
     bottom: 10px;
     font-size: 12px;
     padding: 8px 10px;
-  }
-}
-@media (max-width: 780px) {
-  .popup {
-    padding: 16px 10px !important;
-    align-items: center !important;
-  }
-
-  .popup__box,
-  .popup__box--about,
-  .popup__box--contacts,
-  .popup__box--tariffs,
-  .popup__box--houses {
-    width: 100% !important;
-    max-width: 520px !important;
-    height: auto !important;
-    max-height: 80vh !important;
-    min-height: 0 !important;
-    margin: 0 auto !important;
-    border-radius: 18px !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  .popup__content,
-  .popup__content--about,
-  .popup__content--contacts,
-  .popup__content--tariffs,
-  .popup__content--houses {
-    height: auto !important;
-    max-height: 80vh !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    padding: 16px 14px !important;
-  }
-
-  .popup__box--tariffs .popup__content,
-  .popup__box--houses .popup__content {
-    max-height: 80vh !important;
   }
 }
