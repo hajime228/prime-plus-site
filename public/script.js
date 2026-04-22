@@ -219,6 +219,12 @@ let dragStartY = 0;
 
 mapImage.addEventListener("dragstart", (e) => e.preventDefault());
 
+// ДОБАВЛЕНО: запрет перетаскивания логотипа
+const logo = document.querySelector('.brand__logo');
+if (logo) {
+  logo.addEventListener('dragstart', (e) => e.preventDefault());
+}
+
 function setupMap() {
   const frameW = mapFrame.clientWidth;
   const frameH = mapFrame.clientHeight;
