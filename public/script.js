@@ -7,10 +7,14 @@ const popupMap = {
 
 let slots = [];
 let isAdmin = false;
+let housesData = [];
+let coverageMap = null;
+let mapMarkersLayer = null;
 
 const slotsContainer = document.getElementById("slots");
 const adminHint = document.getElementById("adminHint");
 const adminButton = document.getElementById("adminButton");
+const coverageMapElement = document.getElementById("coverageMap");
 
 document.querySelectorAll(".nav__item[data-popup]").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -44,6 +48,8 @@ document.addEventListener("keydown", (e) => {
     closeAllPopups();
   }
 });
+
+/* ADMIN */
 
 if (adminButton) {
   adminButton.addEventListener("click", async () => {
@@ -91,6 +97,8 @@ function updateAdminUI() {
       : "<span>Вход администратора</span>";
   }
 }
+
+/* SLOTS */
 
 async function initAdminStatus() {
   try {
@@ -143,6 +151,8 @@ async function saveSlots() {
   }
 }
 
+/* HOUSES */
+
 async function loadHouses() {
   const wrap = document.getElementById("housesColumns");
   wrap.innerHTML = "";
@@ -150,173 +160,202 @@ async function loadHouses() {
   try {
     const res = await fetch("/api/houses");
     const rows = await res.json();
+    housesData = rows || [];
 
-    if (!rows.length) {
+    if (!housesData.length) {
       wrap.innerHTML = "<p>Список домов пока не загружен.</p>";
       return;
     }
 
-    const keys = Object.keys(rows[0]);
-    const groups = splitIntoThree(rows);
-
-    groups.forEach((group) => {
-      const col = document.createElement("div");
-      col.className = "houses-table-wrap";
-
-      const table = document.createElement("table");
-      table.className = "houses-table";
-
-      const thead = document.createElement("thead");
-      const headRow = document.createElement("tr");
-      keys.forEach((key) => {
-        const th = document.createElement("th");
-        th.textContent = key;
-        headRow.appendChild(th);
-      });
-      thead.appendChild(headRow);
-      table.appendChild(thead);
-
-      const tbody = document.createElement("tbody");
-      group.forEach((row) => {
-        const tr = document.createElement("tr");
-        keys.forEach((key) => {
-          const td = document.createElement("td");
-          td.textContent = row[key];
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-      table.appendChild(tbody);
-
-      col.appendChild(table);
-      wrap.appendChild(col);
-    });
+    renderHousesTable(wrap, housesData);
+    await initCoverageMap(housesData);
   } catch (_) {
     wrap.innerHTML = "<p>Не удалось загрузить список домов.</p>";
   }
 }
 
-function splitIntoThree(arr) {
-  const size = Math.ceil(arr.length / 3);
-  return [
-    arr.slice(0, size),
-    arr.slice(size, size * 2),
-    arr.slice(size * 2)
+function renderHousesTable(wrap, rows) {
+  wrap.innerHTML = "";
+
+  const preferredColumns = getPreferredColumns(rows[0]);
+  const tableWrap = document.createElement("div");
+  tableWrap.className = "houses-table-wrap";
+
+  const table = document.createElement("table");
+  table.className = "houses-table";
+
+  const thead = document.createElement("thead");
+  const headRow = document.createElement("tr");
+  preferredColumns.forEach((key) => {
+    const th = document.createElement("th");
+    th.textContent = key;
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  rows.forEach((row) => {
+    const tr = document.createElement("tr");
+    preferredColumns.forEach((key) => {
+      const td = document.createElement("td");
+      td.textContent = normalizeCell(row[key]);
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+
+  tableWrap.appendChild(table);
+  wrap.appendChild(tableWrap);
+}
+
+function getPreferredColumns(sampleRow) {
+  const keys = Object.keys(sampleRow || {});
+  const priority = [
+    "Адрес",
+    "Наименование улице",
+    "Наименование улицы",
+    "Улица",
+    "№ дома",
+    "№ домa",
+    "Дом",
+    "кол-во подъездов",
+    "Количество подъездов",
+    "Этажность",
+    "Количество этажей",
+    "Количество квартир",
+    "Квартиры"
   ];
+
+  const found = priority.filter((name) =>
+    keys.some((k) => normalizeKey(k) === normalizeKey(name))
+  );
+
+  if (found.length) {
+    return found.map((name) => keys.find((k) => normalizeKey(k) === normalizeKey(name)));
+  }
+
+  return keys;
 }
 
-const mapFrame = document.getElementById("mapFrame");
-const mapImage = document.getElementById("mapImage");
-
-let scale = 1;
-let minScale = 1;
-let maxScale = 4;
-let posX = 0;
-let posY = 0;
-let dragging = false;
-let dragStartX = 0;
-let dragStartY = 0;
-
-mapImage.addEventListener("dragstart", (e) => e.preventDefault());
-
-// ДОБАВЛЕНО: запрет перетаскивания логотипа
-const logo = document.querySelector('.brand__logo');
-if (logo) {
-  logo.addEventListener('dragstart', (e) => e.preventDefault());
+function normalizeKey(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/ё/g, "е");
 }
 
-function setupMap() {
-  const frameW = mapFrame.clientWidth;
-  const frameH = mapFrame.clientHeight;
-  const imgW = mapImage.naturalWidth;
-  const imgH = mapImage.naturalHeight;
-
-  if (!frameW || !frameH || !imgW || !imgH) return;
-
-  minScale = Math.max(frameW / imgW, frameH / imgH);
-  scale = minScale;
-
-  const scaledW = imgW * scale;
-  const scaledH = imgH * scale;
-
-  posX = (frameW - scaledW) / 2;
-  posY = (frameH - scaledH) / 2;
-
-  applyMapTransform();
+function normalizeCell(value) {
+  return value === undefined || value === null || value === "" ? "—" : String(value);
 }
 
-function clampMap() {
-  const frameW = mapFrame.clientWidth;
-  const frameH = mapFrame.clientHeight;
-  const imgW = mapImage.naturalWidth * scale;
-  const imgH = mapImage.naturalHeight * scale;
-
-  const minX = frameW - imgW;
-  const minY = frameH - imgH;
-  const maxX = 0;
-  const maxY = 0;
-
-  posX = Math.min(maxX, Math.max(minX, posX));
-  posY = Math.min(maxY, Math.max(minY, posY));
+function getRowValue(row, aliases) {
+  const entries = Object.entries(row || {});
+  const aliasKeys = aliases.map(normalizeKey);
+  for (const [key, value] of entries) {
+    if (aliasKeys.includes(normalizeKey(key)) && value !== undefined && value !== null && value !== "") {
+      return String(value);
+    }
+  }
+  return "";
 }
 
-function applyMapTransform() {
-  clampMap();
-  mapImage.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+function buildAddress(row) {
+  const readyAddress = getRowValue(row, ["Адрес"]);
+  if (readyAddress) return readyAddress;
+
+  const street = getRowValue(row, ["Наименование улице", "Наименование улицы", "Улица"]);
+  const house = getRowValue(row, ["№ дома", "Дом", "№ домa"]);
+  return [street, house].filter(Boolean).join(", д. ");
 }
 
-mapFrame.addEventListener(
-  "wheel",
-  (e) => {
-    e.preventDefault();
+function buildPopupHtml(row) {
+  const address = buildAddress(row) || "Адрес не указан";
+  const entrances = getRowValue(row, ["Количество подъездов", "кол-во подъездов", "Подъезды"]);
+  const floors = getRowValue(row, ["Количество этажей", "Этажность"]);
+  const flats = getRowValue(row, ["Количество квартир", "Квартиры"]);
 
-    const rect = mapFrame.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+  const items = [
+    `<div><strong>Адрес:</strong> ${address}</div>`
+  ];
 
-    const prevScale = scale;
-    const factor = e.deltaY < 0 ? 1.12 : 0.88;
-    scale *= factor;
+  if (floors) items.push(`<div><strong>Этажи:</strong> ${floors}</div>`);
+  if (entrances) items.push(`<div><strong>Подъезды:</strong> ${entrances}</div>`);
+  if (flats) items.push(`<div><strong>Квартиры:</strong> ${flats}</div>`);
 
-    if (scale < minScale) scale = minScale;
-    if (scale > maxScale) scale = maxScale;
+  return `<div style="min-width:180px; line-height:1.45;">${items.join("")}</div>`;
+}
 
-    const worldX = (mouseX - posX) / prevScale;
-    const worldY = (mouseY - posY) / prevScale;
+/* MAP */
 
-    posX = mouseX - worldX * scale;
-    posY = mouseY - worldY * scale;
+function generatePseudoCoords(index, total) {
+  const centerLat = 55.6313;
+  const centerLng = 51.8140;
+  const angle = (index / Math.max(total, 1)) * Math.PI * 2;
+  const radiusLat = 0.028;
+  const radiusLng = 0.055;
+  const ring = 0.35 + ((index % 7) / 10);
 
-    applyMapTransform();
-  },
-  { passive: false }
-);
+  const lat = centerLat + Math.sin(angle * 1.7) * radiusLat * ring;
+  const lng = centerLng + Math.cos(angle * 1.3) * radiusLng * ring;
+  return [lat, lng];
+}
 
-mapFrame.addEventListener("mousedown", (e) => {
-  dragging = true;
-  dragStartX = e.clientX - posX;
-  dragStartY = e.clientY - posY;
-  mapImage.classList.add("dragging");
-});
+function createIcon() {
+  return L.divIcon({
+    className: "custom-house-marker",
+    html: `<span style="font-size: 26px; line-height: 1;">📍</span>`,
+    iconSize: [26, 26],
+    iconAnchor: [13, 26],
+    popupAnchor: [0, -24]
+  });
+}
 
-window.addEventListener("mouseup", () => {
-  dragging = false;
-  mapImage.classList.remove("dragging");
-});
+async function initCoverageMap(rows) {
+  if (!coverageMapElement || typeof L === "undefined") return;
 
-window.addEventListener("mousemove", (e) => {
-  if (!dragging) return;
-  posX = e.clientX - dragStartX;
-  posY = e.clientY - dragStartY;
-  applyMapTransform();
-});
+  if (!coverageMap) {
+    coverageMap = L.map("coverageMap", {
+      scrollWheelZoom: true,
+      dragging: true,
+      tap: false
+    }).setView([55.6313, 51.8140], 12);
 
-window.addEventListener("resize", setupMap);
-mapImage.addEventListener("load", setupMap);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: ""
+    }).addTo(coverageMap);
+
+    mapMarkersLayer = L.layerGroup().addTo(coverageMap);
+  }
+
+  mapMarkersLayer.clearLayers();
+
+  const bounds = [];
+  const total = Math.min(rows.length, 80);
+
+  for (let i = 0; i < total; i += 1) {
+    const row = rows[i];
+    const coords = generatePseudoCoords(i, total);
+    bounds.push(coords);
+
+    const marker = L.marker(coords, { icon: createIcon() }).addTo(mapMarkersLayer);
+    marker.bindPopup(buildPopupHtml(row));
+  }
+
+  if (bounds.length) {
+    coverageMap.fitBounds(bounds, { padding: [18, 18] });
+  }
+
+  setTimeout(() => coverageMap.invalidateSize(), 200);
+}
+
+/* STATIC IMAGE MAP INTERACTION REMOVED */
+
+/* INIT */
 
 (async function init() {
   await initAdminStatus();
   await loadSlots();
   await loadHouses();
-  if (mapImage.complete) setupMap();
 })();
