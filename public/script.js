@@ -169,35 +169,68 @@ async function loadHouses() {
 
 function renderHousesList(rows) {
   const wrap = document.getElementById("housesList");
+  const search = document.getElementById("houseSearch");
+
   if (!wrap) return;
 
-  wrap.innerHTML = "";
+  function draw(list) {
+    wrap.innerHTML = "";
 
-  if (!rows.length) {
-    wrap.innerHTML = "<p>Список домов пока не загружен.</p>";
-    return;
+    if (!list.length) {
+      wrap.innerHTML = "<p>Ничего не найдено.</p>";
+      return;
+    }
+
+    list.forEach((row) => {
+      const item = document.createElement("div");
+      item.className = "house-row";
+
+      const address = row.address || formatHouseAddress(row);
+      const entrances = row.entrances || row.podezdy || row["количество подъездов"] || "";
+      const floors = row.floors || row.etazhi || row["этажность"] || "";
+      const flats = row.flats || row.kvartiry || row["квартир"] || "";
+
+      item.innerHTML = `
+        <div class="house-address">
+          <span class="house-pin"></span>
+          <button class="house-address__btn" type="button">${escapeHtml(address)}</button>
+        </div>
+        <div class="house-center">${escapeHtml(String(entrances || ""))}</div>
+        <div class="house-center">${escapeHtml(String(floors || flats || ""))}</div>
+      `;
+
+      const btn = item.querySelector(".house-address__btn");
+      if (btn) {
+        btn.addEventListener("click", () => {
+          focusHouseOnMap(address);
+          closeAllPopups();
+        });
+      }
+
+      wrap.appendChild(item);
+    });
   }
 
-  rows.forEach((row) => {
-    const item = document.createElement("div");
-    item.className = "house-row";
+  draw(rows);
 
-    const address = row.address || formatHouseAddress(row);
-    const entrances = row.entrances || row.podezdy || row["количество подъездов"] || "";
-    const floors = row.floors || row.etazhi || row["этажность"] || "";
-    const flats = row.flats || row.kvartiry || row["квартир"] || "";
+  if (search && !search.dataset.bound) {
+    search.dataset.bound = "true";
+    search.addEventListener("input", () => {
+      const query = normalizeAddressForKey(search.value);
 
-    item.innerHTML = `
-      <div class="house-address">
-        <span class="house-pin">📍</span>
-        <span>${escapeHtml(address)}</span>
-      </div>
-      <div class="house-center">${escapeHtml(String(entrances || ""))}</div>
-      <div class="house-center">${escapeHtml(String(floors || flats || ""))}</div>
-    `;
+      if (!query) {
+        draw(housesCache);
+        return;
+      }
 
-    wrap.appendChild(item);
-  });
+      const filtered = housesCache.filter((row) => {
+        const address = row.address || formatHouseAddress(row);
+        return normalizeAddressForKey(address).includes(query);
+      });
+
+      draw(filtered);
+    });
+  }
 }
 
 function formatHouseAddress(row) {
@@ -215,129 +248,79 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+let leafletMap = null;
+let leafletMarkers = [];
+let leafletMarkerByAddress = new Map();
+
 async function initYandexMap() {
-  const mapEl = document.getElementById("map");
-  const fallback = document.getElementById("mapFallback");
-
-  if (!mapEl) return;
-
-  try {
-    const configRes = await fetch("/api/map-config");
-    const config = await configRes.json();
-
-    if (config.yandexMapsApiKey) {
-      await initYandexRealMap(config.yandexMapsApiKey);
-      return;
-    }
-
-    await initFreeLeafletMap();
-  } catch (_) {
-    await initFreeLeafletMap();
-  }
-
-  function showFallbackMap() {
-    if (mapEl) mapEl.hidden = true;
-    if (fallback) fallback.hidden = false;
-  }
+  await initFreeLeafletMap();
 }
 
-function loadYandexScript(apiKey) {
-  return new Promise((resolve, reject) => {
-    if (window.ymaps) {
-      resolve();
-      return;
-    }
+function normalizeAddressForKey(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replaceAll("ё", "е")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-    const script = document.createElement("script");
-    script.src = `https://api-maps.yandex.ru/2.1/?apikey=${encodeURIComponent(apiKey)}&lang=ru_RU`;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
+function makePopupHtml(house) {
+  const address = house.address || formatHouseAddress(house);
+  return `
+    <div class="map-popup">
+      <div class="map-popup__title">Адрес: ${escapeHtml(address)}</div>
+      <div>Этажность: ${escapeHtml(String(house.floors || "—"))}</div>
+      <div>Подъездов: ${escapeHtml(String(house.entrances || "—"))}</div>
+      <div>Квартир: ${escapeHtml(String(house.flats || "—"))}</div>
+    </div>
+  `;
+}
+
+function createPinIcon(extraClass = "") {
+  return L.divIcon({
+    className: `leaflet-custom-pin ${extraClass}`.trim(),
+    html: "<span></span>",
+    iconSize: [34, 42],
+    iconAnchor: [17, 42],
+    popupAnchor: [0, -40]
   });
 }
 
-async function initYandexRealMap(apiKey) {
-  await loadYandexScript(apiKey);
-
-  ymaps.ready(async () => {
-    yandexMap = new ymaps.Map("map", {
-      center: [55.6311, 51.8149],
-      zoom: 12,
-      controls: ["zoomControl", "fullscreenControl"]
-    }, {
-      suppressMapOpenBlock: true,
-      yandexMapDisablePoiInteractivity: true
-    });
-
-    yandexMap.behaviors.disable("scrollZoom");
-    yandexMap.behaviors.enable(["drag", "multiTouch"]);
-
-    await loadYandexMapHouses();
+function createClusterIcon(count) {
+  return L.divIcon({
+    className: "leaflet-cluster-pin",
+    html: `<span>${count}</span>`,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21]
   });
 }
 
-async function loadYandexMapHouses() {
-  if (!yandexMap) return;
+function clusterHouses(rows) {
+  const precision = 3;
+  const clusters = new Map();
 
-  try {
-    const res = await fetch("/api/houses-map");
-    const rows = await res.json();
+  rows.forEach((house) => {
+    const lat = Number(house.lat);
+    const lon = Number(house.lon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
 
-    yandexObjects.forEach((object) => {
-      yandexMap.geoObjects.remove(object);
-    });
-    yandexObjects = [];
+    const key = `${lat.toFixed(precision)}_${lon.toFixed(precision)}`;
 
-    const coords = [];
-
-    rows.forEach((house) => {
-      if (!house.lat || !house.lon) return;
-
-      const point = [Number(house.lat), Number(house.lon)];
-      coords.push(point);
-
-      const address = house.address || formatHouseAddress(house);
-      const floors = house.floors || "";
-      const entrances = house.entrances || "";
-      const flats = house.flats || "";
-
-      const iconClassName = yandexObjects.length === 0 ? "map-pin-custom is-main" : "map-pin-custom";
-      const iconLayout = ymaps.templateLayoutFactory.createClass(`<div class="${iconClassName}"></div>`);
-
-      const placemark = new ymaps.Placemark(point, {
-        balloonContent: `
-          <div style="font-family: Arial, sans-serif; min-width: 190px;">
-            <div style="font-size:18px;font-weight:700;color:#1a537d;margin-bottom:8px;">
-              Адрес: ${escapeHtml(address)}
-            </div>
-            <div style="font-size:15px;color:#1a537d;font-weight:700;">
-              Этажность: ${escapeHtml(String(floors || "—"))}<br>
-              Подъездов: ${escapeHtml(String(entrances || "—"))}<br>
-              Квартир: ${escapeHtml(String(flats || "—"))}
-            </div>
-          </div>
-        `,
-        hintContent: `${address}`
-      }, {
-        iconLayout,
-        iconShape: {
-          type: "Rectangle",
-          coordinates: [[-17, -34], [17, 0]]
-        },
-        hideIconOnBalloonOpen: false
-      });
-
-      yandexMap.geoObjects.add(placemark);
-      yandexObjects.push(placemark);
-    });
-
-    if (coords.length) {
-      yandexMap.setBounds(yandexMap.geoObjects.getBounds(), {
-        checkZoomRange: true,
-        zoomMargin: 45
-      });
+    if (!clusters.has(key)) {
+      clusters.set(key, { latSum: 0, lonSum: 0, items: [] });
     }
-  } catch (_) {}
+
+    const cluster = clusters.get(key);
+    cluster.latSum += lat;
+    cluster.lonSum += lon;
+    cluster.items.push(house);
+  });
+
+  return [...clusters.values()].map((cluster) => ({
+    lat: cluster.latSum / cluster.items.length,
+    lon: cluster.lonSum / cluster.items.length,
+    items: cluster.items
+  }));
 }
 
 async function initFreeLeafletMap() {
@@ -353,59 +336,86 @@ async function initFreeLeafletMap() {
   if (fallback) fallback.hidden = true;
   mapEl.hidden = false;
 
-  const map = L.map("map", {
+  leafletMap = L.map("map", {
     scrollWheelZoom: false,
     dragging: true,
-    tap: false
+    tap: false,
+    zoomControl: true
   }).setView([55.6311, 51.8149], 12);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: ""
-  }).addTo(map);
-
-  const customIcon = L.icon({
-    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-    iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+  }).addTo(leafletMap);
 
   try {
     const res = await fetch("/api/houses-map");
     const rows = await res.json();
+    const clusters = clusterHouses(rows);
     const bounds = [];
 
-    rows.forEach((house) => {
-      if (!house.lat || !house.lon) return;
-
-      const point = [Number(house.lat), Number(house.lon)];
+    clusters.forEach((cluster) => {
+      const point = [cluster.lat, cluster.lon];
       bounds.push(point);
 
-      const address = house.address || formatHouseAddress(house);
-      const floors = house.floors || "";
-      const entrances = house.entrances || "";
-      const flats = house.flats || "";
+      if (cluster.items.length === 1) {
+        const house = cluster.items[0];
+        const address = house.address || formatHouseAddress(house);
 
-      L.marker(point, { icon: customIcon })
-        .addTo(map)
-        .bindPopup(`
-          <div class="map-popup">
-            <div class="map-popup__title">Адрес: ${escapeHtml(address)}</div>
-            <div>Этажность: ${escapeHtml(String(floors || "—"))}</div>
-            <div>Подъездов: ${escapeHtml(String(entrances || "—"))}</div>
-            <div>Квартир: ${escapeHtml(String(flats || "—"))}</div>
-          </div>
-        `);
+        const marker = L.marker(point, { icon: createPinIcon() })
+          .addTo(leafletMap)
+          .bindPopup(makePopupHtml(house));
+
+        leafletMarkers.push(marker);
+        leafletMarkerByAddress.set(normalizeAddressForKey(address), marker);
+      } else {
+        const marker = L.marker(point, { icon: createClusterIcon(cluster.items.length) })
+          .addTo(leafletMap)
+          .bindPopup(`
+            <div class="map-popup">
+              <div class="map-popup__title">Домов рядом: ${cluster.items.length}</div>
+              <div>Нажмите на кластер, чтобы приблизить карту.</div>
+            </div>
+          `);
+
+        marker.on("click", () => {
+          leafletMap.setView(point, Math.min(leafletMap.getZoom() + 2, 18), { animate: true });
+        });
+
+        leafletMarkers.push(marker);
+
+        cluster.items.forEach((house) => {
+          const address = house.address || formatHouseAddress(house);
+          leafletMarkerByAddress.set(normalizeAddressForKey(address), marker);
+        });
+      }
     });
 
     if (bounds.length) {
-      map.fitBounds(bounds, { padding: [28, 28] });
+      leafletMap.fitBounds(bounds, { padding: [35, 35], maxZoom: 15 });
     }
   } catch (_) {}
+}
+
+function focusHouseOnMap(address) {
+  const key = normalizeAddressForKey(address);
+  const marker = leafletMarkerByAddress.get(key);
+
+  if (!marker || !leafletMap) return;
+
+  const latLng = marker.getLatLng();
+
+  leafletMap.setView(latLng, Math.max(leafletMap.getZoom(), 16), {
+    animate: true
+  });
+
+  marker.openPopup();
+
+  const iconEl = marker.getElement();
+  if (iconEl) {
+    iconEl.classList.add("is-active");
+    setTimeout(() => iconEl.classList.remove("is-active"), 1800);
+  }
 }
 
 const logo = document.querySelector(".brand__logo");

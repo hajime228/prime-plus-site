@@ -153,6 +153,26 @@ function normalizeHouses() {
         "flats"
       ]));
 
+      const values = Object.values(row);
+
+      const latRaw = cleanValue(pick(row, [
+        "lat",
+        "latitude",
+        "широта",
+        "координата широта"
+      ]) || values[6]);
+
+      const lonRaw = cleanValue(pick(row, [
+        "lon",
+        "lng",
+        "longitude",
+        "долгота",
+        "координата долгота"
+      ]) || values[7]);
+
+      const lat = Number(String(latRaw).replace(",", "."));
+      const lon = Number(String(lonRaw).replace(",", "."));
+
       const address = street && house ? `${street} д.${house}` : cleanValue(pick(row, ["Адрес", "address"]));
 
       return {
@@ -161,7 +181,9 @@ function normalizeHouses() {
         address,
         entrances,
         floors,
-        flats
+        flats,
+        lat: Number.isFinite(lat) ? lat : null,
+        lon: Number.isFinite(lon) ? lon : null
       };
     })
     .filter((row) => row.address || row.street || row.house);
@@ -231,32 +253,9 @@ async function geocodeAddress(address) {
 }
 
 async function getHousesWithCoordinates() {
-  const houses = normalizeHouses();
-  const cache = readGeocodeCache();
-  let changed = false;
-
-  for (const house of houses) {
-    const key = house.address || `${house.street} ${house.house}`;
-
-    if (cache[key]) {
-      house.lat = cache[key].lat;
-      house.lon = cache[key].lon;
-      continue;
-    }
-
-    const coords = await geocodeAddress(house.address);
-    if (coords) {
-      house.lat = coords.lat;
-      house.lon = coords.lon;
-      cache[key] = coords;
-      changed = true;
-      await new Promise((resolve) => setTimeout(resolve, YANDEX_GEOCODER_API_KEY ? 120 : 1100));
-    }
-  }
-
-  if (changed) writeGeocodeCache(cache);
-
-  return houses;
+  return normalizeHouses().filter((house) => {
+    return Number.isFinite(Number(house.lat)) && Number.isFinite(Number(house.lon));
+  });
 }
 
 app.get("/api/slots", (req, res) => {
@@ -318,6 +317,24 @@ app.post("/api/admin/save-slots", (req, res) => {
   res.json({ ok: true });
 });
 
+
+
+app.post("/api/admin/geocode-all", async (req, res) => {
+  if (!req.session.isAdmin) {
+    return res.status(403).json({ ok: false, message: "Нет доступа" });
+  }
+
+  try {
+    const houses = await getHousesWithCoordinates({ geocode: true });
+    res.json({
+      ok: true,
+      total: houses.length,
+      geocoded: houses.filter((h) => h.lat && h.lon).length
+    });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: "Не удалось получить координаты" });
+  }
+});
 
 app.get("/api/geocode-debug", async (req, res) => {
   const houses = normalizeHouses();

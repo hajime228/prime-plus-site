@@ -2616,3 +2616,227 @@ body.modal-open {
 .leaflet-control-attribution {
   display: none;
 }
+
+
+/* ================================
+   V12: надежные красные пины на карте и в списке домов
+   ================================ */
+
+.leaflet-custom-pin {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-custom-pin span {
+  display: block;
+  width: 34px;
+  height: 42px;
+  position: relative;
+}
+
+.leaflet-custom-pin span::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  background: #e60018;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.26);
+}
+
+.leaflet-custom-pin span::after {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 9px;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+}
+
+/* Такой же тип иконки в "Дома с щитами" */
+.house-pin {
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 34px !important;
+  display: inline-block !important;
+  position: relative !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  filter: none !important;
+}
+
+.house-pin::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 2px !important;
+  top: 0 !important;
+  width: 24px !important;
+  height: 24px !important;
+  background: #e60018 !important;
+  border: none !important;
+  border-radius: 50% 50% 50% 0 !important;
+  transform: rotate(-45deg) !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.24) !important;
+}
+
+.house-pin::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 9px !important;
+  top: 7px !important;
+  width: 10px !important;
+  height: 10px !important;
+  background: #ffffff !important;
+  border-radius: 50% !important;
+}
+
+/* Никаких страшных сообщений на карте */
+.map-fallback__text {
+  display: none !important;
+}
+
+
+/* ================================
+   V13: lat/lon из Excel G/H + поиск + кластеры + клик по адресу
+   ================================ */
+
+.houses-search {
+  width: 100%;
+  height: 46px;
+  margin: 0 0 12px;
+  padding: 0 16px;
+  border: 2px solid rgba(255,255,255,0.26);
+  border-radius: 16px;
+  outline: none;
+  background: rgba(255,255,255,0.92);
+  color: #0b4f7a;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.houses-search::placeholder {
+  color: rgba(11,79,122,0.62);
+}
+
+.house-address__btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #0b4f7a;
+  font: inherit;
+  font-weight: 900;
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: left;
+}
+
+.house-address__btn:hover {
+  color: #d00000;
+}
+
+.leaflet-custom-pin,
+.leaflet-cluster-pin {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-custom-pin span {
+  display: block;
+  width: 34px;
+  height: 42px;
+  position: relative;
+  animation: pinDrop 0.42s ease both;
+}
+
+.leaflet-custom-pin span::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  background: #e60018;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.26);
+}
+
+.leaflet-custom-pin span::after {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 9px;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.leaflet-custom-pin.is-active span,
+.leaflet-marker-icon.is-active span {
+  animation: pinPulse 0.7s ease 2;
+}
+
+.leaflet-cluster-pin span {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e60018;
+  color: #ffffff;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: 0 4px 9px rgba(0,0,0,0.28);
+}
+
+@keyframes pinDrop {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pinPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.24); }
+}
+
+.map-popup {
+  font-family: Arial, sans-serif;
+  min-width: 190px;
+  color: #1a537d;
+  font-weight: 700;
+}
+
+.map-popup__title {
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.houses-list {
+  max-height: calc(100% - 150px);
+}
+
+@media (max-width: 780px) {
+  .houses-search {
+    height: 40px;
+    font-size: 14px;
+    border-radius: 12px;
+    padding: 0 12px;
+  }
+
+  .houses-list {
+    max-height: calc(100% - 116px);
+  }
+
+  .house-address__btn {
+    overflow-wrap: anywhere;
+  }
+}
