@@ -429,9 +429,17 @@ document.querySelectorAll("img").forEach((img) => {
 })();
 
 
+
 /* ================================
-   V32: надежное ручное расположение текста/стрелок тарифов
+   V33: ручное расположение тарифных блоков и стрелок
    ================================ */
+
+/*
+  Как теперь работает:
+  - если двигаешь заголовок тарифа, двигается ВЕСЬ блок: заголовок + описание под ним;
+  - стрелки двигаются отдельно;
+  - после сохранения координаты пишутся на сервер в tariff-positions.json.
+*/
 
 const defaultTariffPositions = {
   titleA4: { x: 0, y: 0 },
@@ -449,19 +457,29 @@ function getTariffDraggableElements() {
   return Array.from(document.querySelectorAll("#popup-tariffs [data-drag-key]"));
 }
 
+function getTariffBlockByTitleKey(key) {
+  const title = document.querySelector(`#popup-tariffs [data-drag-key="${key}"]`);
+  return title ? title.closest(".tariff-text-block") : null;
+}
+
 function applyTariffPositions() {
-  getTariffDraggableElements().forEach((el) => {
-    const key = el.dataset.dragKey;
+  ["titleA4", "titleA5", "titleA6"].forEach((key) => {
+    const block = getTariffBlockByTitleKey(key);
     const pos = tariffPositions[key];
 
-    if (!pos) return;
+    if (!block || !pos) return;
 
-    if (key.startsWith("title")) {
-      el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
-    } else {
-      el.style.left = `${pos.x}px`;
-      el.style.top = `${pos.y}px`;
-    }
+    block.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+  });
+
+  ["arrowA4", "arrowA5", "arrowA6"].forEach((key) => {
+    const arrow = document.querySelector(`#popup-tariffs [data-drag-key="${key}"]`);
+    const pos = tariffPositions[key];
+
+    if (!arrow || !pos) return;
+
+    arrow.style.left = `${pos.x}px`;
+    arrow.style.top = `${pos.y}px`;
   });
 }
 
@@ -471,6 +489,7 @@ async function loadTariffPositions() {
     if (!res.ok) throw new Error("no positions");
 
     const data = await res.json();
+
     tariffPositions = {
       ...JSON.parse(JSON.stringify(defaultTariffPositions)),
       ...data
@@ -540,7 +559,9 @@ function startTariffDrag(event) {
   };
 
   if (el.setPointerCapture && event.pointerId !== undefined) {
-    el.setPointerCapture(event.pointerId);
+    try {
+      el.setPointerCapture(event.pointerId);
+    } catch (_) {}
   }
 }
 
