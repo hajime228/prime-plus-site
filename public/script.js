@@ -297,6 +297,9 @@ async function loadMapHouses() {
       const entrances = house.entrances || "";
       const flats = house.flats || "";
 
+      const iconClassName = yandexObjects.length === 0 ? "map-pin-custom is-main" : "map-pin-custom";
+      const iconLayout = ymaps.templateLayoutFactory.createClass(`<div class="${iconClassName}"></div>`);
+
       const placemark = new ymaps.Placemark(point, {
         balloonContent: `
           <div style="font-family: Arial, sans-serif; min-width: 190px;">
@@ -312,7 +315,11 @@ async function loadMapHouses() {
         `,
         hintContent: `${address}`
       }, {
-        preset: "islands#redDotIcon",
+        iconLayout,
+        iconShape: {
+          type: "Rectangle",
+          coordinates: [[-17, -34], [17, 0]]
+        },
         hideIconOnBalloonOpen: false
       });
 

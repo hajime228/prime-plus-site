@@ -1670,3 +1670,340 @@ body.modal-open {
     min-width: 660px;
   }
 }
+
+
+/* ================================
+   V7 FIXES: финальная компоновка
+   ================================ */
+
+/* Главная: слоты ниже, нижний край слотов = нижнему краю рекламы и карты */
+.showcase {
+  margin-top: -72px;
+  align-items: end;
+}
+
+.showcase__left {
+  align-items: flex-end;
+}
+
+.mini-ad {
+  margin-top: 0;
+}
+
+.slots-panel {
+  margin-top: 0;
+}
+
+.showcase__right {
+  align-items: flex-end;
+}
+
+/* чтобы контактные плашки были поверх только своего блока и не конфликтовали визуально */
+.quick-contact {
+  z-index: 8;
+}
+
+.slots-panel {
+  z-index: 1;
+}
+
+/* Тарифы: более чистая схема без лишних выделений */
+.popup__box--tariffs {
+  width: min(1220px, calc(100vw - 24px));
+  height: min(660px, calc(100vh - 24px));
+}
+
+.popup__content--tariffs {
+  padding: 28px 34px 24px;
+}
+
+.tariffs-final {
+  grid-template-columns: 420px minmax(0, 1fr);
+  grid-template-areas:
+    "scheme text"
+    "table table"
+    "note note";
+  column-gap: 34px;
+  row-gap: 18px;
+  align-items: start;
+}
+
+.tariffs-scheme {
+  width: 420px;
+  max-width: 420px;
+}
+
+.tariff-demo-grid--final {
+  width: 420px;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 84px);
+  gap: 8px;
+  padding: 12px;
+  background: rgba(183, 222, 239, 0.92);
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.28);
+  border: 0;
+}
+
+.tariff-demo-grid--final div {
+  aspect-ratio: auto;
+  background: #5d9bcf;
+  border: 2px solid rgba(53, 100, 145, 0.65);
+}
+
+.format-a4 {
+  grid-row: span 2;
+  aspect-ratio: auto !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+}
+
+.format-a5 {
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+}
+
+.format-a6 {
+  transform: none !important;
+  height: 42px;
+  align-self: end;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+}
+
+.tariffs-text {
+  display: grid;
+  grid-template-rows: 120px 94px 80px;
+  align-items: start;
+  padding-top: 0;
+  overflow: visible;
+}
+
+.tariff-text-block {
+  margin: 0;
+}
+
+.tariff-text-block h3 {
+  font-size: clamp(20px, 1.28vw, 26px);
+  line-height: 1.1;
+  margin: 0 0 8px;
+}
+
+.tariff-text-block p {
+  font-size: clamp(16px, 1vw, 20px);
+  line-height: 1.24;
+}
+
+.tariff-table-wrap {
+  width: min(880px, 78%);
+  min-width: 760px;
+  margin-left: 54px;
+  justify-self: start;
+  align-self: start;
+}
+
+.tariff-table {
+  width: 100%;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.tariff-table th,
+.tariff-table td {
+  padding: 5px 6px;
+}
+
+.tariff-note {
+  width: min(880px, 78%);
+  min-width: 760px;
+  margin-left: 54px;
+  justify-self: start;
+  text-align: right;
+  font-size: 14px;
+}
+
+.tariff-note-yellow,
+.tariff-arrow {
+  display: none !important;
+}
+
+/* Контакты: компактнее, меньше пустоты вокруг */
+.popup__box--contacts {
+  width: min(700px, calc(100vw - 36px));
+  min-height: 360px;
+  height: auto;
+  max-height: min(430px, calc(100vh - 36px));
+}
+
+.popup__content--contacts {
+  padding: 20px 30px 22px;
+}
+
+.contact-final {
+  min-height: 310px;
+  gap: 8px;
+  padding: 0 20px;
+}
+
+.contact-final__small {
+  align-self: flex-start;
+  margin-left: 28px;
+  font-size: clamp(26px, 1.9vw, 36px);
+}
+
+.contact-final__title {
+  font-size: clamp(28px, 2.1vw, 40px);
+}
+
+.contact-final__phone {
+  min-height: 54px;
+  font-size: clamp(32px, 2.8vw, 52px);
+}
+
+.contact-final__time {
+  font-size: clamp(17px, 1.18vw, 24px);
+}
+
+.contact-final__slogan {
+  font-size: clamp(19px, 1.45vw, 28px);
+}
+
+/* Дома с щитами: значок-метка как у карты, адрес читается лучше */
+.house-pin {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  display: inline-block;
+  position: relative;
+  color: transparent;
+  font-size: 0;
+  filter: none;
+}
+
+.house-pin::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  background: #e93642;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+}
+
+.house-pin::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 6px;
+  width: 5px;
+  height: 5px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.house-address span:last-child {
+  text-decoration: underline;
+}
+
+/* Яндекс-карта: кастомная метка ближе к примеру заказчика */
+.map-pin-custom {
+  width: 34px;
+  height: 34px;
+  position: relative;
+  transform: translate(-17px, -34px);
+}
+
+.map-pin-custom::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  background: #f0323e;
+  border: 4px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 3px 7px rgba(0,0,0,0.28);
+}
+
+.map-pin-custom::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.map-pin-custom.is-main::before {
+  width: 32px;
+  height: 32px;
+  left: 1px;
+  top: -8px;
+  background: #ff1010;
+}
+
+/* Мобильная версия */
+@media (max-width: 780px) {
+  .showcase {
+    margin-top: 14px;
+  }
+
+  .showcase__left {
+    align-items: center;
+  }
+
+  .tariffs-final {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "scheme"
+      "text"
+      "table"
+      "note";
+  }
+
+  .tariffs-scheme,
+  .tariff-demo-grid--final {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .tariff-demo-grid--final {
+    grid-template-rows: repeat(4, 62px);
+  }
+
+  .tariffs-text {
+    grid-template-rows: auto;
+    gap: 14px;
+  }
+
+  .tariff-table-wrap,
+  .tariff-note {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .tariff-table {
+    min-width: 660px;
+  }
+
+  .popup__box--contacts {
+    min-height: 0;
+    max-height: 82vh !important;
+  }
+
+  .contact-final {
+    min-height: 280px;
+  }
+
+  .contact-final__small {
+    align-self: center;
+    margin-left: 0;
+  }
+}
