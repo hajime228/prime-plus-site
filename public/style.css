@@ -3711,3 +3711,236 @@ body.modal-open {
     display: none !important;
   }
 }
+
+
+/* ================================
+   V21: аккуратные короткие стрелки к началу текста
+   ================================ */
+
+/* Убираем все старые варианты стрелок */
+.popup__content--tariffs::before,
+.popup__content--tariffs::after,
+.tariffs-final::after,
+.popup__content--tariffs .tariffs-final::before,
+.tariffs-final .tariffs-scheme::before,
+.tariffs-final .tariffs-scheme::after,
+.tariff-arrows-final {
+  content: none !important;
+  display: none !important;
+}
+
+.tariffs-final {
+  position: relative !important;
+}
+
+/* SVG лежит между схемой и текстом, но не перекрывает текст */
+.tariff-link-arrows {
+  display: block !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 340px !important;
+  z-index: 44 !important;
+  pointer-events: none !important;
+  overflow: visible !important;
+}
+
+.tariff-link-arrow {
+  display: block !important;
+  fill: none !important;
+  stroke: #f10000 !important;
+  stroke-width: 3 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  marker-end: url(#tariffLinkArrowHead) !important;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.16));
+}
+
+.tariff-link-arrows marker path {
+  fill: #f10000 !important;
+  stroke: none !important;
+}
+
+/* Текст поверх, стрелки заканчиваются до букв */
+.tariffs-text {
+  position: relative !important;
+  z-index: 50 !important;
+}
+
+.tariffs-scheme {
+  position: relative !important;
+  z-index: 45 !important;
+}
+
+/* В окне тарифов полностью отключаем hover-свечение/перелив */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover {
+  transform: none !important;
+  animation: none !important;
+  background: #5d9bcf !important;
+  border: 3px solid rgba(202, 236, 249, 0.92) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell::after,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover::after {
+  content: none !important;
+  display: none !important;
+  opacity: 0 !important;
+  animation: none !important;
+}
+
+/* A4: рамка всегда остается */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a4,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a4:hover {
+  grid-column: 4 !important;
+  grid-row: 1 / span 2 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  position: relative !important;
+  box-shadow:
+    inset 0 0 0 5px #f10000,
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+/* A5: рамка всегда остается */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a5,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a5:hover {
+  grid-column: 4 !important;
+  grid-row: 3 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  position: relative !important;
+  box-shadow:
+    inset 0 0 0 5px #f10000,
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+/* A6: квадрат целый, выделена только правая половина */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover {
+  grid-column: 4 !important;
+  grid-row: 4 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  position: relative !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6::before,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 50% !important;
+  height: 100% !important;
+  background: transparent !important;
+  transform: none !important;
+  animation: none !important;
+  opacity: 1 !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6::after,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover::after {
+  content: none !important;
+  display: none !important;
+}
+
+@media (max-width: 780px) {
+  .tariff-link-arrows {
+    display: none !important;
+  }
+}
+
+
+/* ================================
+   V22: свечение и перелив ТОЛЬКО на главном экране
+   ================================ */
+
+/* Главная сетка слотов */
+.showcase .slots-panel {
+  background: rgba(185, 225, 245, 0.92) !important;
+  box-shadow:
+    0 0 18px rgba(130, 222, 255, 0.42),
+    0 14px 28px rgba(0, 0, 0, 0.18),
+    inset 0 0 18px rgba(255,255,255,0.28) !important;
+}
+
+.showcase .slot {
+  position: relative !important;
+  overflow: hidden !important;
+  background: linear-gradient(135deg, #6aa8db 0%, #4f91c8 48%, #78b7e8 100%) !important;
+  border: 2px solid rgba(220, 245, 255, 0.86) !important;
+  box-shadow:
+    inset 0 0 10px rgba(255,255,255,0.24),
+    0 0 7px rgba(145,225,255,0.22) !important;
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    filter 0.25s ease !important;
+}
+
+/* Перелив появляется только при наведении на главном экране */
+.showcase .slot::after {
+  content: "" !important;
+  position: absolute !important;
+  top: -65% !important;
+  left: -95% !important;
+  width: 72% !important;
+  height: 230% !important;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.48),
+    transparent
+  ) !important;
+  transform: rotate(22deg) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.showcase .slot:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(255,255,255,0.98) !important;
+  filter: brightness(1.06) !important;
+  box-shadow:
+    inset 0 0 15px rgba(255,255,255,0.46),
+    0 0 18px rgba(145,225,255,0.72) !important;
+}
+
+.showcase .slot:hover::after {
+  opacity: 1 !important;
+  animation: mainSlotShineHover 0.9s ease !important;
+}
+
+@keyframes mainSlotShineHover {
+  from {
+    left: -95%;
+  }
+  to {
+    left: 125%;
+  }
+}
+
+/* В тарифах свечение и перелив по-прежнему выключены */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover {
+  transform: none !important;
+  animation: none !important;
+  filter: none !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell::after,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+  opacity: 0 !important;
+}
