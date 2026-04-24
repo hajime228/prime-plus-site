@@ -3420,3 +3420,144 @@ body.modal-open {
     display: none !important;
   }
 }
+
+
+/* ================================
+   V19: стрелки от прямоугольников к тексту тарифов
+   ================================ */
+
+/* Отключаем старые псевдо-стрелки, которые шли в таблицу */
+.popup__content--tariffs::before,
+.popup__content--tariffs::after,
+.tariffs-final::after,
+.popup__content--tariffs .tariffs-final::before,
+.tariffs-final .tariffs-scheme::before,
+.tariffs-final .tariffs-scheme::after,
+.tariff-arrows-final {
+  content: none !important;
+  display: none !important;
+}
+
+/* Весь блок тарифов — база для нового SVG */
+.tariffs-final {
+  position: relative !important;
+}
+
+/* Новые стрелки: от выделений A4/A5/A6 к соответствующим заголовкам справа */
+.tariff-link-arrows {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 360px !important;
+  z-index: 40 !important;
+  pointer-events: none !important;
+  overflow: visible !important;
+}
+
+.tariff-link-arrow {
+  fill: none !important;
+  stroke: #f10000 !important;
+  stroke-width: 4 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  marker-end: url(#tariffLinkArrowHead) !important;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.18));
+}
+
+.tariff-link-arrows marker path {
+  fill: #f10000 !important;
+  stroke: none !important;
+}
+
+/* Чтобы стрелки не перекрывали чтение: текст остается выше стрелок, но наконечник рядом с заголовком виден */
+.tariffs-text {
+  position: relative !important;
+  z-index: 45 !important;
+}
+
+.tariffs-scheme {
+  position: relative !important;
+  z-index: 42 !important;
+}
+
+/* Тарифная сетка без свечения и без hover-перелива */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover {
+  transform: none !important;
+  animation: none !important;
+  background: #5d9bcf !important;
+  border: 3px solid rgba(202, 236, 249, 0.92) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell::after,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* A4/A5 — красные рамки не исчезают */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a4,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a4:hover {
+  grid-column: 4 !important;
+  grid-row: 1 / span 2 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  box-shadow:
+    inset 0 0 0 5px #f10000,
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a5,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a5:hover {
+  grid-column: 4 !important;
+  grid-row: 3 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  box-shadow:
+    inset 0 0 0 5px #f10000,
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+/* A6 — полный квадрат остается, выделена правая половина */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover {
+  grid-column: 4 !important;
+  grid-row: 4 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  position: relative !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6::before,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 50% !important;
+  height: 100% !important;
+  background: transparent !important;
+  transform: none !important;
+  animation: none !important;
+  opacity: 1 !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6::after,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* На мобильной версии стрелки скрываем, потому что там блоки идут друг под другом */
+@media (max-width: 780px) {
+  .tariff-link-arrows {
+    display: none !important;
+  }
+}
