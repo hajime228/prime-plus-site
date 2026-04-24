@@ -428,8 +428,9 @@ document.querySelectorAll("img").forEach((img) => {
   await initYandexMap();
 })();
 
+
 /* ================================
-   V31: ручное расположение текста/стрелок тарифов
+   V32: надежное ручное расположение текста/стрелок тарифов
    ================================ */
 
 const defaultTariffPositions = {
@@ -468,8 +469,8 @@ async function loadTariffPositions() {
   try {
     const res = await fetch("/api/tariff-positions");
     if (!res.ok) throw new Error("no positions");
-    const data = await res.json();
 
+    const data = await res.json();
     tariffPositions = {
       ...JSON.parse(JSON.stringify(defaultTariffPositions)),
       ...data
@@ -492,6 +493,7 @@ async function saveTariffPositions() {
     });
 
     if (!res.ok) throw new Error("save failed");
+
     alert("Расположение сохранено");
   } catch (_) {
     alert("Не удалось сохранить расположение");
@@ -510,61 +512,78 @@ function updateTariffEditPanel() {
   if (!panel || !tariffsPopup) return;
 
   const shouldShow = isAdmin && tariffsPopup.classList.contains("is-open");
+
   panel.hidden = !shouldShow;
   document.body.classList.toggle("tariff-edit-mode", shouldShow);
+
+  applyTariffPositions();
+}
+
+function startTariffDrag(event) {
+  if (!isAdmin || !document.body.classList.contains("tariff-edit-mode")) return;
+
+  const el = event.target.closest("#popup-tariffs [data-drag-key]");
+  if (!el) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const key = el.dataset.dragKey;
+  const start = tariffPositions[key] || { x: 0, y: 0 };
+
+  tariffDragState = {
+    key,
+    startX: event.clientX,
+    startY: event.clientY,
+    originalX: start.x,
+    originalY: start.y
+  };
+
+  if (el.setPointerCapture && event.pointerId !== undefined) {
+    el.setPointerCapture(event.pointerId);
+  }
+}
+
+function moveTariffDrag(event) {
+  if (!tariffDragState) return;
+
+  const dx = event.clientX - tariffDragState.startX;
+  const dy = event.clientY - tariffDragState.startY;
+
+  tariffPositions[tariffDragState.key] = {
+    x: Math.round(tariffDragState.originalX + dx),
+    y: Math.round(tariffDragState.originalY + dy)
+  };
+
+  applyTariffPositions();
+}
+
+function stopTariffDrag() {
+  tariffDragState = null;
 }
 
 function enableTariffPositionEditor() {
   const saveBtn = document.getElementById("saveTariffPositions");
   const resetBtn = document.getElementById("resetTariffPositions");
+  const tariffsPopup = document.getElementById("popup-tariffs");
 
   if (saveBtn) saveBtn.addEventListener("click", saveTariffPositions);
   if (resetBtn) resetBtn.addEventListener("click", resetTariffPositions);
 
-  getTariffDraggableElements().forEach((el) => {
-    el.addEventListener("mousedown", (event) => {
-      if (!isAdmin || !document.body.classList.contains("tariff-edit-mode")) return;
+  if (tariffsPopup) {
+    tariffsPopup.addEventListener("pointerdown", startTariffDrag);
+  }
 
-      event.preventDefault();
-      event.stopPropagation();
-
-      const key = el.dataset.dragKey;
-      const start = tariffPositions[key] || { x: 0, y: 0 };
-
-      tariffDragState = {
-        key,
-        startX: event.clientX,
-        startY: event.clientY,
-        originalX: start.x,
-        originalY: start.y
-      };
-    });
-  });
-
-  window.addEventListener("mousemove", (event) => {
-    if (!tariffDragState) return;
-
-    const dx = event.clientX - tariffDragState.startX;
-    const dy = event.clientY - tariffDragState.startY;
-
-    tariffPositions[tariffDragState.key] = {
-      x: Math.round(tariffDragState.originalX + dx),
-      y: Math.round(tariffDragState.originalY + dy)
-    };
-
-    applyTariffPositions();
-  });
-
-  window.addEventListener("mouseup", () => {
-    tariffDragState = null;
-  });
+  window.addEventListener("pointermove", moveTariffDrag);
+  window.addEventListener("pointerup", stopTariffDrag);
+  window.addEventListener("pointercancel", stopTariffDrag);
 }
 
+/* дополняем существующие функции сайта */
 const originalOpenPopupForTariffs = openPopup;
 openPopup = function patchedOpenPopup(key) {
   originalOpenPopupForTariffs(key);
   updateTariffEditPanel();
-  applyTariffPositions();
 };
 
 const originalCloseAllPopupsForTariffs = closeAllPopups;
@@ -579,7 +598,5 @@ updateAdminUI = function patchedUpdateAdminUI() {
   updateTariffEditPanel();
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-  enableTariffPositionEditor();
-  loadTariffPositions();
-});
+enableTariffPositionEditor();
+loadTariffPositions();

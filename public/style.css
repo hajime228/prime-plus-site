@@ -5735,3 +5735,62 @@ body.tariff-edit-mode .popup__box--tariffs .manual-arrow {
     display: none !important;
   }
 }
+
+
+/* ================================
+   V32: исправление drag и красных занятых ячеек
+   ================================ */
+
+/* в режиме правки слой стрелок не должен блокировать заголовки, но сами стрелки можно двигать */
+body.tariff-edit-mode .popup__box--tariffs .tariff-editor-layer {
+  pointer-events: none !important;
+}
+
+body.tariff-edit-mode .popup__box--tariffs .manual-arrow {
+  pointer-events: auto !important;
+  cursor: move !important;
+}
+
+body.tariff-edit-mode .popup__box--tariffs .tariff-text-block h3 {
+  cursor: move !important;
+  position: relative !important;
+  z-index: 60 !important;
+}
+
+body.tariff-edit-mode .popup__box--tariffs [data-drag-key] {
+  touch-action: none !important;
+}
+
+/* свободные слоты на главной — голубые с переливом */
+.showcase .slot:not(.busy) {
+  background: linear-gradient(135deg, #6aa8db 0%, #4f91c8 48%, #78b7e8 100%) !important;
+}
+
+/* занятые слоты на главной — красные */
+.showcase .slot.busy,
+.showcase .slot.busy:hover {
+  background: linear-gradient(135deg, #e34a4a 0%, #c82e2e 55%, #a91f1f 100%) !important;
+  border-color: #8d1f1f !important;
+  box-shadow:
+    inset 0 0 12px rgba(255,255,255,0.18),
+    0 0 13px rgba(255,80,80,0.46) !important;
+}
+
+/* у красных занятых ячеек не должно быть белого перелива */
+.showcase .slot.busy::after,
+.showcase .slot.busy:hover::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+  opacity: 0 !important;
+}
+
+.showcase .slot.is-admin {
+  cursor: pointer !important;
+}
+
+/* тарифная схема не должна краснеть как реальные занятые слоты */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell.busy,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell.busy:hover {
+  background: #5d9bcf !important;
+}
