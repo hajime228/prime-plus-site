@@ -427,3 +427,159 @@ document.querySelectorAll("img").forEach((img) => {
   await loadHouses();
   await initYandexMap();
 })();
+
+/* ================================
+   V31: ручное расположение текста/стрелок тарифов
+   ================================ */
+
+const defaultTariffPositions = {
+  titleA4: { x: 0, y: 0 },
+  titleA5: { x: 0, y: 0 },
+  titleA6: { x: 0, y: 0 },
+  arrowA4: { x: 410, y: 86 },
+  arrowA5: { x: 410, y: 176 },
+  arrowA6: { x: 410, y: 246 }
+};
+
+let tariffPositions = JSON.parse(JSON.stringify(defaultTariffPositions));
+let tariffDragState = null;
+
+function getTariffDraggableElements() {
+  return Array.from(document.querySelectorAll("#popup-tariffs [data-drag-key]"));
+}
+
+function applyTariffPositions() {
+  getTariffDraggableElements().forEach((el) => {
+    const key = el.dataset.dragKey;
+    const pos = tariffPositions[key];
+
+    if (!pos) return;
+
+    if (key.startsWith("title")) {
+      el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+    } else {
+      el.style.left = `${pos.x}px`;
+      el.style.top = `${pos.y}px`;
+    }
+  });
+}
+
+async function loadTariffPositions() {
+  try {
+    const res = await fetch("/api/tariff-positions");
+    if (!res.ok) throw new Error("no positions");
+    const data = await res.json();
+
+    tariffPositions = {
+      ...JSON.parse(JSON.stringify(defaultTariffPositions)),
+      ...data
+    };
+  } catch (_) {
+    tariffPositions = JSON.parse(JSON.stringify(defaultTariffPositions));
+  }
+
+  applyTariffPositions();
+}
+
+async function saveTariffPositions() {
+  try {
+    const res = await fetch("/api/admin/save-tariff-positions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(tariffPositions)
+    });
+
+    if (!res.ok) throw new Error("save failed");
+    alert("Расположение сохранено");
+  } catch (_) {
+    alert("Не удалось сохранить расположение");
+  }
+}
+
+function resetTariffPositions() {
+  tariffPositions = JSON.parse(JSON.stringify(defaultTariffPositions));
+  applyTariffPositions();
+}
+
+function updateTariffEditPanel() {
+  const panel = document.getElementById("tariffPositionPanel");
+  const tariffsPopup = document.getElementById("popup-tariffs");
+
+  if (!panel || !tariffsPopup) return;
+
+  const shouldShow = isAdmin && tariffsPopup.classList.contains("is-open");
+  panel.hidden = !shouldShow;
+  document.body.classList.toggle("tariff-edit-mode", shouldShow);
+}
+
+function enableTariffPositionEditor() {
+  const saveBtn = document.getElementById("saveTariffPositions");
+  const resetBtn = document.getElementById("resetTariffPositions");
+
+  if (saveBtn) saveBtn.addEventListener("click", saveTariffPositions);
+  if (resetBtn) resetBtn.addEventListener("click", resetTariffPositions);
+
+  getTariffDraggableElements().forEach((el) => {
+    el.addEventListener("mousedown", (event) => {
+      if (!isAdmin || !document.body.classList.contains("tariff-edit-mode")) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const key = el.dataset.dragKey;
+      const start = tariffPositions[key] || { x: 0, y: 0 };
+
+      tariffDragState = {
+        key,
+        startX: event.clientX,
+        startY: event.clientY,
+        originalX: start.x,
+        originalY: start.y
+      };
+    });
+  });
+
+  window.addEventListener("mousemove", (event) => {
+    if (!tariffDragState) return;
+
+    const dx = event.clientX - tariffDragState.startX;
+    const dy = event.clientY - tariffDragState.startY;
+
+    tariffPositions[tariffDragState.key] = {
+      x: Math.round(tariffDragState.originalX + dx),
+      y: Math.round(tariffDragState.originalY + dy)
+    };
+
+    applyTariffPositions();
+  });
+
+  window.addEventListener("mouseup", () => {
+    tariffDragState = null;
+  });
+}
+
+const originalOpenPopupForTariffs = openPopup;
+openPopup = function patchedOpenPopup(key) {
+  originalOpenPopupForTariffs(key);
+  updateTariffEditPanel();
+  applyTariffPositions();
+};
+
+const originalCloseAllPopupsForTariffs = closeAllPopups;
+closeAllPopups = function patchedCloseAllPopups() {
+  originalCloseAllPopupsForTariffs();
+  updateTariffEditPanel();
+};
+
+const originalUpdateAdminUIForTariffs = updateAdminUI;
+updateAdminUI = function patchedUpdateAdminUI() {
+  originalUpdateAdminUIForTariffs();
+  updateTariffEditPanel();
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  enableTariffPositionEditor();
+  loadTariffPositions();
+});

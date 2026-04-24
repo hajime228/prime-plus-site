@@ -176,9 +176,21 @@
               <div class="tariff-cell tariff-a6"></div>
             </div>
           </div>
+          <div class="tariff-editor-layer" id="tariffEditorLayer" aria-hidden="true">
+            <div class="manual-arrow manual-arrow--a4" data-drag-key="arrowA4"></div>
+            <div class="manual-arrow manual-arrow--a5" data-drag-key="arrowA5"></div>
+            <div class="manual-arrow manual-arrow--a6" data-drag-key="arrowA6"></div>
+          </div>
+
+          <div class="tariff-position-panel" id="tariffPositionPanel" hidden>
+            <button type="button" id="saveTariffPositions">Сохранить расположение</button>
+            <button type="button" id="resetTariffPositions">Сбросить</button>
+            <span>Перетащи заголовки и стрелки мышкой</span>
+          </div>
+
           <div class="tariffs-text">
             <div class="tariff-text-block">
-              <h3>ТАРИФ «ОБЪЕМНЫЙ». Колонка формата A4</h3>
+              <h3 data-drag-key="titleA4">ТАРИФ «ОБЪЕМНЫЙ». Колонка формата A4</h3>
               <p>
                 Этот формат в точности равен целому листу A4.
                 Размер бумаги формата A4 по стандарту ISO 216 составляет
@@ -187,7 +199,7 @@
             </div>
 
             <div class="tariff-text-block">
-              <h3>ТАРИФ «ВЕСЬ ГОРОД». Колонка формата A5</h3>
+              <h3 data-drag-key="titleA5">ТАРИФ «ВЕСЬ ГОРОД». Колонка формата A5</h3>
               <p>
                 Этот формат в точности равен половине листа A4.
                 Размер бумаги формата A5 по стандарту ISO 216 составляет
@@ -196,7 +208,7 @@
             </div>
 
             <div class="tariff-text-block">
-              <h3>ТАРИФ «ЛАЙТ». Колонка формата A6</h3>
+              <h3 data-drag-key="titleA6">ТАРИФ «ЛАЙТ». Колонка формата A6</h3>
               <p>
                 Этот формат равен половине листа A5.
                 Размер бумаги формата A6 составляет

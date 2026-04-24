@@ -5632,3 +5632,106 @@ body.modal-open {
     min-width: 0 !important;
   }
 }
+
+
+/* ================================
+   V31: ручное позиционирование тарифов с сохранением
+   ================================ */
+
+.popup__box--tariffs .tariff-text-block h3::before,
+.popup__box--tariffs .tariff-text-block h3::after {
+  content: none !important;
+  display: none !important;
+}
+
+.popup__box--tariffs .tariff-editor-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 30 !important;
+  pointer-events: none !important;
+}
+
+.popup__box--tariffs .manual-arrow {
+  position: absolute !important;
+  width: 54px !important;
+  height: 3px !important;
+  background: #f10000 !important;
+  border-radius: 999px !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.18)) !important;
+}
+
+.popup__box--tariffs .manual-arrow::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -1px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 7px solid transparent !important;
+  border-bottom: 7px solid transparent !important;
+  border-left: 12px solid #f10000 !important;
+}
+
+.popup__box--tariffs .manual-arrow--a4 { left: 410px !important; top: 86px !important; }
+.popup__box--tariffs .manual-arrow--a5 { left: 410px !important; top: 176px !important; }
+.popup__box--tariffs .manual-arrow--a6 { left: 410px !important; top: 246px !important; }
+
+.tariff-position-panel {
+  position: absolute !important;
+  right: 26px !important;
+  bottom: 20px !important;
+  z-index: 1200 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 10px 12px !important;
+  background: rgba(0, 31, 43, 0.9) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.24) !important;
+}
+
+.tariff-position-panel[hidden] {
+  display: none !important;
+}
+
+.tariff-position-panel button {
+  border: 0 !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+  background: #ffffff !important;
+  color: #0e6bb4 !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+}
+
+body.tariff-edit-mode .popup__box--tariffs [data-drag-key] {
+  cursor: move !important;
+  outline: 2px dashed rgba(255,255,255,0.48) !important;
+  outline-offset: 4px !important;
+}
+
+body.tariff-edit-mode .popup__box--tariffs .tariff-editor-layer,
+body.tariff-edit-mode .popup__box--tariffs .manual-arrow {
+  pointer-events: auto !important;
+}
+
+body.tariff-edit-mode .popup__box--tariffs .tariff-text-block h3 {
+  position: relative !important;
+  z-index: 40 !important;
+}
+
+body.tariff-edit-mode .popup__box--tariffs .manual-arrow {
+  z-index: 41 !important;
+}
+
+@media (max-width: 780px) {
+  .tariff-position-panel,
+  .tariff-editor-layer {
+    display: none !important;
+  }
+}

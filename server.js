@@ -12,6 +12,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || "prime-plus-secret";
 const YANDEX_MAPS_API_KEY = process.env.YANDEX_MAPS_API_KEY || "";
 const YANDEX_GEOCODER_API_KEY = process.env.YANDEX_GEOCODER_API_KEY || YANDEX_MAPS_API_KEY || "";
 
+const TARIFF_POSITIONS_FILE = path.join(__dirname, 'tariff-positions.json');
 const SLOTS_FILE = path.join(__dirname, "slots.json");
 const PUBLIC_DIR = path.join(__dirname, "public");
 const GEOCODE_CACHE_FILE = path.join(__dirname, "geocoded_houses.json");
@@ -346,6 +347,29 @@ app.get("/api/geocode-debug", async (req, res) => {
     geocodedRows: withCoords.filter((h) => h.lat && h.lon).length,
     sample: withCoords.slice(0, 5)
   });
+});
+
+
+
+app.get("/api/tariff-positions", (req, res) => {
+  try {
+    if (!fs.existsSync(TARIFF_POSITIONS_FILE)) {
+      return res.json({});
+    }
+
+    res.json(JSON.parse(fs.readFileSync(TARIFF_POSITIONS_FILE, "utf8")));
+  } catch (_) {
+    res.json({});
+  }
+});
+
+app.post("/api/admin/save-tariff-positions", requireAdmin, (req, res) => {
+  try {
+    fs.writeFileSync(TARIFF_POSITIONS_FILE, JSON.stringify(req.body || {}, null, 2), "utf8");
+    res.json({ ok: true });
+  } catch (_) {
+    res.status(500).json({ error: "save failed" });
+  }
 });
 
 app.get("*", (req, res) => {
