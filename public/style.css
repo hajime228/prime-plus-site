@@ -1058,3 +1058,364 @@ body.modal-open {
     padding: 8px 10px;
   }
 }
+
+/* ================================
+   V5 FIXES: заказчик + читаемость
+   ================================ */
+
+/* Карта: если меток нет — подсказка не ломает дизайн */
+.map-fallback__text {
+  font-weight: 700;
+}
+
+/* ОКНО: О компании — ближе к макету, но аккуратнее */
+.popup__box--about {
+  width: min(1120px, calc(100vw - 36px));
+  height: min(610px, calc(100vh - 36px));
+}
+
+.about-panel {
+  padding: 18px 34px 20px;
+}
+
+.about-line--big {
+  max-width: 980px;
+}
+
+.about-contact-row {
+  grid-template-columns: 64px 1fr;
+  gap: 14px;
+}
+
+.about-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  color: white;
+  font-size: 0;
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.16);
+}
+
+.about-icon::before {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.about-contact-row:nth-child(1) .about-icon {
+  background: linear-gradient(135deg, #2aa8ff, #0d72c8);
+}
+.about-contact-row:nth-child(1) .about-icon::before {
+  content: "📍";
+}
+
+.about-contact-row:nth-child(2) .about-icon {
+  background: linear-gradient(135deg, #ffffff, #d8e9ff);
+}
+.about-contact-row:nth-child(2) .about-icon::before {
+  content: "✉️";
+}
+
+.about-contact-row:nth-child(3) .about-icon {
+  background: linear-gradient(135deg, #2b2b2b, #0b0b0b);
+}
+.about-contact-row:nth-child(3) .about-icon::before {
+  content: "☎️";
+}
+
+.about-contact-row:nth-child(4) .about-icon {
+  background: linear-gradient(135deg, #42e46f, #0aa83f);
+}
+.about-contact-row:nth-child(4) .about-icon::before {
+  content: "☏";
+  font-family: Arial, sans-serif;
+  font-weight: 900;
+  font-size: 34px;
+}
+
+.about-contact-row:nth-child(5) .about-icon {
+  background: linear-gradient(135deg, #38bdf8, #1d8bd8);
+}
+.about-contact-row:nth-child(5) .about-icon::before {
+  content: "✈";
+  font-size: 34px;
+}
+
+.about-contact-row:nth-child(6) .about-icon {
+  background: linear-gradient(135deg, #8e6cff, #5945e8);
+}
+.about-contact-row:nth-child(6) .about-icon::before {
+  content: "●";
+  font-size: 34px;
+}
+
+/* ОКНО: Контакты — читаемость лучше, не просто огромный текст */
+.popup__box--contacts {
+  width: min(820px, calc(100vw - 36px));
+  height: min(500px, calc(100vh - 36px));
+}
+
+.contact-final {
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 30px;
+}
+
+.contact-final__small {
+  align-self: center;
+  margin-left: 0;
+  font-size: clamp(28px, 2vw, 40px);
+}
+
+.contact-final__title {
+  font-size: clamp(30px, 2.4vw, 46px);
+  line-height: 1.12;
+}
+
+.contact-final__phone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: 0 24px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.28);
+  font-size: clamp(36px, 3.3vw, 62px);
+  letter-spacing: 1px;
+}
+
+.contact-final__time {
+  font-size: clamp(18px, 1.4vw, 26px);
+}
+
+.contact-final__slogan {
+  display: inline-block;
+  max-width: 560px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.10);
+  font-size: clamp(20px, 1.65vw, 32px);
+}
+
+/* ОКНО: Тарифы — убираем стрелки и корявое выделение */
+.popup__box--tariffs {
+  width: min(1180px, calc(100vw - 24px));
+  height: min(650px, calc(100vh - 24px));
+}
+
+.tariffs-final {
+  grid-template-columns: 430px 1fr;
+  grid-template-areas:
+    "scheme text"
+    "yellow table"
+    "note note";
+  gap: 18px 28px;
+  align-items: start;
+}
+
+.tariffs-scheme {
+  max-width: 430px;
+}
+
+.tariff-demo-grid--final {
+  border: 0;
+  border-radius: 0;
+  padding: 12px;
+  background: rgba(178, 216, 235, 0.92);
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.28);
+}
+
+.tariff-demo-grid--final div {
+  border-color: rgba(53, 100, 145, 0.65);
+  background: #5d9bcf;
+}
+
+.format-a4,
+.format-a5,
+.format-a6 {
+  outline: none !important;
+  box-shadow: inset 0 0 0 5px #f10000;
+}
+
+.tariff-arrow {
+  display: none !important;
+}
+
+.tariff-text-block {
+  margin-bottom: 18px;
+}
+
+.tariff-text-block h3 {
+  font-size: clamp(20px, 1.25vw, 25px);
+  line-height: 1.12;
+}
+
+.tariff-text-block p {
+  font-size: clamp(17px, 1vw, 21px);
+  line-height: 1.26;
+}
+
+.tariff-table-wrap {
+  width: 100%;
+}
+
+.tariff-table {
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.tariff-table th,
+.tariff-table td {
+  padding: 5px 6px;
+}
+
+.tariff-note-yellow {
+  font-size: clamp(23px, 1.7vw, 32px);
+}
+
+/* ОКНО: Дома с щитами — без белой “шапки”, дружелюбнее */
+.popup__box--houses {
+  width: min(1100px, calc(100vw - 24px));
+  height: min(640px, calc(100vh - 24px));
+}
+
+.popup__content--houses {
+  padding: 34px 38px 26px;
+}
+
+.houses-title-row {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  grid-template-columns: minmax(270px, 1fr) 180px 180px;
+  color: #ffffff;
+  background: rgba(13, 99, 146, 0.55);
+  border: 2px solid rgba(255,255,255,0.24);
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+  font-size: clamp(20px, 1.35vw, 28px);
+  padding: 14px 18px;
+  backdrop-filter: blur(4px);
+}
+
+.houses-list {
+  margin-top: 10px;
+  gap: 0;
+  max-height: calc(100% - 92px);
+}
+
+.house-row {
+  grid-template-columns: minmax(270px, 1fr) 180px 180px;
+  color: #0b4f7a;
+  font-size: clamp(18px, 1.1vw, 24px);
+  background: rgba(255,255,255,0.16);
+  border-bottom: 2px solid rgba(15, 83, 122, 0.62);
+  padding: 9px 12px;
+}
+
+.house-row:nth-child(even) {
+  background: rgba(255,255,255,0.08);
+}
+
+.house-address {
+  color: #0b4f7a;
+}
+
+.house-pin {
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+}
+
+/* Мобильная версия для новых окон */
+@media (max-width: 780px) {
+  .popup__box--about,
+  .popup__box--contacts,
+  .popup__box--tariffs,
+  .popup__box--houses {
+    max-width: 390px !important;
+    max-height: 82vh !important;
+  }
+
+  .about-panel {
+    padding: 32px 4px 8px;
+  }
+
+  .about-line {
+    margin-bottom: 14px;
+  }
+
+  .about-contact-row {
+    grid-template-columns: 38px 1fr;
+    gap: 9px;
+    font-size: 15px;
+  }
+
+  .about-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .about-icon::before {
+    font-size: 20px;
+  }
+
+  .contact-final {
+    min-height: 330px;
+    padding: 34px 8px 12px;
+  }
+
+  .contact-final__phone {
+    min-height: 58px;
+    padding: 0 12px;
+    font-size: 30px;
+    border-radius: 16px;
+  }
+
+  .contact-final__slogan {
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  .tariffs-final {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "scheme"
+      "text"
+      "yellow"
+      "table"
+      "note";
+  }
+
+  .tariffs-scheme {
+    max-width: 100%;
+  }
+
+  .tariff-table {
+    min-width: 620px;
+    font-size: 11px;
+  }
+
+  .tariff-table-wrap {
+    overflow-x: auto;
+  }
+
+  .popup__content--houses {
+    padding: 36px 14px 16px !important;
+  }
+
+  .houses-title-row,
+  .house-row {
+    grid-template-columns: minmax(150px, 1fr) 74px 74px;
+    gap: 5px;
+  }
+
+  .houses-title-row {
+    font-size: 13px;
+    padding: 9px 7px;
+    border-radius: 12px;
+  }
+
+  .house-row {
+    font-size: 14px;
+    padding: 7px 4px;
+  }
+}

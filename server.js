@@ -293,6 +293,19 @@ app.post("/api/admin/save-slots", (req, res) => {
   res.json({ ok: true });
 });
 
+
+app.get("/api/geocode-debug", async (req, res) => {
+  const houses = normalizeHouses();
+  const withCoords = await getHousesWithCoordinates();
+  res.json({
+    hasYandexMapsApiKey: !!YANDEX_MAPS_API_KEY,
+    hasYandexGeocoderApiKey: !!YANDEX_GEOCODER_API_KEY,
+    excelRows: houses.length,
+    geocodedRows: withCoords.filter((h) => h.lat && h.lon).length,
+    sample: withCoords.slice(0, 5)
+  });
+});
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "index.html"));
 });
