@@ -363,7 +363,11 @@ app.get("/api/tariff-positions", (req, res) => {
   }
 });
 
-app.post("/api/admin/save-tariff-positions", requireAdmin, (req, res) => {
+app.post("/api/admin/save-tariff-positions", (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(403).json({ error: "Нет доступа" });
+  }
+
   try {
     fs.writeFileSync(TARIFF_POSITIONS_FILE, JSON.stringify(req.body || {}, null, 2), "utf8");
     res.json({ ok: true });
