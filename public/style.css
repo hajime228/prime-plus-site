@@ -3020,53 +3020,46 @@ body.modal-open {
     height: 26px !important;
   }
 }
-/* Красивое свечение рекламных слотов */
-.slots-panel,
-.tariff-demo-grid--final {
-  background: rgba(185, 225, 245, 0.9);
-  box-shadow:
-    0 0 18px rgba(134, 220, 255, 0.45),
-    inset 0 0 18px rgba(255,255,255,0.35);
-}
-
+/* Свечение слотов только при наведении */
 .slot,
 .tariff-demo-grid--final .tariff-cell {
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, #6aa8db, #4f91c8, #78b7e8);
   border: 2px solid rgba(220, 245, 255, 0.75);
-  box-shadow:
-    inset 0 0 12px rgba(255,255,255,0.35),
-    0 0 8px rgba(145, 225, 255, 0.35);
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.25);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 
-/* перелив внутри ячеек */
+.slot:hover,
+.tariff-demo-grid--final .tariff-cell:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.95);
+  box-shadow:
+    inset 0 0 14px rgba(255,255,255,0.45),
+    0 0 16px rgba(145,225,255,0.65);
+}
+
 .slot::after,
 .tariff-demo-grid--final .tariff-cell::after {
   content: "";
   position: absolute;
   top: -60%;
-  left: -80%;
+  left: -90%;
   width: 70%;
   height: 220%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.38),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent);
   transform: rotate(22deg);
-  animation: slotShine 4.5s infinite;
+  opacity: 0;
 }
 
-@keyframes slotShine {
-  0% {
-    left: -90%;
-  }
-  45% {
-    left: 120%;
-  }
-  100% {
-    left: 120%;
-  }
+.slot:hover::after,
+.tariff-demo-grid--final .tariff-cell:hover::after {
+  opacity: 1;
+  animation: slotShineHover 0.9s ease;
+}
+
+@keyframes slotShineHover {
+  from { left: -90%; }
+  to { left: 120%; }
 }
