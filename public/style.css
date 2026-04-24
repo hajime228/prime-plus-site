@@ -3020,46 +3020,110 @@ body.modal-open {
     height: 26px !important;
   }
 }
-/* Свечение слотов только при наведении */
-.slot,
-.tariff-demo-grid--final .tariff-cell {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #6aa8db, #4f91c8, #78b7e8);
-  border: 2px solid rgba(220, 245, 255, 0.75);
-  box-shadow: inset 0 0 10px rgba(255,255,255,0.25);
-  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+
+
+/* ================================
+   V16: тарифы без свечения + аккуратные стрелки
+   ================================ */
+
+/* В тарифах убираем любые hover-переливы/блики, чтобы не ломало A6 */
+.popup__content--tariffs .tariff-demo-grid--final .tariff-cell,
+.popup__content--tariffs .tariff-demo-grid--final .tariff-cell:hover {
+  transform: none !important;
+  animation: none !important;
+  overflow: hidden !important;
+  background: #5d9bcf !important;
+  border: 3px solid rgba(202, 236, 249, 0.92) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;
 }
 
-.slot:hover,
-.tariff-demo-grid--final .tariff-cell:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,0.95);
-  box-shadow:
-    inset 0 0 14px rgba(255,255,255,0.45),
-    0 0 16px rgba(145,225,255,0.65);
+.popup__content--tariffs .tariff-demo-grid--final .tariff-cell::before,
+.popup__content--tariffs .tariff-demo-grid--final .tariff-cell::after,
+.popup__content--tariffs .tariff-demo-grid--final .tariff-cell:hover::before,
+.popup__content--tariffs .tariff-demo-grid--final .tariff-cell:hover::after {
+  animation: none !important;
+  opacity: 1 !important;
 }
 
-.slot::after,
-.tariff-demo-grid--final .tariff-cell::after {
-  content: "";
+/* A4 — высокий прямоугольник справа */
+.popup__content--tariffs .tariff-demo-grid--final .tariff-a4 {
+  grid-column: 4 !important;
+  grid-row: 1 / span 2 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+}
+
+/* A5 — обычный слот справа */
+.popup__content--tariffs .tariff-demo-grid--final .tariff-a5 {
+  grid-column: 4 !important;
+  grid-row: 3 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+}
+
+/* A6 — полный квадрат остается, выделена только правая половина */
+.popup__content--tariffs .tariff-demo-grid--final .tariff-a6 {
+  grid-column: 4 !important;
+  grid-row: 4 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  position: relative !important;
+  box-shadow: none !important;
+}
+
+.popup__content--tariffs .tariff-demo-grid--final .tariff-a6::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 50% !important;
+  height: 100% !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  transform: none !important;
+}
+
+.popup__content--tariffs .tariff-demo-grid--final .tariff-a6::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Схема тарифов: стрелки поверх схемы, но не мешают кликам */
+.tariffs-scheme {
+  position: relative !important;
+}
+
+.tariff-arrows-final {
   position: absolute;
-  top: -60%;
-  left: -90%;
-  width: 70%;
-  height: 220%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent);
-  transform: rotate(22deg);
-  opacity: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 5;
 }
 
-.slot:hover::after,
-.tariff-demo-grid--final .tariff-cell:hover::after {
-  opacity: 1;
-  animation: slotShineHover 0.9s ease;
+.tariff-arrows-final path {
+  fill: none;
+  stroke: #f10000;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  marker-end: url(#tariffArrowHead);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.16));
 }
 
-@keyframes slotShineHover {
-  from { left: -90%; }
-  to { left: 120%; }
+.tariff-arrows-final marker path {
+  fill: #f10000;
+}
+
+/* На мобильной версии стрелки остаются, но становятся аккуратнее */
+@media (max-width: 780px) {
+  .tariff-arrows-final path {
+    stroke-width: 3;
+  }
 }
