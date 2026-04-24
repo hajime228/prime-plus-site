@@ -430,15 +430,20 @@ document.querySelectorAll("img").forEach((img) => {
 
 
 
+
 /* ================================
-   V33: ручное расположение тарифных блоков и стрелок
+   V34: надежное перемещение тарифных блоков и стрелок + выравнивание
    ================================ */
 
 /*
-  Как теперь работает:
-  - если двигаешь заголовок тарифа, двигается ВЕСЬ блок: заголовок + описание под ним;
-  - стрелки двигаются отдельно;
-  - после сохранения координаты пишутся на сервер в tariff-positions.json.
+  Как пользоваться:
+  1) Войти как админ.
+  2) Открыть "Тарифы".
+  3) Перетаскивать:
+     - красный заголовок = двигается весь блок тарифа вместе с описанием;
+     - красную стрелку = двигается только стрелка.
+  4) Координаты автоматически округляются до 5px, чтобы было проще поставить ровно.
+  5) Кнопка "Сохранить расположение" сохраняет на сервер.
 */
 
 const defaultTariffPositions = {
@@ -452,14 +457,50 @@ const defaultTariffPositions = {
 
 let tariffPositions = JSON.parse(JSON.stringify(defaultTariffPositions));
 let tariffDragState = null;
+const TARIFF_SNAP = 5;
+const ARROW_HIT_PADDING = 18;
 
-function getTariffDraggableElements() {
-  return Array.from(document.querySelectorAll("#popup-tariffs [data-drag-key]"));
+function snapTariffValue(value) {
+  return Math.round(value / TARIFF_SNAP) * TARIFF_SNAP;
 }
 
 function getTariffBlockByTitleKey(key) {
   const title = document.querySelector(`#popup-tariffs [data-drag-key="${key}"]`);
   return title ? title.closest(".tariff-text-block") : null;
+}
+
+function getTariffArrowByKey(key) {
+  return document.querySelector(`#popup-tariffs [data-drag-key="${key}"]`);
+}
+
+function getTariffTitleKeyFromTarget(target) {
+  const title = target.closest?.("#popup-tariffs .tariff-text-block h3[data-drag-key]");
+  return title ? title.dataset.dragKey : null;
+}
+
+function getArrowKeyAtPoint(clientX, clientY) {
+  const arrows = [
+    { key: "arrowA4", el: getTariffArrowByKey("arrowA4") },
+    { key: "arrowA5", el: getTariffArrowByKey("arrowA5") },
+    { key: "arrowA6", el: getTariffArrowByKey("arrowA6") }
+  ];
+
+  for (const item of arrows) {
+    if (!item.el) continue;
+
+    const rect = item.el.getBoundingClientRect();
+
+    const left = rect.left - ARROW_HIT_PADDING;
+    const right = rect.right + ARROW_HIT_PADDING;
+    const top = rect.top - ARROW_HIT_PADDING;
+    const bottom = rect.bottom + ARROW_HIT_PADDING;
+
+    if (clientX >= left && clientX <= right && clientY >= top && clientY <= bottom) {
+      return item.key;
+    }
+  }
+
+  return null;
 }
 
 function applyTariffPositions() {
@@ -473,7 +514,7 @@ function applyTariffPositions() {
   });
 
   ["arrowA4", "arrowA5", "arrowA6"].forEach((key) => {
-    const arrow = document.querySelector(`#popup-tariffs [data-drag-key="${key}"]`);
+    const arrow = getTariffArrowByKey(key);
     const pos = tariffPositions[key];
 
     if (!arrow || !pos) return;
@@ -541,13 +582,15 @@ function updateTariffEditPanel() {
 function startTariffDrag(event) {
   if (!isAdmin || !document.body.classList.contains("tariff-edit-mode")) return;
 
-  const el = event.target.closest("#popup-tariffs [data-drag-key]");
-  if (!el) return;
+  const titleKey = getTariffTitleKeyFromTarget(event.target);
+  const arrowKey = getArrowKeyAtPoint(event.clientX, event.clientY);
+  const key = titleKey || arrowKey;
+
+  if (!key) return;
 
   event.preventDefault();
   event.stopPropagation();
 
-  const key = el.dataset.dragKey;
   const start = tariffPositions[key] || { x: 0, y: 0 };
 
   tariffDragState = {
@@ -558,11 +601,7 @@ function startTariffDrag(event) {
     originalY: start.y
   };
 
-  if (el.setPointerCapture && event.pointerId !== undefined) {
-    try {
-      el.setPointerCapture(event.pointerId);
-    } catch (_) {}
-  }
+  document.body.classList.add("tariff-dragging");
 }
 
 function moveTariffDrag(event) {
@@ -572,8 +611,8 @@ function moveTariffDrag(event) {
   const dy = event.clientY - tariffDragState.startY;
 
   tariffPositions[tariffDragState.key] = {
-    x: Math.round(tariffDragState.originalX + dx),
-    y: Math.round(tariffDragState.originalY + dy)
+    x: snapTariffValue(tariffDragState.originalX + dx),
+    y: snapTariffValue(tariffDragState.originalY + dy)
   };
 
   applyTariffPositions();
@@ -581,6 +620,7 @@ function moveTariffDrag(event) {
 
 function stopTariffDrag() {
   tariffDragState = null;
+  document.body.classList.remove("tariff-dragging");
 }
 
 function enableTariffPositionEditor() {
@@ -592,12 +632,12 @@ function enableTariffPositionEditor() {
   if (resetBtn) resetBtn.addEventListener("click", resetTariffPositions);
 
   if (tariffsPopup) {
-    tariffsPopup.addEventListener("pointerdown", startTariffDrag);
+    tariffsPopup.addEventListener("pointerdown", startTariffDrag, true);
   }
 
-  window.addEventListener("pointermove", moveTariffDrag);
-  window.addEventListener("pointerup", stopTariffDrag);
-  window.addEventListener("pointercancel", stopTariffDrag);
+  window.addEventListener("pointermove", moveTariffDrag, true);
+  window.addEventListener("pointerup", stopTariffDrag, true);
+  window.addEventListener("pointercancel", stopTariffDrag, true);
 }
 
 /* дополняем существующие функции сайта */
