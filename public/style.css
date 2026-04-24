@@ -2197,23 +2197,9 @@ body.modal-open {
 .tariff-demo-grid--final .tariff-a6 {
   grid-column: 4;
   grid-row: 4;
-
-  position: relative;
-}
-
-/* рисуем ПРАВУЮ ПОЛОВИНУ квадрата */
-.tariff-demo-grid--final .tariff-a6::after {
-  content: "";
-  position: absolute;
-
-  top: 0;
-  right: 0;
-
-  width: 50%;
-  height: 100%;
-
-  box-shadow: inset 0 0 0 5px #f10000;
-  pointer-events: none;
+  height: 40px;
+  align-self: end;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
 }
 
 .format-a4,
@@ -2358,5 +2344,84 @@ body.modal-open {
 
   .tariff-table {
     min-width: 660px;
+  }
+}
+
+
+/* ================================
+   V9: настоящие картинки в "О компании"
+   ================================ */
+
+.about-icon {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow: visible;
+}
+
+.about-icon::before,
+.about-icon::after {
+  content: none !important;
+  display: none !important;
+}
+
+.about-icon img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Для черных иконок на голубом фоне добавляем светлую плитку, чтобы они не терялись */
+.about-contact-row:nth-child(1) .about-icon img,
+.about-contact-row:nth-child(2) .about-icon img,
+.about-contact-row:nth-child(3) .about-icon img {
+  padding: 7px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.72);
+}
+
+/* WhatsApp / Telegram / MAX оставляем как есть */
+.about-contact-row:nth-child(4) .about-icon img,
+.about-contact-row:nth-child(5) .about-icon img,
+.about-contact-row:nth-child(6) .about-icon img {
+  padding: 0;
+  border-radius: 8px;
+}
+
+/* A6: остается полный квадрат, выделяется только правая половина нижнего правого квадрата */
+.tariff-demo-grid--final .tariff-a6 {
+  grid-column: 4 !important;
+  grid-row: 4 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  position: relative;
+  box-shadow: none !important;
+}
+
+.tariff-demo-grid--final .tariff-a6::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  box-shadow: inset 0 0 0 5px #f10000;
+  pointer-events: none;
+}
+
+@media (max-width: 780px) {
+  .about-icon img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .about-contact-row:nth-child(1) .about-icon img,
+  .about-contact-row:nth-child(2) .about-icon img,
+  .about-contact-row:nth-child(3) .about-icon img {
+    padding: 4px;
+    border-radius: 6px;
   }
 }
