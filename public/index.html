@@ -154,15 +154,26 @@
         <div class="tariffs-final">
           <div class="tariffs-scheme">
             <div class="tariff-demo-grid tariff-demo-grid--final">
-              <div></div><div></div><div></div><div class="format-a4"></div>
-              <div></div><div></div><div></div><div class="format-a4"></div>
-              <div></div><div></div><div></div><div class="format-a5"></div>
-              <div></div><div></div><div></div><div class="format-a6"></div>
-            </div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell tariff-a4"></div>
 
-            <div class="tariff-arrow tariff-arrow--a4">➜</div>
-            <div class="tariff-arrow tariff-arrow--a5">➜</div>
-            <div class="tariff-arrow tariff-arrow--a6">➜</div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell tariff-a4"></div>
+
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell tariff-a5"></div>
+
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell"></div>
+              <div class="tariff-cell tariff-a6"></div>
+            </div>
           </div>
 
           <div class="tariffs-text">
@@ -251,14 +262,27 @@
     <div class="popup__box popup__box--contacts">
       <button class="popup__close" data-close type="button" aria-label="Закрыть">×</button>
       <div class="popup__content popup__content--contacts">
-        <div class="contact-final">
-          <div class="contact-final__small">Ваш</div>
-          <div class="contact-final__title">персональный<br />менеджер:</div>
-          <a href="tel:89393742324" class="contact-final__phone">8-93-93-74-23-24</a>
-          <div class="contact-final__time">Консультация с 08:00 до 19:00</div>
-          <a href="https://wa.me/79393742324" target="_blank" class="contact-final__slogan">
-            «Поможем определиться с<br />выбором. Это бесплатно»
-          </a>
+        <div class="contact-final contact-card">
+          <div class="contact-card__badge">Ваш персональный менеджер</div>
+
+          <a href="tel:89393742324" class="contact-card__phone">8-93-93-74-23-24</a>
+
+          <div class="contact-card__info">
+            <div class="contact-card__row">
+              <span class="contact-card__icon">⏰</span>
+              <span>Консультация с 08:00 до 19:00</span>
+            </div>
+
+            <a href="https://wa.me/79393742324" target="_blank" class="contact-card__row contact-card__row--link">
+              <span class="contact-card__icon">✓</span>
+              <span>Поможем определиться с выбором. Это бесплатно</span>
+            </a>
+          </div>
+
+          <div class="contact-card__actions">
+            <a href="tel:89393742324">Позвонить</a>
+            <a href="https://wa.me/79393742324" target="_blank">WhatsApp</a>
+          </div>
         </div>
       </div>
     </div>
