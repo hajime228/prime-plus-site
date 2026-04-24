@@ -4918,3 +4918,207 @@ body.modal-open {
     margin-right: 0 !important;
   }
 }
+
+
+/* ================================
+   V27: точное выравнивание стрелок тарифов
+   ================================ */
+
+/*
+  Главное изменение:
+  стрелки больше не "живут сами по себе".
+  Они привязаны к заголовкам, а заголовки поставлены ровно на уровень нужных красных форматов:
+  A4 -> ОБЪЕМНЫЙ
+  A5 -> ВЕСЬ ГОРОД
+  A6 -> ЛАЙТ
+*/
+
+.popup__box--tariffs {
+  width: min(1120px, calc(100vw - 28px)) !important;
+  height: min(600px, calc(100vh - 28px)) !important;
+}
+
+.popup__content--tariffs {
+  padding: 26px 36px 20px !important;
+}
+
+/* Левая схема чуть компактнее, чтобы справа было место */
+.popup__box--tariffs .tariffs-scheme {
+  width: 390px !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final {
+  width: 390px !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  grid-auto-rows: 70px !important;
+  gap: 9px !important;
+  padding: 12px !important;
+}
+
+/* Текст справа */
+.popup__box--tariffs .tariffs-text {
+  position: absolute !important;
+  left: 450px !important;
+  top: 0 !important;
+  width: calc(100% - 465px) !important;
+  display: block !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* 
+  ВАЖНО:
+  top каждого блока = уровень соответствующего выделения на схеме.
+*/
+.popup__box--tariffs .tariff-text-block {
+  position: absolute !important;
+  left: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* A4: заголовок напротив верхнего большого прямоугольника */
+.popup__box--tariffs .tariff-text-block:nth-child(1) {
+  top: 18px !important;
+}
+
+/* A5: заголовок напротив квадрата A5, не между блоками */
+.popup__box--tariffs .tariff-text-block:nth-child(2) {
+  top: 176px !important;
+}
+
+/* A6: заголовок напротив правой половины нижнего квадрата */
+.popup__box--tariffs .tariff-text-block:nth-child(3) {
+  top: 272px !important;
+}
+
+/* Заголовки крупные, но не гигантские */
+.popup__box--tariffs .tariff-text-block h3 {
+  position: relative !important;
+  margin: 0 0 7px !important;
+  color: #d00000 !important;
+  text-decoration: underline !important;
+  font-size: clamp(22px, 1.45vw, 29px) !important;
+  line-height: 1.05 !important;
+  white-space: normal !important;
+}
+
+/* Стрелка строго горизонтальная, заканчивается перед началом текста */
+.popup__box--tariffs .tariff-text-block h3::before {
+  content: "" !important;
+  position: absolute !important;
+  left: -58px !important;
+  top: 50% !important;
+  width: 46px !important;
+  height: 3px !important;
+  background: #f10000 !important;
+  border-radius: 999px !important;
+  transform: translateY(-50%) !important;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.18)) !important;
+}
+
+.popup__box--tariffs .tariff-text-block h3::after {
+  content: "" !important;
+  position: absolute !important;
+  left: -14px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 7px solid transparent !important;
+  border-bottom: 7px solid transparent !important;
+  border-left: 12px solid #f10000 !important;
+}
+
+/* Описание крупнее и без огромных промежутков */
+.popup__box--tariffs .tariff-text-block p {
+  margin: 0 !important;
+  color: #111 !important;
+  font-size: clamp(17px, 1.05vw, 21px) !important;
+  line-height: 1.2 !important;
+  max-width: 760px !important;
+}
+
+/* Таблица под схемой, ближе, чтобы окно не было пустым */
+.popup__box--tariffs .tariff-table-wrap {
+  width: min(880px, 86%) !important;
+  min-width: 760px !important;
+  margin: 26px auto 0 !important;
+}
+
+.popup__box--tariffs .tariff-note {
+  width: min(880px, 86%) !important;
+  min-width: 760px !important;
+  margin: 12px auto 0 !important;
+  text-align: left !important;
+}
+
+/* Не даем старым стрелкам/контейнерам вмешиваться */
+.tariff-link-arrows,
+.tariff-arrows-final,
+.tariff-pointers,
+.tariff-horizontal-arrows,
+.tariff-final-arrows {
+  display: none !important;
+}
+
+/* В тарифах без свечения */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover {
+  transform: none !important;
+  animation: none !important;
+  filter: none !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell::after,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Красные рамки остаются всегда */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a4,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a4:hover {
+  box-shadow:
+    inset 0 0 0 5px #f10000,
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a5,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a5:hover {
+  box-shadow:
+    inset 0 0 0 5px #f10000,
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6::before,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 50% !important;
+  height: 100% !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+  pointer-events: none !important;
+}
+
+/* Мобильная версия: без стрелок */
+@media (max-width: 780px) {
+  .popup__box--tariffs .tariffs-text {
+    position: static !important;
+    width: 100% !important;
+    margin-top: 18px !important;
+  }
+
+  .popup__box--tariffs .tariff-text-block {
+    position: static !important;
+    margin-bottom: 18px !important;
+  }
+
+  .popup__box--tariffs .tariff-text-block h3::before,
+  .popup__box--tariffs .tariff-text-block h3::after {
+    display: none !important;
+  }
+}
