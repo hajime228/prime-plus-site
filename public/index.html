@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Прайм Плюс</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -64,7 +63,7 @@
     <section class="showcase">
       <div class="showcase__left">
         <div class="mini-ad ad-preview">
-          <img src="rek.jpg?v=3" alt="Пример рекламы" draggable="false" />
+          <img src="rek.jpg?v=2" alt="Пример рекламы" draggable="false" />
         </div>
 
         <div class="slots-panel">
@@ -73,10 +72,13 @@
       </div>
 
       <div class="showcase__right">
-        <div class="map-section">
-          <p class="map-note">Нажмите на метку, чтобы увидеть адрес и параметры дома</p>
-          <div class="map-frame map-frame--leaflet">
-            <div id="coverageMap"></div>
+        <div class="map-frame yandex-map-frame">
+          <div id="map" class="yandex-map"></div>
+          <div id="mapFallback" class="map-fallback" hidden>
+            <img src="map.jpg" alt="Карта покрытия" draggable="false" />
+            <div class="map-fallback__text">
+              Для отображения интерактивной Яндекс.Карты добавьте YANDEX_MAPS_API_KEY в Render.
+            </div>
           </div>
         </div>
       </div>
@@ -95,74 +97,48 @@
   <div class="popup" id="popup-about" aria-hidden="true">
     <div class="popup__overlay" data-close></div>
     <div class="popup__box popup__box--about">
-      <button class="popup__close" type="button" data-close aria-label="Закрыть">×</button>
+      <button class="popup__close" data-close type="button" aria-label="Закрыть">×</button>
       <div class="popup__content popup__content--about">
-        <div class="company-card">
-          <h2 class="company-card__title">О компании</h2>
+        <div class="about-panel">
+          <p class="about-line about-line--big">
+            <span class="about-label">Полное наименование:</span>
+            <span>Общество с ограниченной ответственностью «Прайм Плюс»</span>
+          </p>
 
-          <div class="about-card-grid">
-            <div class="about-item">
-              <span class="about-item__icon">🏢</span>
-              <div>
-                <strong>Полное наименование</strong>
-                <p>Общество с ограниченной ответственностью «Прайм Плюс»</p>
-              </div>
+          <p class="about-line about-line--center">
+            <span class="about-label">Краткое наименование:</span>
+            <span>ООО «Прайм Плюс»</span>
+          </p>
+
+          <div class="about-contacts">
+            <div class="about-contact-row">
+              <span class="about-icon about-icon--pin">📍</span>
+              <span><b>Юридический адрес:</b> город Чистополь,<br />ул. Энгельса д.161</span>
             </div>
 
-            <div class="about-item">
-              <span class="about-item__icon">🏷️</span>
-              <div>
-                <strong>Краткое наименование</strong>
-                <p>ООО «Прайм Плюс»</p>
-              </div>
+            <div class="about-contact-row">
+              <span class="about-icon">✉️</span>
+              <span><b>Email:</b> Prime.plus.rt@gmail.com</span>
             </div>
 
-            <div class="about-item">
-              <span class="about-item__icon">📍</span>
-              <div>
-                <strong>Юридический адрес</strong>
-                <p>город Чистополь, ул. Энгельса, д. 161</p>
-              </div>
+            <div class="about-contact-row">
+              <span class="about-icon">☎️</span>
+              <span><b>Телефон:</b> 8 93 93 74 23 24</span>
             </div>
 
-            <div class="about-item">
-              <span class="about-item__icon">✉️</span>
-              <div>
-                <strong>Email</strong>
-                <p>Prime.plus.rt@gmail.com</p>
-              </div>
+            <div class="about-contact-row">
+              <span class="about-icon">🟢</span>
+              <span><b>WhatsApp:</b> 8 93 93 74 23 24</span>
             </div>
 
-            <div class="about-item">
-              <span class="about-item__icon">📞</span>
-              <div>
-                <strong>Телефон</strong>
-                <p>8 93 93 74 23 24</p>
-              </div>
+            <div class="about-contact-row">
+              <span class="about-icon">✈️</span>
+              <span><b>Telegram:</b> 8 93 93 74 23 24</span>
             </div>
 
-            <div class="about-item">
-              <span class="about-item__icon">💬</span>
-              <div>
-                <strong>WhatsApp</strong>
-                <p>8 93 93 74 23 24</p>
-              </div>
-            </div>
-
-            <div class="about-item">
-              <span class="about-item__icon">📨</span>
-              <div>
-                <strong>Telegram</strong>
-                <p>8 93 93 74 23 24</p>
-              </div>
-            </div>
-
-            <div class="about-item">
-              <span class="about-item__icon">📌</span>
-              <div>
-                <strong>MAX</strong>
-                <p>8 93 93 74 23 24</p>
-              </div>
+            <div class="about-contact-row">
+              <span class="about-icon">💬</span>
+              <span><b>MAX:</b> 8 93 93 74 23 24</span>
             </div>
           </div>
         </div>
@@ -173,56 +149,98 @@
   <div class="popup" id="popup-tariffs" aria-hidden="true">
     <div class="popup__overlay" data-close></div>
     <div class="popup__box popup__box--tariffs">
-      <button class="popup__close" type="button" data-close aria-label="Закрыть">×</button>
+      <button class="popup__close" data-close type="button" aria-label="Закрыть">×</button>
       <div class="popup__content popup__content--tariffs">
-        <div class="tariff-layout">
-          <div class="tariff-left">
-            <div class="slot-grid tariff-demo-grid">
-              <div></div><div></div><div></div><div class="is-a5"></div>
-              <div></div><div></div><div></div><div></div>
-              <div></div><div></div><div></div><div class="is-a4 tall"></div>
-              <div></div><div></div><div></div>
+        <div class="tariffs-final">
+          <div class="tariffs-scheme">
+            <div class="tariff-demo-grid tariff-demo-grid--final">
+              <div></div><div></div><div></div><div class="format-a4"></div>
+              <div></div><div></div><div></div><div class="format-a4"></div>
+              <div></div><div></div><div class="format-a5"></div><div></div>
+              <div></div><div></div><div></div><div class="format-a6"></div>
             </div>
 
-            <div class="preview-card">
-              <img src="rek.jpg?v=3" alt="Пример рекламы" class="preview-card__image" draggable="false" />
-            </div>
+            <div class="tariff-arrow tariff-arrow--a4">➜</div>
+            <div class="tariff-arrow tariff-arrow--a5">➜</div>
+            <div class="tariff-arrow tariff-arrow--a6">➜</div>
           </div>
 
-          <div class="tariff-right">
-            <div class="tariff-section">
-              <h3>Колонка формата A5</h3>
+          <div class="tariffs-text">
+            <div class="tariff-text-block">
+              <h3>ТАРИФ «ОБЪЕМНЫЙ». Колонка формата A4</h3>
+              <p>
+                Этот формат в точности равен целому листу A4.
+                Размер бумаги формата A4 по стандарту ISO 216 составляет
+                <strong>210 × 297 мм</strong>.
+              </p>
+            </div>
+
+            <div class="tariff-text-block">
+              <h3>ТАРИФ «ВЕСЬ ГОРОД». Колонка формата A5</h3>
               <p>
                 Этот формат в точности равен половине листа A4.
                 Размер бумаги формата A5 по стандарту ISO 216 составляет
                 <strong>148 × 210 мм</strong>.
               </p>
-              <p class="tariff-price">
-                Цена размещения 1 рекламы на 1 щите 20 рублей в месяц.
-                Покрытие по всем рекламным щитам в количестве 600 щитов
-                в месяц 12.000 рублей.
-              </p>
             </div>
 
-            <div class="tariff-section tariff-section--a4">
-              <h3>Колонка формата A4</h3>
+            <div class="tariff-text-block">
+              <h3>ТАРИФ «ЛАЙТ». Колонка формата A6</h3>
               <p>
-                Этот формат равен целому листу A4.
-                Размер бумаги формата A4 по стандарту ISO 216 составляет
-                <strong>210 × 297 мм</strong>.
-              </p>
-              <p class="tariff-price tariff-price--big">
-                Цена размещения 1 рекламы на 1 щите 40 рублей в месяц.
-                Покрытие по всем рекламным щитам в количестве 600 щитов
-                в месяц 24.000 рублей.
+                Этот формат равен половине листа A5.
+                Размер бумаги формата A6 составляет
+                <strong>105 × 148 мм</strong>.
               </p>
             </div>
-
-            <p class="tariff-note">
-              В стоимость включено редактирование колонки, печать и раскладка.
-              Размеры иных параметров оговариваются при необходимости индивидуально.
-            </p>
           </div>
+
+          <div class="tariff-note-yellow">Это, не дорого))</div>
+
+          <div class="tariff-table-wrap">
+            <table class="tariff-table">
+              <thead>
+                <tr>
+                  <th>Наименование тарифа</th>
+                  <th>Формат размещаемой рекламы</th>
+                  <th>Размеры, в мм.</th>
+                  <th>Количество рекламных щитов, в шт.</th>
+                  <th>Стоимость тарифа за 1 рекламную колонку, в месяц, в руб.</th>
+                  <th>Итоговая стоимость в месяц, в руб.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>«ОБЪЕМНЫЙ»</td>
+                  <td>A4</td>
+                  <td>210×297</td>
+                  <td>600</td>
+                  <td>40</td>
+                  <td>24 000</td>
+                </tr>
+                <tr>
+                  <td>«ВЕСЬ ГОРОД»</td>
+                  <td>A5</td>
+                  <td>148×210</td>
+                  <td>600</td>
+                  <td>20</td>
+                  <td>12 000</td>
+                </tr>
+                <tr>
+                  <td>«ЛАЙТ»</td>
+                  <td>A6</td>
+                  <td>105×148</td>
+                  <td>600</td>
+                  <td>10</td>
+                  <td>6 000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="tariff-note">
+            * В стоимость включено редактирование колонки, печать и раскладка.<br />
+            * Размеры иных параметров оговариваются при необходимости индивидуально.
+          </p>
         </div>
       </div>
     </div>
@@ -231,17 +249,16 @@
   <div class="popup" id="popup-contacts" aria-hidden="true">
     <div class="popup__overlay" data-close></div>
     <div class="popup__box popup__box--contacts">
-      <button class="popup__close" type="button" data-close aria-label="Закрыть">×</button>
+      <button class="popup__close" data-close type="button" aria-label="Закрыть">×</button>
       <div class="popup__content popup__content--contacts">
-        <div class="contact-manager-box">
-          <h2>Ваш персональный<br />менеджер</h2>
-
-          <div class="manager-phone">8-93-93-74-23-24</div>
-
-          <p class="manager-hours">Консультации с 08:00 до 19:00</p>
-
-          <a href="tel:89393742324" class="manager-btn">Позвонить</a>
-          <a href="https://wa.me/79393742324" target="_blank" class="manager-btn manager-btn--secondary">Написать в WhatsApp</a>
+        <div class="contact-final">
+          <div class="contact-final__small">Ваш</div>
+          <div class="contact-final__title">персональный<br />менеджер:</div>
+          <a href="tel:89393742324" class="contact-final__phone">8-93-93-74-23-24</a>
+          <div class="contact-final__time">Консультация с 08:00 до 19:00</div>
+          <a href="https://wa.me/79393742324" target="_blank" class="contact-final__slogan">
+            «Поможем определиться с<br />выбором. Это бесплатно»
+          </a>
         </div>
       </div>
     </div>
@@ -250,18 +267,18 @@
   <div class="popup" id="popup-houses" aria-hidden="true">
     <div class="popup__overlay" data-close></div>
     <div class="popup__box popup__box--houses">
-      <button class="popup__close" type="button" data-close aria-label="Закрыть">×</button>
+      <button class="popup__close" data-close type="button" aria-label="Закрыть">×</button>
       <div class="popup__content popup__content--houses">
-        <div class="houses-modal-header">
-          <h2>Дома с щитами</h2>
-          <p>Список адресов из файла Excel</p>
+        <div class="houses-title-row">
+          <div>Адрес</div>
+          <div>Количество<br />подъездов</div>
+          <div>Количество<br />этажей</div>
         </div>
-        <div id="housesColumns" class="houses-list-card"></div>
+        <div id="housesList" class="houses-list"></div>
       </div>
     </div>
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

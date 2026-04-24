@@ -7,14 +7,13 @@ const popupMap = {
 
 let slots = [];
 let isAdmin = false;
-let housesData = [];
-let coverageMap = null;
-let mapMarkersLayer = null;
+let housesCache = [];
+let yandexMap = null;
+let yandexObjects = [];
 
 const slotsContainer = document.getElementById("slots");
 const adminHint = document.getElementById("adminHint");
 const adminButton = document.getElementById("adminButton");
-const coverageMapElement = document.getElementById("coverageMap");
 
 document.querySelectorAll(".nav__item[data-popup]").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -29,7 +28,9 @@ document.querySelectorAll("[data-close]").forEach((el) => {
 function openPopup(key) {
   closeAllPopups();
   const popup = popupMap[key];
+
   if (!popup) return;
+
   popup.classList.add("is-open");
   popup.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
@@ -37,9 +38,11 @@ function openPopup(key) {
 
 function closeAllPopups() {
   Object.values(popupMap).forEach((popup) => {
+    if (!popup) return;
     popup.classList.remove("is-open");
     popup.setAttribute("aria-hidden", "true");
   });
+
   document.body.classList.remove("modal-open");
 }
 
@@ -48,8 +51,6 @@ document.addEventListener("keydown", (e) => {
     closeAllPopups();
   }
 });
-
-/* ADMIN */
 
 if (adminButton) {
   adminButton.addEventListener("click", async () => {
@@ -89,7 +90,9 @@ if (adminButton) {
 }
 
 function updateAdminUI() {
-  adminHint.hidden = !isAdmin;
+  if (adminHint) {
+    adminHint.hidden = !isAdmin;
+  }
 
   if (adminButton) {
     adminButton.innerHTML = isAdmin
@@ -97,8 +100,6 @@ function updateAdminUI() {
       : "<span>Вход администратора</span>";
   }
 }
-
-/* SLOTS */
 
 async function initAdminStatus() {
   try {
@@ -119,7 +120,10 @@ async function loadSlots() {
 }
 
 function renderSlots() {
+  if (!slotsContainer) return;
+
   slotsContainer.innerHTML = "";
+
   slots.forEach((value, index) => {
     const cell = document.createElement("div");
     cell.className = "slot";
@@ -151,211 +155,192 @@ async function saveSlots() {
   }
 }
 
-/* HOUSES */
-
 async function loadHouses() {
-  const wrap = document.getElementById("housesColumns");
-  wrap.innerHTML = "";
-
   try {
     const res = await fetch("/api/houses");
-    const rows = await res.json();
-    housesData = rows || [];
+    housesCache = await res.json();
 
-    if (!housesData.length) {
-      wrap.innerHTML = "<p>Список домов пока не загружен.</p>";
+    renderHousesList(housesCache);
+  } catch (_) {
+    housesCache = [];
+    renderHousesList([]);
+  }
+}
+
+function renderHousesList(rows) {
+  const wrap = document.getElementById("housesList");
+  if (!wrap) return;
+
+  wrap.innerHTML = "";
+
+  if (!rows.length) {
+    wrap.innerHTML = "<p>Список домов пока не загружен.</p>";
+    return;
+  }
+
+  rows.forEach((row) => {
+    const item = document.createElement("div");
+    item.className = "house-row";
+
+    const address = row.address || formatHouseAddress(row);
+    const entrances = row.entrances || row.podezdy || row["количество подъездов"] || "";
+    const floors = row.floors || row.etazhi || row["этажность"] || "";
+    const flats = row.flats || row.kvartiry || row["квартир"] || "";
+
+    item.innerHTML = `
+      <div class="house-address">
+        <span class="house-pin">📍</span>
+        <span>${escapeHtml(address)}</span>
+      </div>
+      <div class="house-center">${escapeHtml(String(entrances || ""))}</div>
+      <div class="house-center">${escapeHtml(String(floors || flats || ""))}</div>
+    `;
+
+    wrap.appendChild(item);
+  });
+}
+
+function formatHouseAddress(row) {
+  const street = row.street || row.ulica || row["наименование улице"] || row["наименование улицы"] || row["улица"] || "";
+  const house = row.house || row.dom || row["№ дома"] || row["номер дома"] || "";
+  return `${street} д.${house}`.trim();
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+async function initYandexMap() {
+  const mapEl = document.getElementById("map");
+  const fallback = document.getElementById("mapFallback");
+
+  if (!mapEl) return;
+
+  try {
+    const configRes = await fetch("/api/map-config");
+    const config = await configRes.json();
+
+    if (!config.yandexMapsApiKey) {
+      showFallbackMap();
       return;
     }
 
-    renderHousesTable(wrap, housesData);
-    await initCoverageMap(housesData);
-  } catch (_) {
-    wrap.innerHTML = "<p>Не удалось загрузить список домов.</p>";
-  }
-}
+    await loadYandexScript(config.yandexMapsApiKey);
 
-function renderHousesTable(wrap, rows) {
-  wrap.innerHTML = "";
+    ymaps.ready(async () => {
+      yandexMap = new ymaps.Map("map", {
+        center: [55.6311, 51.8149],
+        zoom: 12,
+        controls: ["zoomControl", "fullscreenControl"]
+      }, {
+        suppressMapOpenBlock: true,
+        yandexMapDisablePoiInteractivity: true
+      });
 
-  const preferredColumns = getPreferredColumns(rows[0]);
-  const tableWrap = document.createElement("div");
-  tableWrap.className = "houses-table-wrap";
+      yandexMap.behaviors.disable("scrollZoom");
+      yandexMap.behaviors.enable(["drag", "multiTouch"]);
 
-  const table = document.createElement("table");
-  table.className = "houses-table";
-
-  const thead = document.createElement("thead");
-  const headRow = document.createElement("tr");
-  preferredColumns.forEach((key) => {
-    const th = document.createElement("th");
-    th.textContent = key;
-    headRow.appendChild(th);
-  });
-  thead.appendChild(headRow);
-  table.appendChild(thead);
-
-  const tbody = document.createElement("tbody");
-  rows.forEach((row) => {
-    const tr = document.createElement("tr");
-    preferredColumns.forEach((key) => {
-      const td = document.createElement("td");
-      td.textContent = normalizeCell(row[key]);
-      tr.appendChild(td);
+      await loadMapHouses();
     });
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-
-  tableWrap.appendChild(table);
-  wrap.appendChild(tableWrap);
-}
-
-function getPreferredColumns(sampleRow) {
-  const keys = Object.keys(sampleRow || {});
-  const priority = [
-    "Адрес",
-    "Наименование улице",
-    "Наименование улицы",
-    "Улица",
-    "№ дома",
-    "№ домa",
-    "Дом",
-    "кол-во подъездов",
-    "Количество подъездов",
-    "Этажность",
-    "Количество этажей",
-    "Количество квартир",
-    "Квартиры"
-  ];
-
-  const found = priority.filter((name) =>
-    keys.some((k) => normalizeKey(k) === normalizeKey(name))
-  );
-
-  if (found.length) {
-    return found.map((name) => keys.find((k) => normalizeKey(k) === normalizeKey(name)));
+  } catch (_) {
+    showFallbackMap();
   }
 
-  return keys;
+  function showFallbackMap() {
+    if (mapEl) mapEl.hidden = true;
+    if (fallback) fallback.hidden = false;
+  }
 }
 
-function normalizeKey(value) {
-  return String(value || "")
-    .trim()
-    .toLowerCase()
-    .replace(/ё/g, "е");
-}
-
-function normalizeCell(value) {
-  return value === undefined || value === null || value === "" ? "—" : String(value);
-}
-
-function getRowValue(row, aliases) {
-  const entries = Object.entries(row || {});
-  const aliasKeys = aliases.map(normalizeKey);
-  for (const [key, value] of entries) {
-    if (aliasKeys.includes(normalizeKey(key)) && value !== undefined && value !== null && value !== "") {
-      return String(value);
+function loadYandexScript(apiKey) {
+  return new Promise((resolve, reject) => {
+    if (window.ymaps) {
+      resolve();
+      return;
     }
-  }
-  return "";
-}
 
-function buildAddress(row) {
-  const readyAddress = getRowValue(row, ["Адрес"]);
-  if (readyAddress) return readyAddress;
-
-  const street = getRowValue(row, ["Наименование улице", "Наименование улицы", "Улица"]);
-  const house = getRowValue(row, ["№ дома", "Дом", "№ домa"]);
-  return [street, house].filter(Boolean).join(", д. ");
-}
-
-function buildPopupHtml(row) {
-  const address = buildAddress(row) || "Адрес не указан";
-  const entrances = getRowValue(row, ["Количество подъездов", "кол-во подъездов", "Подъезды"]);
-  const floors = getRowValue(row, ["Количество этажей", "Этажность"]);
-  const flats = getRowValue(row, ["Количество квартир", "Квартиры"]);
-
-  const items = [
-    `<div><strong>Адрес:</strong> ${address}</div>`
-  ];
-
-  if (floors) items.push(`<div><strong>Этажи:</strong> ${floors}</div>`);
-  if (entrances) items.push(`<div><strong>Подъезды:</strong> ${entrances}</div>`);
-  if (flats) items.push(`<div><strong>Квартиры:</strong> ${flats}</div>`);
-
-  return `<div style="min-width:180px; line-height:1.45;">${items.join("")}</div>`;
-}
-
-/* MAP */
-
-function generatePseudoCoords(index, total) {
-  const centerLat = 55.6313;
-  const centerLng = 51.8140;
-  const angle = (index / Math.max(total, 1)) * Math.PI * 2;
-  const radiusLat = 0.028;
-  const radiusLng = 0.055;
-  const ring = 0.35 + ((index % 7) / 10);
-
-  const lat = centerLat + Math.sin(angle * 1.7) * radiusLat * ring;
-  const lng = centerLng + Math.cos(angle * 1.3) * radiusLng * ring;
-  return [lat, lng];
-}
-
-function createIcon() {
-  return L.divIcon({
-    className: "custom-house-marker",
-    html: `<span style="font-size: 26px; line-height: 1;">📍</span>`,
-    iconSize: [26, 26],
-    iconAnchor: [13, 26],
-    popupAnchor: [0, -24]
+    const script = document.createElement("script");
+    script.src = `https://api-maps.yandex.ru/2.1/?apikey=${encodeURIComponent(apiKey)}&lang=ru_RU`;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
   });
 }
 
-async function initCoverageMap(rows) {
-  if (!coverageMapElement || typeof L === "undefined") return;
+async function loadMapHouses() {
+  if (!yandexMap) return;
 
-  if (!coverageMap) {
-    coverageMap = L.map("coverageMap", {
-      scrollWheelZoom: true,
-      dragging: true,
-      tap: false
-    }).setView([55.6313, 51.8140], 12);
+  try {
+    const res = await fetch("/api/houses-map");
+    const rows = await res.json();
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: ""
-    }).addTo(coverageMap);
+    yandexObjects.forEach((object) => {
+      yandexMap.geoObjects.remove(object);
+    });
+    yandexObjects = [];
 
-    mapMarkersLayer = L.layerGroup().addTo(coverageMap);
-  }
+    const coords = [];
 
-  mapMarkersLayer.clearLayers();
+    rows.forEach((house) => {
+      if (!house.lat || !house.lon) return;
 
-  const bounds = [];
-  const total = Math.min(rows.length, 80);
+      const point = [Number(house.lat), Number(house.lon)];
+      coords.push(point);
 
-  for (let i = 0; i < total; i += 1) {
-    const row = rows[i];
-    const coords = generatePseudoCoords(i, total);
-    bounds.push(coords);
+      const address = house.address || formatHouseAddress(house);
+      const floors = house.floors || "";
+      const entrances = house.entrances || "";
+      const flats = house.flats || "";
 
-    const marker = L.marker(coords, { icon: createIcon() }).addTo(mapMarkersLayer);
-    marker.bindPopup(buildPopupHtml(row));
-  }
+      const placemark = new ymaps.Placemark(point, {
+        balloonContent: `
+          <div style="font-family: Arial, sans-serif; min-width: 190px;">
+            <div style="font-size:18px;font-weight:700;color:#1a537d;margin-bottom:8px;">
+              Адрес: ${escapeHtml(address)}
+            </div>
+            <div style="font-size:15px;color:#1a537d;font-weight:700;">
+              Этажность: ${escapeHtml(String(floors || "—"))}<br>
+              Подъездов: ${escapeHtml(String(entrances || "—"))}<br>
+              Квартир: ${escapeHtml(String(flats || "—"))}
+            </div>
+          </div>
+        `,
+        hintContent: `${address}`
+      }, {
+        preset: "islands#redIcon",
+        hideIconOnBalloonOpen: false
+      });
 
-  if (bounds.length) {
-    coverageMap.fitBounds(bounds, { padding: [18, 18] });
-  }
+      yandexMap.geoObjects.add(placemark);
+      yandexObjects.push(placemark);
+    });
 
-  setTimeout(() => coverageMap.invalidateSize(), 200);
+    if (coords.length) {
+      yandexMap.setBounds(yandexMap.geoObjects.getBounds(), {
+        checkZoomRange: true,
+        zoomMargin: 45
+      });
+    }
+  } catch (_) {}
 }
 
-/* STATIC IMAGE MAP INTERACTION REMOVED */
+const logo = document.querySelector(".brand__logo");
+if (logo) {
+  logo.addEventListener("dragstart", (e) => e.preventDefault());
+}
 
-/* INIT */
+document.querySelectorAll("img").forEach((img) => {
+  img.addEventListener("dragstart", (e) => e.preventDefault());
+});
 
 (async function init() {
   await initAdminStatus();
   await loadSlots();
   await loadHouses();
+  await initYandexMap();
 })();
