@@ -3256,3 +3256,167 @@ body.modal-open {
     stroke-width: 3 !important;
   }
 }
+
+
+/* ================================
+   V18: стрелки тарифов направлены к строкам таблицы
+   ================================ */
+
+/* Старые SVG-стрелки полностью отключены */
+.tariff-arrows-final {
+  display: none !important;
+}
+
+/* Контейнер вкладки тарифов нужен для абсолютного позиционирования стрелок */
+.popup__content--tariffs {
+  position: relative !important;
+}
+
+/* Стрелки создаются как аккуратные красные линии от схемы к нужным строкам таблицы */
+.popup__content--tariffs::before,
+.popup__content--tariffs::after,
+.tariffs-final::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 50 !important;
+  pointer-events: none !important;
+  height: 4px !important;
+  background: #f10000 !important;
+  border-radius: 999px !important;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.18));
+}
+
+/* наконечник стрелки */
+.popup__content--tariffs .tariffs-final::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 51 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 11px solid transparent !important;
+  border-bottom: 11px solid transparent !important;
+  border-left: 18px solid #f10000 !important;
+}
+
+/* A4 -> строка «ОБЪЕМНЫЙ» */
+.popup__content--tariffs::before {
+  left: 440px !important;
+  top: 448px !important;
+  width: 150px !important;
+  transform: rotate(28deg) !important;
+  transform-origin: left center !important;
+}
+
+/* наконечник A4 */
+.popup__content--tariffs .tariffs-final::before {
+  left: 574px !important;
+  top: 483px !important;
+  transform: rotate(28deg) !important;
+}
+
+/* A5 -> строка «ВЕСЬ ГОРОД» */
+.popup__content--tariffs::after {
+  left: 440px !important;
+  top: 492px !important;
+  width: 150px !important;
+  transform: rotate(16deg) !important;
+  transform-origin: left center !important;
+}
+
+/* наконечник A5 */
+.tariffs-final .tariffs-scheme::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 51 !important;
+  pointer-events: none !important;
+  left: 559px !important;
+  top: 493px !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 11px solid transparent !important;
+  border-bottom: 11px solid transparent !important;
+  border-left: 18px solid #f10000 !important;
+  transform: rotate(16deg) !important;
+}
+
+/* A6 -> строка «ЛАЙТ» */
+.tariffs-final::after {
+  left: 440px !important;
+  top: 535px !important;
+  width: 150px !important;
+  transform: rotate(4deg) !important;
+  transform-origin: left center !important;
+}
+
+/* наконечник A6 */
+.tariffs-final .tariffs-scheme::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 51 !important;
+  pointer-events: none !important;
+  left: 563px !important;
+  top: 527px !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 11px solid transparent !important;
+  border-bottom: 11px solid transparent !important;
+  border-left: 18px solid #f10000 !important;
+  transform: rotate(4deg) !important;
+}
+
+/* Сетка тарифов без свечения/переливов */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-cell:hover {
+  transform: none !important;
+  animation: none !important;
+  background: #5d9bcf !important;
+  border: 3px solid rgba(202, 236, 249, 0.92) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+/* Красные выделения не исчезают при hover */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a4,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a4:hover {
+  box-shadow:
+    inset 0 0 0 5px #f10000,
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a5,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a5:hover {
+  box-shadow:
+    inset 0 0 0 5px #f10000,
+    inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6::before,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 50% !important;
+  height: 100% !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+}
+
+/* На мобильной версии эти длинные стрелки лучше скрыть, иначе будет путаница */
+@media (max-width: 780px) {
+  .popup__content--tariffs::before,
+  .popup__content--tariffs::after,
+  .tariffs-final::after,
+  .popup__content--tariffs .tariffs-final::before,
+  .tariffs-final .tariffs-scheme::before,
+  .tariffs-final .tariffs-scheme::after {
+    display: none !important;
+  }
+}
