@@ -2840,3 +2840,79 @@ body.modal-open {
     overflow-wrap: anywhere;
   }
 }
+
+
+/* ================================
+   V14: PNG-пины как на картинке, без кластеризации
+   ================================ */
+
+/* Leaflet теперь использует настоящую PNG-картинку icons/map-pin.png */
+.leaflet-image-pin {
+  filter: drop-shadow(0 4px 7px rgba(0,0,0,0.28));
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.leaflet-image-pin:hover {
+  transform: translateY(-2px) scale(1.08);
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.34));
+}
+
+.leaflet-image-pin.is-active {
+  animation: pinImagePulse 0.7s ease 2;
+}
+
+@keyframes pinImagePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.28);
+  }
+}
+
+/* Старые CSS-пины и кластеры отключаем */
+.leaflet-custom-pin,
+.leaflet-cluster-pin {
+  display: none !important;
+}
+
+/* Такой же пин во вкладке "Дома с щитами" */
+.house-pin {
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  display: inline-block !important;
+  background-image: url("icons/map-pin.png") !important;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  position: relative !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.24)) !important;
+}
+
+.house-pin::before,
+.house-pin::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Убираем служебные надписи/кластеры */
+.map-fallback__text {
+  display: none !important;
+}
+
+@media (max-width: 780px) {
+  .house-pin {
+    width: 26px !important;
+    min-width: 26px !important;
+    height: 26px !important;
+  }
+
+  .leaflet-image-pin {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}

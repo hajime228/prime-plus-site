@@ -253,6 +253,8 @@ let leafletMarkers = [];
 let leafletMarkerByAddress = new Map();
 
 async function initYandexMap() {
+  // Используем бесплатную карту OpenStreetMap + Leaflet.
+  // Координаты берутся только из Excel: G = lat, H = lon.
   await initFreeLeafletMap();
 }
 
@@ -266,6 +268,7 @@ function normalizeAddressForKey(value) {
 
 function makePopupHtml(house) {
   const address = house.address || formatHouseAddress(house);
+
   return `
     <div class="map-popup">
       <div class="map-popup__title">Адрес: ${escapeHtml(address)}</div>
@@ -277,50 +280,13 @@ function makePopupHtml(house) {
 }
 
 function createPinIcon(extraClass = "") {
-  return L.divIcon({
-    className: `leaflet-custom-pin ${extraClass}`.trim(),
-    html: "<span></span>",
-    iconSize: [34, 42],
-    iconAnchor: [17, 42],
-    popupAnchor: [0, -40]
+  return L.icon({
+    iconUrl: "icons/map-pin.png",
+    iconSize: [38, 38],
+    iconAnchor: [19, 38],
+    popupAnchor: [0, -34],
+    className: `leaflet-image-pin ${extraClass}`.trim()
   });
-}
-
-function createClusterIcon(count) {
-  return L.divIcon({
-    className: "leaflet-cluster-pin",
-    html: `<span>${count}</span>`,
-    iconSize: [42, 42],
-    iconAnchor: [21, 21]
-  });
-}
-
-function clusterHouses(rows) {
-  const precision = 3;
-  const clusters = new Map();
-
-  rows.forEach((house) => {
-    const lat = Number(house.lat);
-    const lon = Number(house.lon);
-    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
-
-    const key = `${lat.toFixed(precision)}_${lon.toFixed(precision)}`;
-
-    if (!clusters.has(key)) {
-      clusters.set(key, { latSum: 0, lonSum: 0, items: [] });
-    }
-
-    const cluster = clusters.get(key);
-    cluster.latSum += lat;
-    cluster.lonSum += lon;
-    cluster.items.push(house);
-  });
-
-  return [...clusters.values()].map((cluster) => ({
-    lat: cluster.latSum / cluster.items.length,
-    lon: cluster.lonSum / cluster.items.length,
-    items: cluster.items
-  }));
 }
 
 async function initFreeLeafletMap() {
@@ -351,48 +317,32 @@ async function initFreeLeafletMap() {
   try {
     const res = await fetch("/api/houses-map");
     const rows = await res.json();
-    const clusters = clusterHouses(rows);
     const bounds = [];
 
-    clusters.forEach((cluster) => {
-      const point = [cluster.lat, cluster.lon];
+    rows.forEach((house) => {
+      const lat = Number(house.lat);
+      const lon = Number(house.lon);
+
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+
+      const point = [lat, lon];
       bounds.push(point);
 
-      if (cluster.items.length === 1) {
-        const house = cluster.items[0];
-        const address = house.address || formatHouseAddress(house);
+      const address = house.address || formatHouseAddress(house);
 
-        const marker = L.marker(point, { icon: createPinIcon() })
-          .addTo(leafletMap)
-          .bindPopup(makePopupHtml(house));
+      const marker = L.marker(point, { icon: createPinIcon() })
+        .addTo(leafletMap)
+        .bindPopup(makePopupHtml(house));
 
-        leafletMarkers.push(marker);
-        leafletMarkerByAddress.set(normalizeAddressForKey(address), marker);
-      } else {
-        const marker = L.marker(point, { icon: createClusterIcon(cluster.items.length) })
-          .addTo(leafletMap)
-          .bindPopup(`
-            <div class="map-popup">
-              <div class="map-popup__title">Домов рядом: ${cluster.items.length}</div>
-              <div>Нажмите на кластер, чтобы приблизить карту.</div>
-            </div>
-          `);
-
-        marker.on("click", () => {
-          leafletMap.setView(point, Math.min(leafletMap.getZoom() + 2, 18), { animate: true });
-        });
-
-        leafletMarkers.push(marker);
-
-        cluster.items.forEach((house) => {
-          const address = house.address || formatHouseAddress(house);
-          leafletMarkerByAddress.set(normalizeAddressForKey(address), marker);
-        });
-      }
+      leafletMarkers.push(marker);
+      leafletMarkerByAddress.set(normalizeAddressForKey(address), marker);
     });
 
     if (bounds.length) {
-      leafletMap.fitBounds(bounds, { padding: [35, 35], maxZoom: 15 });
+      leafletMap.fitBounds(bounds, {
+        padding: [35, 35],
+        maxZoom: 15
+      });
     }
   } catch (_) {}
 }
@@ -405,7 +355,7 @@ function focusHouseOnMap(address) {
 
   const latLng = marker.getLatLng();
 
-  leafletMap.setView(latLng, Math.max(leafletMap.getZoom(), 16), {
+  leafletMap.setView(latLng, Math.max(leafletMap.getZoom(), 17), {
     animate: true
   });
 
