@@ -2425,3 +2425,92 @@ body.modal-open {
     border-radius: 6px;
   }
 }
+
+
+/* ================================
+   V10: правки "О компании" и мобильной таблицы домов
+   ================================ */
+
+/* Краткое наименование по левому краю */
+.about-line--center {
+  text-align: left !important;
+}
+
+/* Одинаковые отступы вокруг краткого наименования */
+.about-line {
+  margin: 0 0 18px !important;
+}
+
+.about-line--big {
+  margin-bottom: 18px !important;
+}
+
+.about-line--center {
+  margin-top: 18px !important;
+  margin-bottom: 18px !important;
+}
+
+/* Чтобы блок контактов после краткого начинался ровно */
+.about-contacts {
+  margin-top: 18px !important;
+}
+
+/* Мобильная версия: заголовки "Количество подъездов/этажей" не залезают друг на друга */
+@media (max-width: 780px) {
+  .popup__content--houses {
+    padding: 36px 10px 16px !important;
+  }
+
+  .houses-title-row {
+    grid-template-columns: minmax(138px, 1fr) 92px 74px !important;
+    gap: 4px !important;
+    font-size: 11px !important;
+    line-height: 1.08 !important;
+    padding: 8px 6px !important;
+  }
+
+  .houses-title-row > div {
+    overflow-wrap: anywhere;
+    word-break: normal;
+    hyphens: auto;
+  }
+
+  .house-row {
+    grid-template-columns: minmax(138px, 1fr) 92px 74px !important;
+    gap: 4px !important;
+    font-size: 14px !important;
+  }
+
+  .house-address {
+    gap: 6px !important;
+    min-width: 0;
+  }
+
+  .house-address span:last-child {
+    overflow-wrap: anywhere;
+  }
+
+  .house-center {
+    font-size: 14px !important;
+    text-align: center;
+  }
+
+  .house-pin {
+    width: 22px !important;
+    min-width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+/* Для совсем узких телефонов */
+@media (max-width: 390px) {
+  .houses-title-row {
+    grid-template-columns: minmax(126px, 1fr) 82px 66px !important;
+    font-size: 10px !important;
+  }
+
+  .house-row {
+    grid-template-columns: minmax(126px, 1fr) 82px 66px !important;
+    font-size: 13px !important;
+  }
+}
