@@ -312,7 +312,7 @@ async function loadMapHouses() {
         `,
         hintContent: `${address}`
       }, {
-        preset: "islands#redIcon",
+        preset: "islands#redDotIcon",
         hideIconOnBalloonOpen: false
       });
 

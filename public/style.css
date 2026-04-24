@@ -1419,3 +1419,254 @@ body.modal-open {
     padding: 7px 4px;
   }
 }
+
+
+/* ================================
+   V6 FIXES: ближе к макету заказчика
+   ================================ */
+
+/* Чтобы слоты не перекрывали телефон/почту на главной */
+.quick-contact {
+  position: relative;
+  z-index: 4;
+}
+
+.showcase {
+  margin-top: -118px;
+}
+
+.slots-panel {
+  position: relative;
+  z-index: 1;
+}
+
+/* Карта: небольшие метки смотрятся чище */
+.yandex-map-frame {
+  border: 3px solid rgba(255,255,255,0.24);
+}
+
+/* Контакты: меньше пустого пространства, компактнее как на макете */
+.popup__box--contacts {
+  width: min(760px, calc(100vw - 36px));
+  height: auto;
+  min-height: 390px;
+  max-height: min(460px, calc(100vh - 36px));
+}
+
+.popup__content--contacts {
+  padding: 28px 34px 24px;
+}
+
+.contact-final {
+  min-height: 330px;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 26px;
+}
+
+.contact-final__small {
+  align-self: flex-start;
+  margin-left: 36px;
+  font-size: clamp(28px, 2.1vw, 42px);
+}
+
+.contact-final__title {
+  font-size: clamp(30px, 2.45vw, 46px);
+  line-height: 1.12;
+}
+
+.contact-final__phone {
+  width: min(100%, 560px);
+  min-height: 64px;
+  border-radius: 18px;
+  font-size: clamp(34px, 3.2vw, 58px);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.contact-final__time {
+  font-size: clamp(18px, 1.3vw, 26px);
+  margin-top: -2px;
+}
+
+.contact-final__slogan {
+  max-width: 520px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: transparent;
+  font-size: clamp(20px, 1.7vw, 32px);
+}
+
+/* Тарифы: без стрелок, без желтой надписи, таблица левее и ниже как на примере */
+.popup__box--tariffs {
+  width: min(1230px, calc(100vw - 24px));
+  height: min(660px, calc(100vh - 24px));
+}
+
+.popup__content--tariffs {
+  padding: 30px 36px 24px;
+}
+
+.tariffs-final {
+  min-height: 100%;
+  grid-template-columns: 430px minmax(0, 1fr);
+  grid-template-areas:
+    "scheme text"
+    "table table"
+    "note note";
+  gap: 16px 34px;
+  align-items: start;
+}
+
+.tariff-note-yellow {
+  display: none !important;
+}
+
+.tariffs-scheme {
+  max-width: 430px;
+}
+
+.tariff-demo-grid--final {
+  width: 430px;
+  max-width: 100%;
+  border: 0;
+  border-radius: 0;
+  padding: 12px;
+  background: rgba(178, 216, 235, 0.92);
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,0.25);
+}
+
+.tariff-demo-grid--final div {
+  background: #5d9bcf;
+  border: 2px solid rgba(53, 100, 145, 0.65);
+}
+
+.format-a4,
+.format-a5,
+.format-a6 {
+  outline: none !important;
+  box-shadow: inset 0 0 0 5px #f10000;
+}
+
+.tariff-arrow {
+  display: none !important;
+}
+
+.tariffs-text {
+  padding-top: 2px;
+  overflow: visible;
+}
+
+.tariff-text-block {
+  margin-bottom: 18px;
+}
+
+.tariff-text-block h3 {
+  font-size: clamp(20px, 1.34vw, 27px);
+  line-height: 1.12;
+  margin-bottom: 7px;
+}
+
+.tariff-text-block p {
+  font-size: clamp(17px, 1.05vw, 21px);
+  line-height: 1.24;
+}
+
+.tariff-table-wrap {
+  grid-area: table;
+  width: 76%;
+  min-width: 780px;
+  margin-left: 72px;
+  margin-top: 0;
+  align-self: start;
+  justify-self: start;
+  overflow-x: auto;
+}
+
+.tariff-table {
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.tariff-table th,
+.tariff-table td {
+  padding: 5px 6px;
+}
+
+.tariff-note {
+  width: 76%;
+  min-width: 780px;
+  margin-left: 72px;
+  justify-self: start;
+  text-align: right;
+  font-size: 14px;
+  line-height: 1.24;
+}
+
+/* Дома с щитами: оставляем современный вид, но чуть плотнее и без белой тяжелой шапки */
+.houses-title-row {
+  background: rgba(9, 92, 140, 0.68);
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.32);
+}
+
+.house-row {
+  background: rgba(255,255,255,0.10);
+}
+
+.house-row:nth-child(even) {
+  background: rgba(255,255,255,0.16);
+}
+
+/* Мобильная версия */
+@media (max-width: 780px) {
+  .showcase {
+    margin-top: 14px;
+  }
+
+  .popup__box--contacts {
+    min-height: 0;
+    max-height: 82vh !important;
+  }
+
+  .contact-final {
+    min-height: 300px;
+    padding: 26px 8px 10px;
+  }
+
+  .contact-final__small {
+    align-self: center;
+    margin-left: 0;
+    font-size: 26px;
+  }
+
+  .contact-final__title {
+    font-size: 26px;
+  }
+
+  .contact-final__phone {
+    min-height: 54px;
+    font-size: 30px;
+  }
+
+  .tariffs-final {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "scheme"
+      "text"
+      "table"
+      "note";
+  }
+
+  .tariff-table-wrap,
+  .tariff-note {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  .tariff-table {
+    min-width: 660px;
+  }
+}
