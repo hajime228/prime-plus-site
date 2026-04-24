@@ -251,10 +251,11 @@ function escapeHtml(value) {
 let leafletMap = null;
 let leafletMarkers = [];
 let leafletMarkerByAddress = new Map();
+let markerClusterGroup = null;
 
 async function initYandexMap() {
-  // Используем бесплатную карту OpenStreetMap + Leaflet.
-  // Координаты берутся только из Excel: G = lat, H = lon.
+  // Бесплатная карта OpenStreetMap + Leaflet.
+  // Координаты берутся из Excel: G = lat, H = lon.
   await initFreeLeafletMap();
 }
 
@@ -281,11 +282,25 @@ function makePopupHtml(house) {
 
 function createPinIcon(extraClass = "") {
   return L.icon({
-    iconUrl: "icons/map-pin.png",
-    iconSize: [38, 38],
-    iconAnchor: [19, 38],
-    popupAnchor: [0, -34],
+    iconUrl: "/icons/map-pin.png",
+    iconSize: [34, 34],
+    iconAnchor: [17, 34],
+    popupAnchor: [0, -30],
     className: `leaflet-image-pin ${extraClass}`.trim()
+  });
+}
+
+function createClusterIcon(cluster) {
+  const count = cluster.getChildCount();
+
+  let sizeClass = "small";
+  if (count >= 10 && count < 50) sizeClass = "medium";
+  if (count >= 50) sizeClass = "large";
+
+  return L.divIcon({
+    html: `<span>${count}</span>`,
+    className: `prime-cluster prime-cluster--${sizeClass}`,
+    iconSize: L.point(46, 46)
   });
 }
 
@@ -314,6 +329,23 @@ async function initFreeLeafletMap() {
     attribution: ""
   }).addTo(leafletMap);
 
+  markerClusterGroup = L.markerClusterGroup({
+    showCoverageOnHover: false,
+    zoomToBoundsOnClick: true,
+    spiderfyOnMaxZoom: true,
+    spiderfyOnEveryZoom: false,
+    removeOutsideVisibleBounds: true,
+    animate: true,
+    maxClusterRadius: 42,
+    disableClusteringAtZoom: 18,
+    iconCreateFunction: createClusterIcon,
+    spiderLegPolylineOptions: {
+      weight: 1.5,
+      color: "#e60018",
+      opacity: 0.65
+    }
+  });
+
   try {
     const res = await fetch("/api/houses-map");
     const rows = await res.json();
@@ -331,12 +363,14 @@ async function initFreeLeafletMap() {
       const address = house.address || formatHouseAddress(house);
 
       const marker = L.marker(point, { icon: createPinIcon() })
-        .addTo(leafletMap)
         .bindPopup(makePopupHtml(house));
 
+      markerClusterGroup.addLayer(marker);
       leafletMarkers.push(marker);
       leafletMarkerByAddress.set(normalizeAddressForKey(address), marker);
     });
+
+    leafletMap.addLayer(markerClusterGroup);
 
     if (bounds.length) {
       leafletMap.fitBounds(bounds, {
@@ -353,19 +387,29 @@ function focusHouseOnMap(address) {
 
   if (!marker || !leafletMap) return;
 
-  const latLng = marker.getLatLng();
+  const openMarker = () => {
+    const latLng = marker.getLatLng();
 
-  leafletMap.setView(latLng, Math.max(leafletMap.getZoom(), 17), {
-    animate: true
-  });
+    leafletMap.setView(latLng, 18, {
+      animate: true
+    });
 
-  marker.openPopup();
+    if (markerClusterGroup) {
+      markerClusterGroup.zoomToShowLayer(marker, () => {
+        marker.openPopup();
 
-  const iconEl = marker.getElement();
-  if (iconEl) {
-    iconEl.classList.add("is-active");
-    setTimeout(() => iconEl.classList.remove("is-active"), 1800);
-  }
+        const iconEl = marker.getElement();
+        if (iconEl) {
+          iconEl.classList.add("is-active");
+          setTimeout(() => iconEl.classList.remove("is-active"), 1800);
+        }
+      });
+    } else {
+      marker.openPopup();
+    }
+  };
+
+  openMarker();
 }
 
 const logo = document.querySelector(".brand__logo");

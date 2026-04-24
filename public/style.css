@@ -2916,3 +2916,107 @@ body.modal-open {
     height: 32px !important;
   }
 }
+
+
+/* ================================
+   V15: нормальная группировка меток
+   ================================ */
+
+/* PNG-пин */
+.leaflet-image-pin {
+  filter: drop-shadow(0 4px 7px rgba(0,0,0,0.28));
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.leaflet-image-pin:hover {
+  transform: translateY(-2px) scale(1.08);
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.34));
+}
+
+.leaflet-image-pin.is-active {
+  animation: pinImagePulse 0.7s ease 2;
+}
+
+@keyframes pinImagePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.28);
+  }
+}
+
+/* Кластеры-цифры: красивые, красные, при приближении распадаются на настоящие пины */
+.marker-cluster,
+.prime-cluster {
+  background: transparent !important;
+  border: none !important;
+}
+
+.prime-cluster span {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e60018;
+  color: #ffffff;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 900;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.32);
+}
+
+.prime-cluster--medium span {
+  width: 52px;
+  height: 52px;
+  font-size: 17px;
+}
+
+.prime-cluster--large span {
+  width: 60px;
+  height: 60px;
+  font-size: 18px;
+}
+
+/* Spiderfy-линии, когда дома очень близко */
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+  transition: transform 0.18s ease;
+}
+
+/* Такой же пин во вкладке "Дома с щитами" */
+.house-pin {
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  display: inline-block !important;
+  background-image: url("/icons/map-pin.png") !important;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  position: relative !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.24)) !important;
+}
+
+.house-pin::before,
+.house-pin::after {
+  content: none !important;
+  display: none !important;
+}
+
+.map-fallback__text {
+  display: none !important;
+}
+
+@media (max-width: 780px) {
+  .house-pin {
+    width: 26px !important;
+    min-width: 26px !important;
+    height: 26px !important;
+  }
+}
