@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Прайм Плюс</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -76,9 +77,7 @@
           <div id="map" class="yandex-map"></div>
           <div id="mapFallback" class="map-fallback" hidden>
             <img src="map.jpg" alt="Карта покрытия" draggable="false" />
-            <div class="map-fallback__text">
-              Для отображения интерактивной Яндекс.Карты добавьте YANDEX_MAPS_API_KEY в Render.
-            </div>
+            
           </div>
         </div>
       </div>
@@ -303,6 +302,7 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

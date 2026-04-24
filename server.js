@@ -182,24 +182,49 @@ function writeGeocodeCache(cache) {
 }
 
 async function geocodeAddress(address) {
-  if (!YANDEX_GEOCODER_API_KEY) return null;
-
   const query = `Россия, Республика Татарстан, Нижнекамск, ${address}`;
-  const url = new URL("https://geocode-maps.yandex.ru/1.x/");
-  url.searchParams.set("apikey", YANDEX_GEOCODER_API_KEY);
-  url.searchParams.set("geocode", query);
-  url.searchParams.set("format", "json");
-  url.searchParams.set("results", "1");
 
-  const res = await fetch(url);
-  if (!res.ok) return null;
+  if (YANDEX_GEOCODER_API_KEY) {
+    const url = new URL("https://geocode-maps.yandex.ru/1.x/");
+    url.searchParams.set("apikey", YANDEX_GEOCODER_API_KEY);
+    url.searchParams.set("geocode", query);
+    url.searchParams.set("format", "json");
+    url.searchParams.set("results", "1");
 
-  const data = await res.json();
-  const member = data?.response?.GeoObjectCollection?.featureMember?.[0];
-  const pos = member?.GeoObject?.Point?.pos;
-  if (!pos) return null;
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      const member = data?.response?.GeoObjectCollection?.featureMember?.[0];
+      const pos = member?.GeoObject?.Point?.pos;
+      if (pos) {
+        const [lon, lat] = pos.split(" ").map(Number);
+        if (Number.isFinite(lat) && Number.isFinite(lon)) return { lat, lon };
+      }
+    }
+  }
 
-  const [lon, lat] = pos.split(" ").map(Number);
+  const nominatimUrl = new URL("https://nominatim.openstreetmap.org/search");
+  nominatimUrl.searchParams.set("q", query);
+  nominatimUrl.searchParams.set("format", "json");
+  nominatimUrl.searchParams.set("limit", "1");
+  nominatimUrl.searchParams.set("addressdetails", "0");
+
+  const osmRes = await fetch(nominatimUrl, {
+    headers: {
+      "User-Agent": "PrimePlusSite/1.0 contact Prime.plus.rt@gmail.com",
+      "Accept-Language": "ru"
+    }
+  });
+
+  if (!osmRes.ok) return null;
+
+  const osmData = await osmRes.json();
+  const item = osmData?.[0];
+  if (!item) return null;
+
+  const lat = Number(item.lat);
+  const lon = Number(item.lon);
+
   if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
 
   return { lat, lon };
@@ -225,7 +250,7 @@ async function getHousesWithCoordinates() {
       house.lon = coords.lon;
       cache[key] = coords;
       changed = true;
-      await new Promise((resolve) => setTimeout(resolve, 120));
+      await new Promise((resolve) => setTimeout(resolve, YANDEX_GEOCODER_API_KEY ? 120 : 1100));
     }
   }
 

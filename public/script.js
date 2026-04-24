@@ -225,30 +225,14 @@ async function initYandexMap() {
     const configRes = await fetch("/api/map-config");
     const config = await configRes.json();
 
-    if (!config.yandexMapsApiKey) {
-      showFallbackMap();
+    if (config.yandexMapsApiKey) {
+      await initYandexRealMap(config.yandexMapsApiKey);
       return;
     }
 
-    await loadYandexScript(config.yandexMapsApiKey);
-
-    ymaps.ready(async () => {
-      yandexMap = new ymaps.Map("map", {
-        center: [55.6311, 51.8149],
-        zoom: 12,
-        controls: ["zoomControl", "fullscreenControl"]
-      }, {
-        suppressMapOpenBlock: true,
-        yandexMapDisablePoiInteractivity: true
-      });
-
-      yandexMap.behaviors.disable("scrollZoom");
-      yandexMap.behaviors.enable(["drag", "multiTouch"]);
-
-      await loadMapHouses();
-    });
+    await initFreeLeafletMap();
   } catch (_) {
-    showFallbackMap();
+    await initFreeLeafletMap();
   }
 
   function showFallbackMap() {
@@ -272,7 +256,27 @@ function loadYandexScript(apiKey) {
   });
 }
 
-async function loadMapHouses() {
+async function initYandexRealMap(apiKey) {
+  await loadYandexScript(apiKey);
+
+  ymaps.ready(async () => {
+    yandexMap = new ymaps.Map("map", {
+      center: [55.6311, 51.8149],
+      zoom: 12,
+      controls: ["zoomControl", "fullscreenControl"]
+    }, {
+      suppressMapOpenBlock: true,
+      yandexMapDisablePoiInteractivity: true
+    });
+
+    yandexMap.behaviors.disable("scrollZoom");
+    yandexMap.behaviors.enable(["drag", "multiTouch"]);
+
+    await loadYandexMapHouses();
+  });
+}
+
+async function loadYandexMapHouses() {
   if (!yandexMap) return;
 
   try {
@@ -332,6 +336,72 @@ async function loadMapHouses() {
         checkZoomRange: true,
         zoomMargin: 45
       });
+    }
+  } catch (_) {}
+}
+
+async function initFreeLeafletMap() {
+  const mapEl = document.getElementById("map");
+  const fallback = document.getElementById("mapFallback");
+
+  if (!mapEl || !window.L) {
+    if (mapEl) mapEl.hidden = true;
+    if (fallback) fallback.hidden = false;
+    return;
+  }
+
+  if (fallback) fallback.hidden = true;
+  mapEl.hidden = false;
+
+  const map = L.map("map", {
+    scrollWheelZoom: false,
+    dragging: true,
+    tap: false
+  }).setView([55.6311, 51.8149], 12);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: ""
+  }).addTo(map);
+
+  const customIcon = L.divIcon({
+    className: "leaflet-custom-pin",
+    html: "<span></span>",
+    iconSize: [34, 34],
+    iconAnchor: [17, 34],
+    popupAnchor: [0, -32]
+  });
+
+  try {
+    const res = await fetch("/api/houses-map");
+    const rows = await res.json();
+    const bounds = [];
+
+    rows.forEach((house) => {
+      if (!house.lat || !house.lon) return;
+
+      const point = [Number(house.lat), Number(house.lon)];
+      bounds.push(point);
+
+      const address = house.address || formatHouseAddress(house);
+      const floors = house.floors || "";
+      const entrances = house.entrances || "";
+      const flats = house.flats || "";
+
+      L.marker(point, { icon: customIcon })
+        .addTo(map)
+        .bindPopup(`
+          <div class="map-popup">
+            <div class="map-popup__title">Адрес: ${escapeHtml(address)}</div>
+            <div>Этажность: ${escapeHtml(String(floors || "—"))}</div>
+            <div>Подъездов: ${escapeHtml(String(entrances || "—"))}</div>
+            <div>Квартир: ${escapeHtml(String(flats || "—"))}</div>
+          </div>
+        `);
+    });
+
+    if (bounds.length) {
+      map.fitBounds(bounds, { padding: [28, 28] });
     }
   } catch (_) {}
 }
