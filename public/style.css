@@ -7174,3 +7174,368 @@ body:has(.floating-admin-panel[open]) #adminHint {
     white-space: normal !important;
   }
 }
+
+
+/* ================================
+   V52: нормальная адаптация под разные экраны
+   ================================ */
+
+/* базово: не даём странице вылезать за экран */
+html,
+body {
+  overflow-x: hidden !important;
+}
+
+* {
+  box-sizing: border-box !important;
+}
+
+.page {
+  width: min(100%, 1760px) !important;
+  margin-inline: auto !important;
+  padding-inline: clamp(18px, 3vw, 54px) !important;
+}
+
+/* шапка стабильно масштабируется */
+.topbar {
+  grid-template-columns: clamp(210px, 18vw, 275px) minmax(0, 1fr) !important;
+  gap: clamp(18px, 2.2vw, 34px) !important;
+  align-items: start !important;
+}
+
+.brand {
+  justify-content: center !important;
+}
+
+.brand__logo {
+  width: clamp(210px, 15vw, 245px) !important;
+  max-width: 100% !important;
+  max-height: 195px !important;
+}
+
+.headline {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.topbar__right .nav {
+  width: 100% !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(8px, 1vw, 14px) !important;
+}
+
+.nav__item {
+  min-width: 0 !important;
+  width: 100% !important;
+  white-space: nowrap !important;
+  font-size: clamp(15px, 1.12vw, 21px) !important;
+  padding-inline: clamp(8px, 1vw, 16px) !important;
+}
+
+/* главный текст */
+.hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr) !important;
+  gap: clamp(28px, 5vw, 78px) !important;
+  align-items: start !important;
+  margin-top: clamp(0px, 1.6vw, 18px) !important;
+}
+
+.hero__lead,
+.hero__subhead,
+.coverage__title {
+  max-width: 100% !important;
+  overflow-wrap: normal !important;
+}
+
+/* главный нижний блок */
+.showcase {
+  display: grid !important;
+  grid-template-columns: minmax(460px, 0.95fr) minmax(520px, 1.05fr) !important;
+  gap: clamp(24px, 3vw, 42px) !important;
+  align-items: end !important;
+  margin-top: -90px !important;
+}
+
+.showcase__left,
+.showcase__right {
+  min-width: 0 !important;
+}
+
+.showcase__right {
+  transform: translateX(12px) !important;
+  max-width: calc(100% - 12px) !important;
+  overflow: visible !important;
+}
+
+.map-wrap,
+.map-container,
+#map,
+#mainMap {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* админ элементы не должны перекрывать карту и текст */
+#openDesignEditor {
+  right: 130px !important;
+  bottom: 78px !important;
+  z-index: 2147482500 !important;
+}
+
+#adminHint,
+.admin-hint,
+.admin-toast {
+  right: 170px !important;
+  bottom: 30px !important;
+  z-index: 2147482400 !important;
+}
+
+.floating-admin-panel {
+  right: 22px !important;
+  bottom: 22px !important;
+}
+
+/* 1500-1700: обычный ноут/монитор */
+@media (max-width: 1700px) {
+  .page {
+    padding-inline: 34px !important;
+  }
+
+  .showcase {
+    grid-template-columns: minmax(455px, 0.98fr) minmax(500px, 1.02fr) !important;
+    gap: 30px !important;
+  }
+
+  .showcase__right {
+    transform: translateX(8px) !important;
+    max-width: calc(100% - 8px) !important;
+  }
+}
+
+/* до 1450: уменьшаем карту/сетку аккуратнее, не допускаем наложения */
+@media (max-width: 1450px) {
+  .page {
+    padding-inline: 28px !important;
+  }
+
+  .topbar {
+    grid-template-columns: 230px minmax(0, 1fr) !important;
+  }
+
+  .brand__logo {
+    width: 215px !important;
+  }
+
+  .hero {
+    gap: 42px !important;
+  }
+
+  .hero__lead {
+    font-size: clamp(24px, 2vw, 32px) !important;
+  }
+
+  .hero__subhead,
+  .coverage__title {
+    font-size: clamp(24px, 2vw, 32px) !important;
+  }
+
+  .showcase {
+    grid-template-columns: minmax(420px, 0.92fr) minmax(470px, 1.08fr) !important;
+    gap: 24px !important;
+    margin-top: -60px !important;
+  }
+
+  .showcase__right {
+    transform: none !important;
+    max-width: 100% !important;
+  }
+}
+
+/* до 1250: главный конфликтный диапазон — перестраиваем в 2 колонки без наезда */
+@media (max-width: 1250px) {
+  .page {
+    padding-inline: 22px !important;
+  }
+
+  .topbar {
+    grid-template-columns: 190px minmax(0, 1fr) !important;
+    gap: 18px !important;
+  }
+
+  .brand__logo {
+    width: 180px !important;
+    max-height: 145px !important;
+  }
+
+  .headline {
+    font-size: 22px !important;
+    padding-block: 8px !important;
+  }
+
+  .nav__item {
+    font-size: 16px !important;
+    padding: 8px 7px !important;
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.86fr) !important;
+    gap: 26px !important;
+  }
+
+  .hero__lead {
+    font-size: 25px !important;
+    line-height: 1.22 !important;
+  }
+
+  .hero__subhead,
+  .coverage__title {
+    font-size: 24px !important;
+    line-height: 1.15 !important;
+  }
+
+  .showcase {
+    grid-template-columns: minmax(380px, 0.86fr) minmax(430px, 1.14fr) !important;
+    gap: 18px !important;
+    margin-top: -34px !important;
+    align-items: start !important;
+  }
+
+  .slots-panel {
+    max-width: 100% !important;
+  }
+
+  #openDesignEditor {
+    right: 116px !important;
+    bottom: 72px !important;
+    transform: scale(0.92) !important;
+    transform-origin: right bottom !important;
+  }
+
+  #adminHint,
+  .admin-hint,
+  .admin-toast {
+    right: 150px !important;
+    bottom: 28px !important;
+    max-width: 310px !important;
+  }
+}
+
+/* до 1050: уже лучше в одну колонку, иначе всё будет давиться */
+@media (max-width: 1050px) {
+  .topbar {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .brand {
+    justify-content: flex-start !important;
+  }
+
+  .brand__logo {
+    width: 175px !important;
+  }
+
+  .topbar__right .nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .hero {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    margin-top: 18px !important;
+  }
+
+  .coverage__title {
+    transform: none !important;
+  }
+
+  .showcase {
+    grid-template-columns: 1fr !important;
+    margin-top: 18px !important;
+    gap: 26px !important;
+  }
+
+  .showcase__left {
+    display: grid !important;
+    grid-template-columns: minmax(220px, 0.7fr) minmax(340px, 1fr) !important;
+    gap: 20px !important;
+    align-items: end !important;
+  }
+
+  .mini-ad {
+    margin-top: 0 !important;
+    width: min(220px, 100%) !important;
+  }
+
+  .showcase__right {
+    transform: none !important;
+    max-width: 100% !important;
+  }
+
+  .map-wrap,
+  .map-container {
+    max-height: none !important;
+  }
+}
+
+/* телефон/узкий планшет */
+@media (max-width: 760px) {
+  .page {
+    padding-inline: 14px !important;
+  }
+
+  .brand {
+    justify-content: center !important;
+  }
+
+  .brand__logo {
+    width: 165px !important;
+  }
+
+  .headline {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+  }
+
+  .nav__item {
+    font-size: 14px !important;
+    min-height: 44px !important;
+  }
+
+  .hero__lead,
+  .hero__subhead,
+  .coverage__title {
+    font-size: 21px !important;
+    line-height: 1.22 !important;
+  }
+
+  .showcase__left {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mini-ad {
+    width: 190px !important;
+    justify-self: center !important;
+  }
+
+  #openDesignEditor {
+    right: 12px !important;
+    bottom: 68px !important;
+    transform: scale(0.82) !important;
+  }
+
+  .floating-admin-panel {
+    right: 10px !important;
+    bottom: 10px !important;
+  }
+
+  #adminHint,
+  .admin-hint,
+  .admin-toast {
+    right: 10px !important;
+    bottom: 62px !important;
+    max-width: calc(100vw - 20px) !important;
+    white-space: normal !important;
+  }
+}
