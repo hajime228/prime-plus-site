@@ -6563,3 +6563,23 @@ body.design-edit-mode .floating-admin-button {
     bottom: 58px;
   }
 }
+
+
+/* ================================
+   V45: кликабельность кнопок админа
+   ================================ */
+
+#adminButton,
+#floatingAdminButton {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+#floatingAdminButton {
+  z-index: 2147483000 !important;
+}
+
+body.modal-open #adminButton {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

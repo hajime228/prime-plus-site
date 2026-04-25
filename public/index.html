@@ -416,5 +416,130 @@
   </button>
 
   <script src="script.js"></script>
+
+  <script id="adminFallbackV45">
+    /*
+      V45: независимый запасной вход администратора.
+      Работает отдельно от основного script.js.
+    */
+    (function () {
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      async function getAdminStatusV45() {
+        try {
+          const res = await fetch("/api/admin/status", { cache: "no-store" });
+          const data = await res.json();
+          return !!data.isAdmin;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function setAdminVisualV45(isOn) {
+        window.__adminFallbackIsOn = !!isOn;
+
+        const topButton = byId("adminButton");
+        const floatingButton = byId("floatingAdminButton");
+        const hint = byId("adminHint");
+
+        if (topButton) {
+          topButton.innerHTML = isOn
+            ? "<span>Выйти из режима</span>"
+            : "<span>Вход администратора</span>";
+        }
+
+        if (floatingButton) {
+          floatingButton.textContent = isOn ? "Выйти" : "Админ";
+          floatingButton.classList.toggle("is-admin-on", !!isOn);
+        }
+
+        if (hint) {
+          hint.hidden = !isOn;
+        }
+
+        try {
+          if (typeof isAdmin !== "undefined") isAdmin = !!isOn;
+          if (typeof updateAdminUI === "function") updateAdminUI();
+          if (typeof renderSlots === "function") renderSlots();
+        } catch (e) {}
+      }
+
+      async function adminFallbackLoginV45(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+        }
+
+        if (window.__adminFallbackBusy) return;
+        window.__adminFallbackBusy = true;
+
+        try {
+          const currentlyOn = await getAdminStatusV45();
+
+          if (!currentlyOn) {
+            const password = prompt("Введите пароль администратора");
+            if (!password) return;
+
+            const res = await fetch("/api/admin/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ password })
+            });
+
+            if (!res.ok) {
+              alert("Неверный пароль");
+              return;
+            }
+
+            setAdminVisualV45(true);
+            alert("Режим администратора включён");
+            return;
+          }
+
+          const res = await fetch("/api/admin/logout", { method: "POST" });
+
+          if (res.ok) {
+            setAdminVisualV45(false);
+            alert("Режим администратора выключен");
+          }
+        } catch (e) {
+          alert("Кнопка нажалась, но сервер не ответил. Проверь Render Logs.");
+        } finally {
+          setTimeout(function () {
+            window.__adminFallbackBusy = false;
+          }, 300);
+        }
+      }
+
+      window.adminFallbackLoginV45 = adminFallbackLoginV45;
+
+      function bindAdminFallbackV45() {
+        var topButton = byId("adminButton");
+        var floatingButton = byId("floatingAdminButton");
+
+        [topButton, floatingButton].forEach(function (button) {
+          if (!button) return;
+
+          button.onclick = adminFallbackLoginV45;
+          button.addEventListener("click", adminFallbackLoginV45, true);
+          button.addEventListener("pointerdown", function (event) {
+            event.stopPropagation();
+          }, true);
+        });
+
+        getAdminStatusV45().then(setAdminVisualV45);
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", bindAdminFallbackV45);
+      } else {
+        bindAdminFallbackV45();
+      }
+    })();
+  </script>
+
 </body>
 </html>
