@@ -889,8 +889,13 @@ body.modal-open {
     aspect-ratio: 1 / 0.9;
     min-height: 48px;
   }
+  
+  .showcase__right .map-container {
+  margin-left: 30px;
+  }
 
   .showcase__right {
+    
     justify-content: center;
     align-items: center;
     margin: 0;
@@ -6990,7 +6995,7 @@ body.modal-open #adminButton {
 
 /* после удаления контактов можно чуть подтянуть витрину вверх, но без наложения */
 .showcase {
-  margin-top: -132px !important;
+  margin-top: -90px !important; /* ниже (было выше) */
 }
 
 /* ячейки чуть ниже текста и без налезания служебных плашек */
