@@ -14,6 +14,84 @@ const YANDEX_GEOCODER_API_KEY = process.env.YANDEX_GEOCODER_API_KEY || YANDEX_MA
 
 const DESIGN_SETTINGS_FILE = path.join(__dirname, 'design-settings.json');
 const TARIFF_POSITIONS_FILE = path.join(__dirname, 'tariff-positions.json');
+
+const DEFAULT_TARIFF_POSITIONS = {
+  "titleA4": {
+    "x": -5,
+    "y": 0
+  },
+  "titleA5": {
+    "x": -5,
+    "y": 35
+  },
+  "titleA6": {
+    "x": -5,
+    "y": 35
+  },
+  "arrowA4": {
+    "x": 370,
+    "y": 36
+  },
+  "arrowA5": {
+    "x": 370,
+    "y": 206
+  },
+  "arrowA6": {
+    "x": 370,
+    "y": 291
+  }
+};
+const DEFAULT_DESIGN_SETTINGS = {
+  "heroLead": {
+    "text": "Отличный способ заявить о себе и раскрутить свой бренд\n          или товары. Отличный способ продвинуть свои услуги\n          быстро, широкой аудитории.",
+    "x": 0,
+    "y": 0,
+    "fontSize": "",
+    "width": "",
+    "fontFamily": ""
+  },
+  "heroSubhead": {
+    "text": "Формат рекламы: в наличии 16 слотов формата A5",
+    "x": 0,
+    "y": 0,
+    "fontSize": "",
+    "width": "",
+    "fontFamily": ""
+  },
+  "coverageTitle": {
+    "text": "Мы располагаемся более чем в\n          600 подъездах",
+    "x": -60,
+    "y": 0,
+    "fontSize": "",
+    "width": "",
+    "fontFamily": ""
+  },
+  "tariffA4": {
+    "text": "ТАРИФ «ОБЪЕМНЫЙ». Колонка формата A4\n                              Этот формат в точности равен целому листу A4.\n                Размер бумаги формата A4 по стандарту ISO 216 составляет\n                210 × 297 мм.",
+    "x": 0,
+    "y": 0,
+    "fontSize": "",
+    "width": "470",
+    "fontFamily": ""
+  },
+  "tariffA5": {
+    "text": "ТАРИФ «ВЕСЬ ГОРОД». Колонка формата A5\n                              Этот формат в точности равен половине листа A4.\n                Размер бумаги формата A5 по стандарту ISO 216 составляет\n                148 × 210 мм.",
+    "x": 0,
+    "y": 0,
+    "fontSize": "",
+    "width": "470",
+    "fontFamily": ""
+  },
+  "tariffA6": {
+    "text": "ТАРИФ «ЛАЙТ». Колонка формата A6\n                              Этот формат равен половине листа A5.\n                Размер бумаги формата A6 составляет\n                105 × 148 мм.",
+    "x": 0,
+    "y": 0,
+    "fontSize": "",
+    "width": "470",
+    "fontFamily": ""
+  }
+};
+
 const SLOTS_FILE = path.join(__dirname, "slots.json");
 const PUBLIC_DIR = path.join(__dirname, "public");
 const GEOCODE_CACHE_FILE = path.join(__dirname, "geocoded_houses.json");
@@ -355,12 +433,12 @@ app.get("/api/geocode-debug", async (req, res) => {
 app.get("/api/tariff-positions", (req, res) => {
   try {
     if (!fs.existsSync(TARIFF_POSITIONS_FILE)) {
-      return res.json({});
+      return res.json(DEFAULT_TARIFF_POSITIONS);
     }
 
     res.json(JSON.parse(fs.readFileSync(TARIFF_POSITIONS_FILE, "utf8")));
   } catch (_) {
-    res.json({});
+    res.json(DEFAULT_TARIFF_POSITIONS);
   }
 });
 
@@ -382,12 +460,12 @@ app.post("/api/admin/save-tariff-positions", (req, res) => {
 app.get("/api/design-settings", (req, res) => {
   try {
     if (!fs.existsSync(DESIGN_SETTINGS_FILE)) {
-      return res.json({});
+      return res.json(DEFAULT_DESIGN_SETTINGS);
     }
 
     res.json(JSON.parse(fs.readFileSync(DESIGN_SETTINGS_FILE, "utf8")));
   } catch (_) {
-    res.json({});
+    res.json(DEFAULT_DESIGN_SETTINGS);
   }
 });
 
