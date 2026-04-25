@@ -6422,3 +6422,55 @@ body.design-edit-mode .tariff-text-block[data-design-key].is-design-selected {
   line-height: 1.35;
   opacity: 0.75;
 }
+
+
+/* ================================
+   V42: стартовые настройки без мигания
+   ================================ */
+
+/* Главный экран сразу в сохраненном виде */
+.hero__lead[data-design-key="heroLead"] {
+  transform: translate(0px, 0px) !important;
+}
+
+.hero__subhead[data-design-key="heroSubhead"] {
+  transform: translate(0px, 0px) !important;
+}
+
+.coverage__title[data-design-key="coverageTitle"] {
+  transform: translate(-60px, 0px) !important;
+}
+
+/* Тарифы сразу в сохраненном виде */
+.tariff-text-block[data-design-key="tariffA4"] {
+  transform: translate(-5px, 0px) !important;
+  width: 470px !important;
+  max-width: 470px !important;
+}
+
+.tariff-text-block[data-design-key="tariffA5"] {
+  transform: translate(-5px, 35px) !important;
+  width: 470px !important;
+  max-width: 470px !important;
+}
+
+.tariff-text-block[data-design-key="tariffA6"] {
+  transform: translate(-5px, 35px) !important;
+  width: 470px !important;
+  max-width: 470px !important;
+}
+
+.manual-arrow[data-drag-key="arrowA4"] {
+  left: 370px !important;
+  top: 36px !important;
+}
+
+.manual-arrow[data-drag-key="arrowA5"] {
+  left: 370px !important;
+  top: 206px !important;
+}
+
+.manual-arrow[data-drag-key="arrowA6"] {
+  left: 370px !important;
+  top: 291px !important;
+}
