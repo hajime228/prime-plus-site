@@ -1172,21 +1172,16 @@ loadDesignSettings = async function patchedLoadDesignSettingsV40() {
 };
 
 
+
 /* ================================
-   V43: фикс кнопки "Вход администратора"
+   V44: стабильный вход администратора
    ================================ */
 
-let adminLoginClickLock = false;
+let adminAuthInProgress = false;
 
-async function handleAdminButtonClickV43(event) {
-  const button = event.target.closest?.("#adminButton");
-  if (!button) return;
-
-  event.preventDefault();
-  event.stopPropagation();
-
-  if (adminLoginClickLock) return;
-  adminLoginClickLock = true;
+async function toggleAdminModeV44() {
+  if (adminAuthInProgress) return;
+  adminAuthInProgress = true;
 
   try {
     if (!isAdmin) {
@@ -1201,32 +1196,70 @@ async function handleAdminButtonClickV43(event) {
         body: JSON.stringify({ password })
       });
 
-      if (res.ok) {
-        isAdmin = true;
-        updateAdminUI();
-        renderSlots();
-        alert("Режим администратора включён");
-      } else {
+      if (!res.ok) {
         alert("Неверный пароль");
+        return;
       }
-    } else {
-      const res = await fetch("/api/admin/logout", {
-        method: "POST"
-      });
 
-      if (res.ok) {
-        isAdmin = false;
-        updateAdminUI();
-        renderSlots();
-        alert("Режим администратора выключен");
-      }
+      isAdmin = true;
+      updateAdminUI();
+      renderSlots();
+      alert("Режим администратора включён");
+      return;
     }
+
+    const res = await fetch("/api/admin/logout", {
+      method: "POST"
+    });
+
+    if (res.ok) {
+      isAdmin = false;
+      updateAdminUI();
+      renderSlots();
+      alert("Режим администратора выключен");
+    }
+  } catch (error) {
+    alert("Ошибка входа администратора. Проверьте подключение или сервер.");
   } finally {
     setTimeout(() => {
-      adminLoginClickLock = false;
+      adminAuthInProgress = false;
     }, 250);
   }
 }
 
-/* capture=true: обработчик сработает даже если что-то поверх/раньше мешает */
-document.addEventListener("click", handleAdminButtonClickV43, true);
+function bindAdminButtonsV44() {
+  const topButton = document.getElementById("adminButton");
+  const floatingButton = document.getElementById("floatingAdminButton");
+
+  [topButton, floatingButton].forEach((button) => {
+    if (!button) return;
+
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleAdminModeV44();
+    });
+  });
+}
+
+const originalUpdateAdminUIV44 = updateAdminUI;
+updateAdminUI = function patchedUpdateAdminUIV44() {
+  originalUpdateAdminUIV44();
+
+  const floatingButton = document.getElementById("floatingAdminButton");
+  const topButton = document.getElementById("adminButton");
+
+  if (floatingButton) {
+    floatingButton.textContent = isAdmin ? "Выйти" : "Админ";
+    floatingButton.classList.toggle("is-admin-on", isAdmin);
+  }
+
+  if (topButton) {
+    topButton.innerHTML = isAdmin
+      ? "<span>Выйти из режима</span>"
+      : "<span>Вход администратора</span>";
+  }
+};
+
+bindAdminButtonsV44();
+updateAdminUI();

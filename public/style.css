@@ -6496,3 +6496,70 @@ body.design-edit-mode .tariff-text-block[data-design-key].is-design-selected {
   display: none !important;
   pointer-events: none !important;
 }
+
+
+/* ================================
+   V44: нормальная кнопка администратора
+   ================================ */
+
+/* верхняя кнопка больше не пролезает поверх модальных окон */
+#adminButton {
+  position: relative !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.modal-open #adminButton {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* отдельная рабочая кнопка для входа */
+.floating-admin-button {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 7000;
+  border: 2px solid rgba(197, 154, 25, 0.95);
+  border-radius: 999px;
+  padding: 11px 17px;
+  background: #f5f5f5;
+  color: #0e6bb4;
+  font-weight: 900;
+  font-size: 15px;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.24);
+  cursor: pointer;
+}
+
+.floating-admin-button:hover {
+  filter: brightness(0.97);
+  transform: translateY(-1px);
+}
+
+.floating-admin-button.is-admin-on {
+  background: #101820;
+  color: #fff;
+  border-color: #fff;
+}
+
+/* чтобы кнопка не мешала, когда открыта панель редактирования текста */
+.design-editor-panel:not([hidden]) ~ .floating-admin-button,
+body.design-edit-mode .floating-admin-button {
+  right: 430px;
+}
+
+@media (max-width: 780px) {
+  .floating-admin-button {
+    right: 10px;
+    bottom: 10px;
+    padding: 9px 13px;
+    font-size: 13px;
+  }
+
+  .design-editor-panel:not([hidden]) ~ .floating-admin-button,
+  body.design-edit-mode .floating-admin-button {
+    right: 10px;
+    bottom: 58px;
+  }
+}
