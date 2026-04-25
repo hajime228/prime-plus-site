@@ -12,6 +12,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || "prime-plus-secret";
 const YANDEX_MAPS_API_KEY = process.env.YANDEX_MAPS_API_KEY || "";
 const YANDEX_GEOCODER_API_KEY = process.env.YANDEX_GEOCODER_API_KEY || YANDEX_MAPS_API_KEY || "";
 
+const DESIGN_SETTINGS_FILE = path.join(__dirname, 'design-settings.json');
 const TARIFF_POSITIONS_FILE = path.join(__dirname, 'tariff-positions.json');
 const SLOTS_FILE = path.join(__dirname, "slots.json");
 const PUBLIC_DIR = path.join(__dirname, "public");
@@ -370,6 +371,33 @@ app.post("/api/admin/save-tariff-positions", (req, res) => {
 
   try {
     fs.writeFileSync(TARIFF_POSITIONS_FILE, JSON.stringify(req.body || {}, null, 2), "utf8");
+    res.json({ ok: true });
+  } catch (_) {
+    res.status(500).json({ error: "save failed" });
+  }
+});
+
+
+
+app.get("/api/design-settings", (req, res) => {
+  try {
+    if (!fs.existsSync(DESIGN_SETTINGS_FILE)) {
+      return res.json({});
+    }
+
+    res.json(JSON.parse(fs.readFileSync(DESIGN_SETTINGS_FILE, "utf8")));
+  } catch (_) {
+    res.json({});
+  }
+});
+
+app.post("/api/admin/save-design-settings", (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(403).json({ error: "Нет доступа" });
+  }
+
+  try {
+    fs.writeFileSync(DESIGN_SETTINGS_FILE, JSON.stringify(req.body || {}, null, 2), "utf8");
     res.json({ ok: true });
   } catch (_) {
     res.status(500).json({ error: "save failed" });

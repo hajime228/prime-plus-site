@@ -33,13 +33,13 @@
 
     <main class="hero">
       <section class="hero__copy">
-        <p class="hero__lead">
+        <p class="hero__lead" data-design-key="heroLead">
           Отличный способ заявить о себе и раскрутить свой бренд
           или товары. Отличный способ продвинуть свои услуги
           быстро, широкой аудитории.
         </p>
 
-        <h2 class="hero__subhead">
+        <h2 class="hero__subhead" data-design-key="heroSubhead">
           Формат рекламы: в наличии 16 слотов формата A5
         </h2>
 
@@ -56,7 +56,7 @@
       </section>
 
       <section class="coverage">
-        <h3 class="coverage__title">
+        <h3 class="coverage__title" data-design-key="coverageTitle">
           Мы располагаемся более чем в<br />
           600 подъездах
         </h3>
@@ -208,7 +208,7 @@
           </div>
 
           <div class="tariffs-text">
-            <div class="tariff-text-block">
+            <div class="tariff-text-block" data-design-key="tariffA4">
               <h3 data-drag-key="titleA4">ТАРИФ «ОБЪЕМНЫЙ». Колонка формата A4</h3>
               <p>
                 Этот формат в точности равен целому листу A4.
@@ -217,7 +217,7 @@
               </p>
             </div>
 
-            <div class="tariff-text-block">
+            <div class="tariff-text-block" data-design-key="tariffA5">
               <h3 data-drag-key="titleA5">ТАРИФ «ВЕСЬ ГОРОД». Колонка формата A5</h3>
               <p>
                 Этот формат в точности равен половине листа A4.
@@ -226,7 +226,7 @@
               </p>
             </div>
 
-            <div class="tariff-text-block">
+            <div class="tariff-text-block" data-design-key="tariffA6">
               <h3 data-drag-key="titleA6">ТАРИФ «ЛАЙТ». Колонка формата A6</h3>
               <p>
                 Этот формат равен половине листа A5.
@@ -336,6 +336,80 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <div class="design-editor-panel" id="designEditorPanel" hidden>
+    <div class="design-editor-panel__head">
+      <strong>Редактор текста</strong>
+      <button type="button" id="closeDesignEditor">×</button>
+    </div>
+
+    <label>
+      Элемент
+      <select id="designElementSelect">
+        <option value="heroLead">Главная: большой текст слева</option>
+        <option value="heroSubhead">Главная: формат рекламы</option>
+        <option value="coverageTitle">Главная: текст про 600 подъездов</option>
+        <option value="tariffA4">Тарифы: ОБЪЕМНЫЙ</option>
+        <option value="tariffA5">Тарифы: ВЕСЬ ГОРОД</option>
+        <option value="tariffA6">Тарифы: ЛАЙТ</option>
+      </select>
+    </label>
+
+    <label>
+      Текст
+      <textarea id="designTextInput" rows="5"></textarea>
+    </label>
+
+    <div class="design-grid-controls">
+      <label>
+        Размер
+        <input id="designFontSize" type="number" min="10" max="80" step="1" />
+      </label>
+
+      <label>
+        Ширина
+        <input id="designWidth" type="number" min="120" max="1200" step="10" />
+      </label>
+
+      <label>
+        X
+        <input id="designX" type="number" step="5" />
+      </label>
+
+      <label>
+        Y
+        <input id="designY" type="number" step="5" />
+      </label>
+    </div>
+
+    <label>
+      Шрифт
+      <select id="designFontFamily">
+        <option value="">Как в сайте</option>
+        <option value="Arial, sans-serif">Arial</option>
+        <option value="Tahoma, Verdana, Arial, sans-serif">Tahoma</option>
+        <option value="'Trebuchet MS', Arial, sans-serif">Trebuchet MS</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+      </select>
+    </label>
+
+    <div class="design-move-buttons">
+      <button type="button" data-design-move="up">↑</button>
+      <button type="button" data-design-move="left">←</button>
+      <button type="button" data-design-move="right">→</button>
+      <button type="button" data-design-move="down">↓</button>
+    </div>
+
+    <div class="design-editor-panel__actions">
+      <button type="button" id="applyDesignSettings">Применить</button>
+      <button type="button" id="saveDesignSettings">Сохранить</button>
+      <button type="button" id="resetDesignElement">Сброс элемента</button>
+    </div>
+
+    <p>Панель видна только администратору. После сохранения обычные посетители ничего менять не смогут.</p>
+  </div>
+
+
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="script.js"></script>
 </body>

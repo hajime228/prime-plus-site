@@ -648,3 +648,525 @@ updateAdminUI = function patchedUpdateAdminUI() {
 
 enableTariffPositionEditor();
 loadTariffPositions();
+
+
+/* ================================
+   V39: редактор текста/размера/ширины/положения
+   ================================ */
+
+const designDefaults = {
+  heroLead: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
+  },
+  heroSubhead: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
+  },
+  coverageTitle: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
+  },
+  tariffA4: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
+  },
+  tariffA5: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
+  },
+  tariffA6: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
+  }
+};
+
+let designSettings = JSON.parse(JSON.stringify(designDefaults));
+let designEditorInitialized = false;
+
+function getDesignElement(key) {
+  return document.querySelector(`[data-design-key="${key}"]`);
+}
+
+function getEditableTextTarget(key) {
+  const el = getDesignElement(key);
+  if (!el) return null;
+
+  if (key.startsWith("tariff")) {
+    return el;
+  }
+
+  return el;
+}
+
+function normalizeHtmlFromTextarea(value) {
+  return String(value || "")
+    .split("\n")
+    .map((line) => line.trim())
+    .join("<br />");
+}
+
+function extractTextForTextarea(el) {
+  if (!el) return "";
+  return el.innerHTML
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>\s*<p>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+}
+
+function applyDesignSettings() {
+  Object.entries(designSettings).forEach(([key, settings]) => {
+    const el = getDesignElement(key);
+    if (!el || !settings) return;
+
+    if (settings.text) {
+      el.innerHTML = normalizeHtmlFromTextarea(settings.text);
+    }
+
+    el.style.setProperty("transform", `translate(${Number(settings.x || 0)}px, ${Number(settings.y || 0)}px)`, "important");
+
+    if (settings.fontSize) {
+      el.style.setProperty("font-size", `${settings.fontSize}px`, "important");
+    } else {
+      el.style.removeProperty("font-size");
+    }
+
+    if (settings.width) {
+      el.style.setProperty("width", `${settings.width}px`, "important");
+      el.style.setProperty("max-width", `${settings.width}px`, "important");
+    } else {
+      el.style.removeProperty("width");
+      el.style.removeProperty("max-width");
+    }
+
+    if (settings.fontFamily) {
+      el.style.setProperty("font-family", settings.fontFamily, "important");
+    } else {
+      el.style.removeProperty("font-family");
+    }
+  });
+
+  syncDesignPanelFields();
+  updateDesignSelectionOutline();
+}
+
+async function loadDesignSettings() {
+  // заполняем дефолтный текст из текущей верстки, чтобы сброс не делал пусто
+  Object.keys(designDefaults).forEach((key) => {
+    const el = getDesignElement(key);
+    if (el && !designDefaults[key].text) {
+      designDefaults[key].text = extractTextForTextarea(el);
+    }
+  });
+
+  try {
+    const res = await fetch("/api/design-settings");
+    if (!res.ok) throw new Error("no settings");
+    const data = await res.json();
+
+    designSettings = {
+      ...JSON.parse(JSON.stringify(designDefaults)),
+      ...data
+    };
+  } catch (_) {
+    designSettings = JSON.parse(JSON.stringify(designDefaults));
+  }
+
+  applyDesignSettings();
+}
+
+async function saveDesignSettings() {
+  try {
+    const res = await fetch("/api/admin/save-design-settings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(designSettings)
+    });
+
+    if (!res.ok) throw new Error("save failed");
+    alert("Текст и расположение сохранены");
+  } catch (_) {
+    alert("Не удалось сохранить настройки текста");
+  }
+}
+
+function getSelectedDesignKey() {
+  return document.getElementById("designElementSelect")?.value || "heroLead";
+}
+
+function readDesignPanelFields() {
+  const key = getSelectedDesignKey();
+
+  if (!designSettings[key]) {
+    designSettings[key] = JSON.parse(JSON.stringify(designDefaults[key] || {}));
+  }
+
+  designSettings[key].text = document.getElementById("designTextInput")?.value || "";
+  designSettings[key].fontSize = document.getElementById("designFontSize")?.value || "";
+  designSettings[key].width = document.getElementById("designWidth")?.value || "";
+  designSettings[key].x = Number(document.getElementById("designX")?.value || 0);
+  designSettings[key].y = Number(document.getElementById("designY")?.value || 0);
+  designSettings[key].fontFamily = document.getElementById("designFontFamily")?.value || "";
+}
+
+function syncDesignPanelFields() {
+  const key = getSelectedDesignKey();
+  const settings = designSettings[key] || designDefaults[key];
+  const el = getDesignElement(key);
+
+  const textInput = document.getElementById("designTextInput");
+  const fontSizeInput = document.getElementById("designFontSize");
+  const widthInput = document.getElementById("designWidth");
+  const xInput = document.getElementById("designX");
+  const yInput = document.getElementById("designY");
+  const fontFamilyInput = document.getElementById("designFontFamily");
+
+  if (textInput) textInput.value = settings.text || extractTextForTextarea(el);
+  if (fontSizeInput) fontSizeInput.value = settings.fontSize || "";
+  if (widthInput) widthInput.value = settings.width || "";
+  if (xInput) xInput.value = settings.x || 0;
+  if (yInput) yInput.value = settings.y || 0;
+  if (fontFamilyInput) fontFamilyInput.value = settings.fontFamily || "";
+}
+
+function updateDesignSelectionOutline() {
+  const selected = getSelectedDesignKey();
+
+  document.querySelectorAll("[data-design-key]").forEach((el) => {
+    el.classList.toggle("is-design-selected", el.dataset.designKey === selected);
+  });
+}
+
+function moveSelectedDesignElement(direction) {
+  const key = getSelectedDesignKey();
+
+  if (!designSettings[key]) {
+    designSettings[key] = JSON.parse(JSON.stringify(designDefaults[key] || {}));
+  }
+
+  const step = 5;
+
+  if (direction === "left") designSettings[key].x = Number(designSettings[key].x || 0) - step;
+  if (direction === "right") designSettings[key].x = Number(designSettings[key].x || 0) + step;
+  if (direction === "up") designSettings[key].y = Number(designSettings[key].y || 0) - step;
+  if (direction === "down") designSettings[key].y = Number(designSettings[key].y || 0) + step;
+
+  applyDesignSettings();
+}
+
+function resetSelectedDesignElement() {
+  const key = getSelectedDesignKey();
+  designSettings[key] = JSON.parse(JSON.stringify(designDefaults[key] || {}));
+  applyDesignSettings();
+}
+
+function updateDesignEditorVisibility() {
+  const panel = document.getElementById("designEditorPanel");
+  const toggle = document.getElementById("openDesignEditor");
+
+  if (!panel) return;
+
+  const shouldAllow = !!isAdmin;
+
+  document.body.classList.toggle("design-edit-mode", shouldAllow && !panel.hidden);
+
+  if (toggle) toggle.hidden = !shouldAllow;
+  if (!shouldAllow) panel.hidden = true;
+
+  updateDesignSelectionOutline();
+}
+
+function ensureDesignEditorToggle() {
+  if (document.getElementById("openDesignEditor")) return;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "openDesignEditor";
+  btn.className = "design-editor-toggle";
+  btn.textContent = "Редактировать текст";
+  btn.hidden = true;
+  document.body.appendChild(btn);
+
+  btn.addEventListener("click", () => {
+    const panel = document.getElementById("designEditorPanel");
+    if (!panel) return;
+
+    panel.hidden = false;
+    updateDesignEditorVisibility();
+    syncDesignPanelFields();
+  });
+}
+
+function enableDesignEditor() {
+  if (designEditorInitialized) return;
+  designEditorInitialized = true;
+
+  ensureDesignEditorToggle();
+
+  const panel = document.getElementById("designEditorPanel");
+  const closeBtn = document.getElementById("closeDesignEditor");
+  const select = document.getElementById("designElementSelect");
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      if (panel) panel.hidden = true;
+      updateDesignEditorVisibility();
+    });
+  }
+
+  if (select) {
+    select.addEventListener("change", () => {
+      syncDesignPanelFields();
+      updateDesignSelectionOutline();
+    });
+  }
+
+  document.getElementById("applyDesignSettings")?.addEventListener("click", () => {
+    readDesignPanelFields();
+    applyDesignSettings();
+  });
+
+  document.getElementById("saveDesignSettings")?.addEventListener("click", async () => {
+    readDesignPanelFields();
+    applyDesignSettings();
+    await saveDesignSettings();
+  });
+
+  document.getElementById("resetDesignElement")?.addEventListener("click", resetSelectedDesignElement);
+
+  document.querySelectorAll("[data-design-move]").forEach((button) => {
+    button.addEventListener("click", () => {
+      readDesignPanelFields();
+      moveSelectedDesignElement(button.dataset.designMove);
+    });
+  });
+
+  ["designTextInput", "designFontSize", "designWidth", "designX", "designY", "designFontFamily"].forEach((id) => {
+    const input = document.getElementById(id);
+    if (!input) return;
+
+    input.addEventListener("input", () => {
+      readDesignPanelFields();
+      applyDesignSettings();
+    });
+  });
+
+  document.querySelectorAll("[data-design-key]").forEach((el) => {
+    el.addEventListener("click", () => {
+      if (!document.body.classList.contains("design-edit-mode")) return;
+
+      const select = document.getElementById("designElementSelect");
+      if (select) {
+        select.value = el.dataset.designKey;
+        syncDesignPanelFields();
+        updateDesignSelectionOutline();
+      }
+    });
+  });
+}
+
+const originalUpdateAdminUIForDesignEditor = updateAdminUI;
+updateAdminUI = function patchedUpdateAdminUIForDesignEditor() {
+  originalUpdateAdminUIForDesignEditor();
+  updateDesignEditorVisibility();
+};
+
+enableDesignEditor();
+loadDesignSettings();
+
+
+/* ================================
+   V40: проверка и фикс редактора текста тарифов
+   ================================ */
+
+/*
+  Важно:
+  для тарифов нельзя заменять innerHTML всего .tariff-text-block,
+  иначе пропадают h3[data-drag-key] и ломается перемещение.
+  Поэтому:
+  - первая строка textarea = заголовок h3;
+  - остальные строки = описание p;
+  - структура блока сохраняется.
+*/
+
+function escapeDesignHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function textareaToHtmlLines(value) {
+  return String(value || "")
+    .split("\n")
+    .map((line) => escapeDesignHtml(line.trim()))
+    .join("<br />");
+}
+
+function extractDesignText(key) {
+  const el = getDesignElement(key);
+  if (!el) return "";
+
+  if (key.startsWith("tariff")) {
+    const h3 = el.querySelector("h3");
+    const p = el.querySelector("p");
+
+    return [
+      h3 ? h3.textContent.trim() : "",
+      p ? p.textContent.trim() : ""
+    ].filter(Boolean).join("\n");
+  }
+
+  return el.innerHTML
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+}
+
+function setDesignText(key, text) {
+  const el = getDesignElement(key);
+  if (!el) return;
+
+  if (key.startsWith("tariff")) {
+    let h3 = el.querySelector("h3");
+    let p = el.querySelector("p");
+
+    if (!h3) {
+      h3 = document.createElement("h3");
+      if (key === "tariffA4") h3.dataset.dragKey = "titleA4";
+      if (key === "tariffA5") h3.dataset.dragKey = "titleA5";
+      if (key === "tariffA6") h3.dataset.dragKey = "titleA6";
+      el.prepend(h3);
+    }
+
+    if (!p) {
+      p = document.createElement("p");
+      el.appendChild(p);
+    }
+
+    const lines = String(text || "").split("\n");
+    const title = lines.shift() || h3.textContent || "";
+    const body = lines.join("\n");
+
+    h3.innerHTML = escapeDesignHtml(title);
+    p.innerHTML = textareaToHtmlLines(body);
+
+    return;
+  }
+
+  el.innerHTML = textareaToHtmlLines(text);
+}
+
+function applyDesignSettings() {
+  Object.entries(designSettings).forEach(([key, settings]) => {
+    const el = getDesignElement(key);
+    if (!el || !settings) return;
+
+    if (settings.text) {
+      setDesignText(key, settings.text);
+    }
+
+    el.style.setProperty("transform", `translate(${Number(settings.x || 0)}px, ${Number(settings.y || 0)}px)`, "important");
+
+    if (settings.fontSize) {
+      el.style.setProperty("font-size", `${settings.fontSize}px`, "important");
+    } else {
+      el.style.removeProperty("font-size");
+    }
+
+    if (settings.width) {
+      el.style.setProperty("width", `${settings.width}px`, "important");
+      el.style.setProperty("max-width", `${settings.width}px`, "important");
+    } else {
+      el.style.removeProperty("width");
+      el.style.removeProperty("max-width");
+    }
+
+    if (settings.fontFamily) {
+      el.style.setProperty("font-family", settings.fontFamily, "important");
+    } else {
+      el.style.removeProperty("font-family");
+    }
+  });
+
+  syncDesignPanelFields();
+  updateDesignSelectionOutline();
+  if (typeof applyTariffPositions === "function") applyTariffPositions();
+}
+
+function syncDesignPanelFields() {
+  const key = getSelectedDesignKey();
+  const settings = designSettings[key] || designDefaults[key];
+
+  const textInput = document.getElementById("designTextInput");
+  const fontSizeInput = document.getElementById("designFontSize");
+  const widthInput = document.getElementById("designWidth");
+  const xInput = document.getElementById("designX");
+  const yInput = document.getElementById("designY");
+  const fontFamilyInput = document.getElementById("designFontFamily");
+
+  if (textInput) textInput.value = settings.text || extractDesignText(key);
+  if (fontSizeInput) fontSizeInput.value = settings.fontSize || "";
+  if (widthInput) widthInput.value = settings.width || "";
+  if (xInput) xInput.value = settings.x || 0;
+  if (yInput) yInput.value = settings.y || 0;
+  if (fontFamilyInput) fontFamilyInput.value = settings.fontFamily || "";
+}
+
+function loadDesignDefaultTextsSafely() {
+  Object.keys(designDefaults).forEach((key) => {
+    if (!designDefaults[key].text) {
+      designDefaults[key].text = extractDesignText(key);
+    }
+  });
+}
+
+const originalLoadDesignSettingsV40 = loadDesignSettings;
+loadDesignSettings = async function patchedLoadDesignSettingsV40() {
+  loadDesignDefaultTextsSafely();
+
+  try {
+    const res = await fetch("/api/design-settings");
+    if (!res.ok) throw new Error("no settings");
+
+    const data = await res.json();
+
+    designSettings = {
+      ...JSON.parse(JSON.stringify(designDefaults)),
+      ...data
+    };
+  } catch (_) {
+    designSettings = JSON.parse(JSON.stringify(designDefaults));
+  }
+
+  applyDesignSettings();
+};
