@@ -7084,3 +7084,93 @@ body.modal-open #adminButton {
     margin-top: 12px !important;
   }
 }
+
+
+/* ================================
+   V51: фикс админ-уведомления и карты в рамке
+   ================================ */
+
+/* карта чуть правее, но НЕ выходит за рамку страницы */
+.showcase {
+  grid-template-columns: minmax(520px, 0.96fr) minmax(560px, 1fr) !important;
+  gap: 28px !important;
+  overflow: visible !important;
+}
+
+.showcase__right {
+  transform: translateX(18px) !important;
+  max-width: calc(100% - 18px) !important;
+  overflow: hidden !important;
+}
+
+.showcase__right .map-container,
+.showcase__right .map-wrap,
+.showcase__right #map,
+.showcase__right #mainMap {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* на очень широких экранах не даём карте уезжать за правую границу */
+@media (min-width: 1500px) {
+  .showcase__right {
+    transform: translateX(10px) !important;
+    max-width: calc(100% - 10px) !important;
+  }
+}
+
+/* на средних экранах карта без лишнего вылета */
+@media (max-width: 1400px) {
+  .showcase__right {
+    transform: translateX(10px) !important;
+    max-width: calc(100% - 10px) !important;
+  }
+}
+
+/* на маленьких экранах всё без сдвига */
+@media (max-width: 1100px) {
+  .showcase {
+    grid-template-columns: 1fr !important;
+    gap: 22px !important;
+  }
+
+  .showcase__right {
+    transform: none !important;
+    max-width: 100% !important;
+  }
+}
+
+/* уведомление режима администратора не должно лежать под кнопкой */
+#adminHint,
+.admin-hint,
+.admin-toast {
+  position: fixed !important;
+  right: 165px !important;
+  bottom: 34px !important;
+  z-index: 2147483000 !important;
+  max-width: 360px !important;
+  white-space: nowrap !important;
+}
+
+/* если открыта форма админа — уведомление уходит выше */
+.floating-admin-panel[open] ~ #adminHint,
+body:has(.floating-admin-panel[open]) #adminHint {
+  bottom: 128px !important;
+}
+
+/* сама кнопка всегда выше уведомления */
+.floating-admin-panel {
+  z-index: 2147483647 !important;
+}
+
+@media (max-width: 780px) {
+  #adminHint,
+  .admin-hint,
+  .admin-toast {
+    right: 12px !important;
+    bottom: 70px !important;
+    max-width: calc(100vw - 24px) !important;
+    white-space: normal !important;
+  }
+}
