@@ -6668,3 +6668,175 @@ body.modal-open #adminButton {
     font-size: 14px !important;
   }
 }
+
+
+/* ================================
+   V47: рабочий HTML-вход админа + компактнее шапка
+   ================================ */
+
+/* уменьшаем логотип и убираем лишнюю высоту сверху */
+.topbar {
+  grid-template-columns: 360px 1fr !important;
+  align-items: start !important;
+  gap: 28px !important;
+}
+
+.brand__logo {
+  width: min(100%, 340px) !important;
+  max-height: 250px !important;
+  object-fit: contain !important;
+}
+
+.hero {
+  margin-top: -12px !important;
+}
+
+.hero__lead {
+  margin-top: 0 !important;
+}
+
+.showcase {
+  margin-top: -112px !important;
+}
+
+/* нижняя кнопка админа теперь нативная, открывает форму без JS */
+.floating-admin-panel {
+  position: fixed !important;
+  right: 18px !important;
+  bottom: 18px !important;
+  z-index: 2147483647 !important;
+  font-family: Tahoma, Verdana, Arial, sans-serif !important;
+}
+
+.floating-admin-panel summary {
+  list-style: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 112px !important;
+  min-height: 52px !important;
+  padding: 12px 22px !important;
+  border: 3px solid rgba(197, 154, 25, 0.98) !important;
+  border-radius: 999px !important;
+  background: #f5f5f5 !important;
+  color: #0e6bb4 !important;
+  font-weight: 900 !important;
+  font-size: 18px !important;
+  box-shadow: 0 14px 32px rgba(0,0,0,0.36) !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+.floating-admin-panel summary::-webkit-details-marker {
+  display: none !important;
+}
+
+.floating-admin-panel[open] summary {
+  background: #101820 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.floating-admin-panel__box {
+  position: absolute !important;
+  right: 0 !important;
+  bottom: calc(100% + 12px) !important;
+  width: 280px !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  background: rgba(0, 31, 43, 0.96) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.42) !important;
+  color: #fff !important;
+}
+
+.floating-admin-panel__box form {
+  margin: 0 0 10px !important;
+}
+
+.floating-admin-panel__box form:last-child {
+  margin-bottom: 0 !important;
+}
+
+.floating-admin-panel__box label {
+  display: block !important;
+  font-weight: 800 !important;
+  font-size: 13px !important;
+  margin-bottom: 8px !important;
+}
+
+.floating-admin-panel__box input {
+  width: 100% !important;
+  margin-top: 6px !important;
+  padding: 10px 11px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  font: 700 15px Arial, sans-serif !important;
+}
+
+.floating-admin-panel__box button {
+  width: 100% !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+  background: #f5f5f5 !important;
+  color: #0e6bb4 !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+}
+
+.floating-admin-panel__logout {
+  background: rgba(255,255,255,0.18) !important;
+  color: #fff !important;
+}
+
+/* старые кнопки скрываем окончательно */
+#floatingAdminButton,
+#adminButton {
+  display: none !important;
+}
+
+@media (max-width: 1100px) {
+  .topbar {
+    grid-template-columns: 240px 1fr !important;
+  }
+
+  .brand__logo {
+    width: min(100%, 235px) !important;
+    max-height: 190px !important;
+  }
+
+  .showcase {
+    margin-top: 12px !important;
+  }
+}
+
+@media (max-width: 780px) {
+  .topbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .brand__logo {
+    width: min(100%, 230px) !important;
+  }
+
+  .hero {
+    margin-top: 10px !important;
+  }
+
+  .floating-admin-panel {
+    right: 10px !important;
+    bottom: 10px !important;
+  }
+
+  .floating-admin-panel summary {
+    min-width: 88px !important;
+    min-height: 44px !important;
+    padding: 9px 14px !important;
+    font-size: 14px !important;
+  }
+
+  .floating-admin-panel__box {
+    width: 260px !important;
+  }
+}

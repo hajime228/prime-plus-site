@@ -410,10 +410,6 @@
 
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-  <button type="button" class="floating-admin-button" id="floatingAdminButton" onclick="adminFallbackLoginV46(event)" onmousedown="adminFallbackLoginV46(event)" ontouchstart="adminFallbackLoginV46(event)">
-    Админ
-  </button>
-
 
   <script id="adminFallbackV46">
     /*
@@ -518,6 +514,25 @@
       getAdminStatusV46().then(setAdminVisualV46);
     });
   </script>
+
+
+
+  <details class="floating-admin-panel" id="floatingAdminPanel">
+    <summary>Админ</summary>
+    <div class="floating-admin-panel__box">
+      <form method="POST" action="/admin-login">
+        <label>
+          Пароль администратора
+          <input type="password" name="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit">Войти</button>
+      </form>
+
+      <form method="POST" action="/admin-logout">
+        <button type="submit" class="floating-admin-panel__logout">Выйти</button>
+      </form>
+    </div>
+  </details>
 
 
   <script src="script.js"></script>
