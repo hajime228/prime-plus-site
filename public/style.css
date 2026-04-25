@@ -889,13 +889,8 @@ body.modal-open {
     aspect-ratio: 1 / 0.9;
     min-height: 48px;
   }
-  
-  .showcase__right .map-container {
-  margin-left: 30px;
-  }
 
   .showcase__right {
-    
     justify-content: center;
     align-items: center;
     margin: 0;
@@ -6995,7 +6990,7 @@ body.modal-open #adminButton {
 
 /* после удаления контактов можно чуть подтянуть витрину вверх, но без наложения */
 .showcase {
-  margin-top: -90px !important; /* ниже (было выше) */
+  margin-top: -132px !important;
 }
 
 /* ячейки чуть ниже текста и без налезания служебных плашек */
@@ -7033,5 +7028,59 @@ body.modal-open #adminButton {
 
   .quick-contact {
     display: none !important;
+  }
+}
+
+
+/* ================================
+   V50: стабильное выравнивание и карта правее
+   ================================ */
+
+/* чтобы на разных мониторах макет не расползался слишком сильно */
+.page {
+  max-width: 1760px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* блок ниже, как просили */
+.showcase {
+  margin-top: -90px !important;
+}
+
+/* правая колонка с картой немного правее */
+.showcase__right {
+  transform: translateX(38px) !important;
+}
+
+/* сама карта занимает правую часть аккуратнее */
+.map-wrap,
+.map-container,
+#map,
+#mainMap {
+  max-width: 100% !important;
+}
+
+/* чтобы нижняя кнопка админа не мешала карте */
+.floating-admin-panel {
+  right: 24px !important;
+  bottom: 24px !important;
+}
+
+/* на средних экранах правый сдвиг чуть меньше */
+@media (max-width: 1400px) {
+  .showcase__right {
+    transform: translateX(24px) !important;
+  }
+}
+
+/* на маленьких экранах не двигаем карту вправо, чтобы не появилась горизонтальная прокрутка */
+@media (max-width: 1100px) {
+  .showcase__right {
+    transform: none !important;
+  }
+
+  .showcase {
+    margin-top: 12px !important;
   }
 }
