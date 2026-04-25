@@ -7084,3 +7084,41 @@ body.modal-open #adminButton {
     margin-top: 12px !important;
   }
 }
+
+
+/* ================================
+   V54: режим администратора в левом нижнем углу
+   ================================ */
+
+#adminHint,
+.admin-hint,
+.admin-toast {
+  position: fixed !important;
+  left: 22px !important;
+  right: auto !important;
+  bottom: 22px !important;
+  z-index: 2147483000 !important;
+  max-width: 360px !important;
+  white-space: nowrap !important;
+  transform: none !important;
+}
+
+/* кнопка админа остаётся справа */
+.floating-admin-panel,
+#floatingAdminButton {
+  right: 22px !important;
+  left: auto !important;
+  bottom: 22px !important;
+}
+
+@media (max-width: 780px) {
+  #adminHint,
+  .admin-hint,
+  .admin-toast {
+    left: 10px !important;
+    right: auto !important;
+    bottom: 66px !important;
+    max-width: calc(100vw - 20px) !important;
+    white-space: normal !important;
+  }
+}
