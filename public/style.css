@@ -6957,3 +6957,76 @@ body.modal-open #adminButton {
     margin-top: 14px !important;
   }
 }
+
+
+/* ================================
+   V49: логотип чуть крупнее, контакты с главной убраны
+   ================================ */
+
+/* логотип чуть больше и ровнее в своём левом блоке */
+.topbar {
+  grid-template-columns: 275px 1fr !important;
+  gap: 24px !important;
+}
+
+.brand {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+}
+
+.brand__logo {
+  width: 245px !important;
+  max-width: 245px !important;
+  max-height: 195px !important;
+  object-fit: contain !important;
+  margin-left: 0 !important;
+}
+
+/* на главной убираем телефон и почту, они есть во вкладке Контакты */
+.quick-contact {
+  display: none !important;
+}
+
+/* после удаления контактов можно чуть подтянуть витрину вверх, но без наложения */
+.showcase {
+  margin-top: -132px !important;
+}
+
+/* ячейки чуть ниже текста и без налезания служебных плашек */
+.slots-panel {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+@media (max-width: 1100px) {
+  .topbar {
+    grid-template-columns: 215px 1fr !important;
+  }
+
+  .brand__logo {
+    width: 205px !important;
+    max-width: 205px !important;
+    max-height: 165px !important;
+  }
+
+  .showcase {
+    margin-top: 12px !important;
+  }
+}
+
+@media (max-width: 780px) {
+  .topbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .brand__logo {
+    width: 205px !important;
+    max-width: 205px !important;
+    max-height: 165px !important;
+  }
+
+  .quick-contact {
+    display: none !important;
+  }
+}
