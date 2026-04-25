@@ -479,7 +479,7 @@ function applyTariffPositions() {
 
     if (!block || !pos) return;
 
-    block.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+    block.style.setProperty("transform", `translate(${pos.x}px, ${pos.y}px)`, "important");
   });
 
   ["arrowA4", "arrowA5", "arrowA6"].forEach((key) => {
@@ -488,8 +488,8 @@ function applyTariffPositions() {
 
     if (!arrow || !pos) return;
 
-    arrow.style.left = `${pos.x}px`;
-    arrow.style.top = `${pos.y}px`;
+    arrow.style.setProperty("left", `${pos.x}px`, "important");
+    arrow.style.setProperty("top", `${pos.y}px`, "important");
   });
 
   updateSelectedTariffOutline();

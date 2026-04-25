@@ -6226,3 +6226,33 @@ body.tariff-edit-mode .popup__box--tariffs .manual-arrow.is-selected-for-move {
 body:not(.tariff-edit-mode) .tariff-position-panel {
   display: none !important;
 }
+
+
+/* ================================
+   V38: стрелки реально двигаются
+   ================================ */
+
+/*
+  Причина была в старых правилах:
+  .manual-arrow--a4 { left: ... !important; top: ... !important; }
+  Они перебивали координаты из JS.
+  Теперь JS ставит left/top тоже с important, а эти правила ниже не мешают.
+*/
+
+.popup__box--tariffs .manual-arrow[data-drag-key] {
+  position: absolute !important;
+}
+
+/* не задаём здесь left/top, ими управляет script.js */
+.popup__box--tariffs .manual-arrow--a4,
+.popup__box--tariffs .manual-arrow--a5,
+.popup__box--tariffs .manual-arrow--a6 {
+  /* left/top intentionally controlled by JS */
+}
+
+/* выбранная стрелка заметнее */
+body.tariff-edit-mode .popup__box--tariffs .manual-arrow.is-selected-for-move {
+  outline: 2px dashed rgba(255,255,255,0.85) !important;
+  outline-offset: 8px !important;
+  box-shadow: 0 0 0 10px rgba(255,255,255,0.18) !important;
+}
