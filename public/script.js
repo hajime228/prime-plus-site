@@ -432,8 +432,9 @@ document.querySelectorAll("img").forEach((img) => {
 
 
 
+
 /* ================================
-   V35: ручное перемещение тарифных блоков и стрелок — фикс стрелок
+   V36: надежное ручное перемещение тарифов и стрелок
    ================================ */
 
 const defaultTariffPositions = {
@@ -502,6 +503,7 @@ async function saveTariffPositions() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(tariffPositions)
     });
+
     if (!res.ok) throw new Error("save failed");
     alert("Расположение сохранено");
   } catch (_) {
@@ -522,28 +524,60 @@ function updateTariffEditPanel() {
   const shouldShow = isAdmin && tariffsPopup.classList.contains("is-open");
   panel.hidden = !shouldShow;
   document.body.classList.toggle("tariff-edit-mode", shouldShow);
+
   applyTariffPositions();
 }
 
-function findManualDragKey(event) {
-  const arrow = event.target.closest?.("#popup-tariffs .manual-arrow[data-drag-key]");
-  if (arrow) return arrow.dataset.dragKey;
+function pointInsideRect(x, y, rect, pad = 0) {
+  return (
+    x >= rect.left - pad &&
+    x <= rect.right + pad &&
+    y >= rect.top - pad &&
+    y <= rect.bottom + pad
+  );
+}
 
-  const title = event.target.closest?.("#popup-tariffs h3[data-drag-key]");
-  if (title) return title.dataset.dragKey;
+function getManualDragKeyByCoordinates(event) {
+  const x = event.clientX;
+  const y = event.clientY;
+
+  // Сначала проверяем стрелки по координатам, а не по target.
+  // Так они двигаются даже если сверху/снизу есть служебные слои.
+  for (const key of ["arrowA4", "arrowA5", "arrowA6"]) {
+    const arrow = getTariffArrowByKey(key);
+    if (!arrow) continue;
+
+    const rect = arrow.getBoundingClientRect();
+    if (pointInsideRect(x, y, rect, 18)) {
+      return key;
+    }
+  }
+
+  // Потом проверяем заголовки. Двигается весь блок: заголовок + текст.
+  for (const key of ["titleA4", "titleA5", "titleA6"]) {
+    const title = getTariffTitleElement(key);
+    if (!title) continue;
+
+    const rect = title.getBoundingClientRect();
+    if (pointInsideRect(x, y, rect, 8)) {
+      return key;
+    }
+  }
 
   return null;
 }
 
 function startTariffDrag(event) {
   if (!isAdmin || !document.body.classList.contains("tariff-edit-mode")) return;
-  const key = findManualDragKey(event);
+
+  const key = getManualDragKeyByCoordinates(event);
   if (!key) return;
 
   event.preventDefault();
   event.stopPropagation();
 
   const start = tariffPositions[key] || { x: 0, y: 0 };
+
   tariffDragState = {
     key,
     startX: event.clientX,
@@ -551,17 +585,21 @@ function startTariffDrag(event) {
     originalX: start.x,
     originalY: start.y
   };
+
   document.body.classList.add("tariff-dragging");
 }
 
 function moveTariffDrag(event) {
   if (!tariffDragState) return;
+
   event.preventDefault();
+  event.stopPropagation();
 
   tariffPositions[tariffDragState.key] = {
     x: snapTariffValue(tariffDragState.originalX + event.clientX - tariffDragState.startX),
     y: snapTariffValue(tariffDragState.originalY + event.clientY - tariffDragState.startY)
   };
+
   applyTariffPositions();
 }
 
