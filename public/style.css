@@ -6114,3 +6114,115 @@ body.tariff-dragging * {
   cursor: grabbing !important;
   user-select: none !important;
 }
+
+
+/* ================================
+   V37: управление тарифами кнопками
+   ================================ */
+
+/* старые псевдо-стрелки у заголовков отключены */
+.popup__box--tariffs .tariff-text-block h3::before,
+.popup__box--tariffs .tariff-text-block h3::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* слой стрелок только отображает стрелки, не ловит клики */
+.popup__box--tariffs .tariff-editor-layer,
+body.tariff-edit-mode .popup__box--tariffs .tariff-editor-layer {
+  pointer-events: none !important;
+  z-index: 120 !important;
+}
+
+/* стрелки видимые */
+.popup__box--tariffs .manual-arrow,
+body.tariff-edit-mode .popup__box--tariffs .manual-arrow[data-drag-key] {
+  position: absolute !important;
+  width: 54px !important;
+  height: 3px !important;
+  background: #f10000 !important;
+  border-radius: 999px !important;
+  pointer-events: none !important;
+  z-index: 121 !important;
+  outline: none !important;
+}
+
+.popup__box--tariffs .manual-arrow::before,
+body.tariff-edit-mode .popup__box--tariffs .manual-arrow[data-drag-key]::before {
+  content: none !important;
+  display: none !important;
+}
+
+.popup__box--tariffs .manual-arrow::after,
+body.tariff-edit-mode .popup__box--tariffs .manual-arrow[data-drag-key]::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -1px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 7px solid transparent !important;
+  border-bottom: 7px solid transparent !important;
+  border-left: 12px solid #f10000 !important;
+}
+
+/* панель управления */
+.tariff-position-panel--controls {
+  width: auto !important;
+  max-width: min(720px, calc(100% - 52px)) !important;
+  left: 26px !important;
+  right: auto !important;
+  bottom: 18px !important;
+  flex-wrap: wrap !important;
+}
+
+.tariff-position-panel--controls label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-weight: 700 !important;
+}
+
+.tariff-position-panel--controls select {
+  height: 34px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  padding: 0 8px !important;
+  color: #0e6bb4 !important;
+  font-weight: 800 !important;
+}
+
+.tariff-move-buttons {
+  display: grid !important;
+  grid-template-columns: repeat(4, 36px) !important;
+  gap: 6px !important;
+}
+
+.tariff-move-buttons button {
+  min-width: 36px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+.tariff-position-panel__hint {
+  opacity: 0.86 !important;
+  font-size: 12px !important;
+}
+
+/* выбранный элемент подсвечивается */
+body.tariff-edit-mode .popup__box--tariffs .tariff-text-block.is-selected-for-move h3 {
+  outline: 2px dashed rgba(255,255,255,0.7) !important;
+  outline-offset: 4px !important;
+}
+
+body.tariff-edit-mode .popup__box--tariffs .manual-arrow.is-selected-for-move {
+  box-shadow: 0 0 0 8px rgba(255,255,255,0.18) !important;
+}
+
+/* обычный посетитель ничего не может двигать, панели нет */
+body:not(.tariff-edit-mode) .tariff-position-panel {
+  display: none !important;
+}

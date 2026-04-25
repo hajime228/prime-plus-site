@@ -182,10 +182,29 @@
             <div class="manual-arrow manual-arrow--a6" data-drag-key="arrowA6" title="Перетащить стрелку A6"></div>
           </div>
 
-          <div class="tariff-position-panel" id="tariffPositionPanel" hidden>
-            <button type="button" id="saveTariffPositions">Сохранить расположение</button>
-            <button type="button" id="resetTariffPositions">Сбросить</button>
-            <span>Перетащи заголовки и стрелки мышкой</span>
+          <div class="tariff-position-panel tariff-position-panel--controls" id="tariffPositionPanel" hidden>
+            <label>
+              Двигать:
+              <select id="tariffMoveTarget">
+                <option value="titleA4">Текст A4 / ОБЪЕМНЫЙ</option>
+                <option value="arrowA4">Стрелка A4</option>
+                <option value="titleA5">Текст A5 / ВЕСЬ ГОРОД</option>
+                <option value="arrowA5">Стрелка A5</option>
+                <option value="titleA6">Текст A6 / ЛАЙТ</option>
+                <option value="arrowA6">Стрелка A6</option>
+              </select>
+            </label>
+
+            <div class="tariff-move-buttons">
+              <button type="button" data-move="up">↑</button>
+              <button type="button" data-move="left">←</button>
+              <button type="button" data-move="right">→</button>
+              <button type="button" data-move="down">↓</button>
+            </div>
+
+            <button type="button" id="saveTariffPositions">Сохранить</button>
+            <button type="button" id="resetTariffPositions">Сброс</button>
+            <span class="tariff-position-panel__hint">Шаг 5px</span>
           </div>
 
           <div class="tariffs-text">
