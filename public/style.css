@@ -6583,3 +6583,88 @@ body.modal-open #adminButton {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+
+/* ================================
+   V46: меню на 4 кнопки и рабочая нижняя кнопка админа
+   ================================ */
+
+/* 4 кнопки занимают всю ширину под заголовком */
+.topbar__right .nav {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  width: 100% !important;
+  align-items: stretch !important;
+}
+
+.topbar__right .nav__item {
+  width: 100% !important;
+  min-width: 0 !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* верхней кнопки админа больше нет */
+#adminButton {
+  display: none !important;
+}
+
+/* нижняя кнопка админа всегда кликабельная */
+#floatingAdminButton.floating-admin-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: fixed !important;
+  right: 18px !important;
+  bottom: 18px !important;
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  min-width: 112px !important;
+  min-height: 52px !important;
+  border: 3px solid rgba(197, 154, 25, 0.98) !important;
+  border-radius: 999px !important;
+  padding: 12px 22px !important;
+  background: #f5f5f5 !important;
+  color: #0e6bb4 !important;
+  font: 900 18px Tahoma, Verdana, Arial, sans-serif !important;
+  box-shadow: 0 14px 32px rgba(0,0,0,0.36) !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+#floatingAdminButton.floating-admin-button:hover {
+  filter: brightness(0.98) !important;
+  transform: translateY(-1px) !important;
+}
+
+#floatingAdminButton.floating-admin-button.is-admin-on {
+  background: #101820 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+/* скрытая панель не должна перекрывать кнопку */
+.design-editor-panel[hidden],
+#openDesignEditor[hidden] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 780px) {
+  .topbar__right .nav {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  #floatingAdminButton.floating-admin-button {
+    right: 10px !important;
+    bottom: 10px !important;
+    min-width: 88px !important;
+    min-height: 44px !important;
+    padding: 9px 14px !important;
+    font-size: 14px !important;
+  }
+}

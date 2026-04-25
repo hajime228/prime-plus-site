@@ -26,7 +26,6 @@
           <button class="nav__item" data-popup="tariffs"><span>Тарифы</span></button>
           <button class="nav__item" data-popup="contacts"><span>Контакты</span></button>
           <button class="nav__item" data-popup="houses"><span>Дома с щитами</span></button>
-          <button class="nav__item nav__item--admin" id="adminButton"><span>Вход администратора</span></button>
         </nav>
       </div>
     </header>
@@ -411,135 +410,116 @@
 
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-  <button type="button" class="floating-admin-button" id="floatingAdminButton">
+  <button type="button" class="floating-admin-button" id="floatingAdminButton" onclick="adminFallbackLoginV46(event)" onmousedown="adminFallbackLoginV46(event)" ontouchstart="adminFallbackLoginV46(event)">
     Админ
   </button>
 
-  <script src="script.js"></script>
 
-  <script id="adminFallbackV45">
+  <script id="adminFallbackV46">
     /*
-      V45: независимый запасной вход администратора.
-      Работает отдельно от основного script.js.
+      V46: независимый вход администратора для нижней кнопки.
+      Кнопка работает даже если основной script.js не успел загрузиться.
     */
-    (function () {
-      function byId(id) {
-        return document.getElementById(id);
+    window.__adminFallbackBusyV46 = false;
+    window.__adminFallbackIsOn = false;
+
+    async function getAdminStatusV46() {
+      try {
+        const res = await fetch("/api/admin/status", { cache: "no-store" });
+        const data = await res.json();
+        return !!data.isAdmin;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function setAdminVisualV46(isOn) {
+      window.__adminFallbackIsOn = !!isOn;
+
+      const floatingButton = document.getElementById("floatingAdminButton");
+      const hint = document.getElementById("adminHint");
+
+      if (floatingButton) {
+        floatingButton.textContent = isOn ? "Выйти" : "Админ";
+        floatingButton.classList.toggle("is-admin-on", !!isOn);
       }
 
-      async function getAdminStatusV45() {
-        try {
-          const res = await fetch("/api/admin/status", { cache: "no-store" });
-          const data = await res.json();
-          return !!data.isAdmin;
-        } catch (e) {
-          return false;
-        }
+      if (hint) {
+        hint.hidden = !isOn;
       }
 
-      function setAdminVisualV45(isOn) {
-        window.__adminFallbackIsOn = !!isOn;
+      try {
+        if (typeof isAdmin !== "undefined") isAdmin = !!isOn;
+        if (typeof updateAdminUI === "function") updateAdminUI();
+        if (typeof renderSlots === "function") renderSlots();
+      } catch (e) {}
+    }
 
-        const topButton = byId("adminButton");
-        const floatingButton = byId("floatingAdminButton");
-        const hint = byId("adminHint");
-
-        if (topButton) {
-          topButton.innerHTML = isOn
-            ? "<span>Выйти из режима</span>"
-            : "<span>Вход администратора</span>";
-        }
-
-        if (floatingButton) {
-          floatingButton.textContent = isOn ? "Выйти" : "Админ";
-          floatingButton.classList.toggle("is-admin-on", !!isOn);
-        }
-
-        if (hint) {
-          hint.hidden = !isOn;
-        }
-
-        try {
-          if (typeof isAdmin !== "undefined") isAdmin = !!isOn;
-          if (typeof updateAdminUI === "function") updateAdminUI();
-          if (typeof renderSlots === "function") renderSlots();
-        } catch (e) {}
+    async function adminFallbackLoginV46(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (event.stopImmediatePropagation) event.stopImmediatePropagation();
       }
 
-      async function adminFallbackLoginV45(event) {
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-        }
+      if (window.__adminFallbackBusyV46) return;
+      window.__adminFallbackBusyV46 = true;
 
-        if (window.__adminFallbackBusy) return;
-        window.__adminFallbackBusy = true;
+      try {
+        const currentlyOn = await getAdminStatusV46();
 
-        try {
-          const currentlyOn = await getAdminStatusV45();
+        if (!currentlyOn) {
+          const password = prompt("Введите пароль администратора");
+          if (!password) return;
 
-          if (!currentlyOn) {
-            const password = prompt("Введите пароль администратора");
-            if (!password) return;
+          const res = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password })
+          });
 
-            const res = await fetch("/api/admin/login", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ password })
-            });
-
-            if (!res.ok) {
-              alert("Неверный пароль");
-              return;
-            }
-
-            setAdminVisualV45(true);
-            alert("Режим администратора включён");
+          if (!res.ok) {
+            alert("Неверный пароль");
             return;
           }
 
-          const res = await fetch("/api/admin/logout", { method: "POST" });
-
-          if (res.ok) {
-            setAdminVisualV45(false);
-            alert("Режим администратора выключен");
-          }
-        } catch (e) {
-          alert("Кнопка нажалась, но сервер не ответил. Проверь Render Logs.");
-        } finally {
-          setTimeout(function () {
-            window.__adminFallbackBusy = false;
-          }, 300);
+          setAdminVisualV46(true);
+          alert("Режим администратора включён");
+          return;
         }
+
+        const res = await fetch("/api/admin/logout", { method: "POST" });
+        if (res.ok) {
+          setAdminVisualV46(false);
+          alert("Режим администратора выключен");
+        }
+      } catch (e) {
+        alert("Кнопка нажалась, но сервер не ответил. Проверь Render Logs.");
+      } finally {
+        setTimeout(function () {
+          window.__adminFallbackBusyV46 = false;
+        }, 350);
+      }
+    }
+
+    window.adminFallbackLoginV46 = adminFallbackLoginV46;
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const button = document.getElementById("floatingAdminButton");
+
+      if (button) {
+        button.onclick = adminFallbackLoginV46;
+        button.onmousedown = adminFallbackLoginV46;
+        button.ontouchstart = adminFallbackLoginV46;
+        button.addEventListener("pointerdown", adminFallbackLoginV46, true);
+        button.addEventListener("click", adminFallbackLoginV46, true);
       }
 
-      window.adminFallbackLoginV45 = adminFallbackLoginV45;
-
-      function bindAdminFallbackV45() {
-        var topButton = byId("adminButton");
-        var floatingButton = byId("floatingAdminButton");
-
-        [topButton, floatingButton].forEach(function (button) {
-          if (!button) return;
-
-          button.onclick = adminFallbackLoginV45;
-          button.addEventListener("click", adminFallbackLoginV45, true);
-          button.addEventListener("pointerdown", function (event) {
-            event.stopPropagation();
-          }, true);
-        });
-
-        getAdminStatusV45().then(setAdminVisualV45);
-      }
-
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", bindAdminFallbackV45);
-      } else {
-        bindAdminFallbackV45();
-      }
-    })();
+      getAdminStatusV46().then(setAdminVisualV46);
+    });
   </script>
 
+
+  <script src="script.js"></script>
 </body>
 </html>

@@ -1263,3 +1263,35 @@ updateAdminUI = function patchedUpdateAdminUIV44() {
 
 bindAdminButtonsV44();
 updateAdminUI();
+
+
+/* ================================
+   V46: финальная синхронизация нижней кнопки админа
+   ================================ */
+
+(function () {
+  function syncFloatingAdminButtonV46() {
+    const button = document.getElementById("floatingAdminButton");
+    if (!button) return;
+
+    button.textContent = isAdmin ? "Выйти" : "Админ";
+    button.classList.toggle("is-admin-on", !!isAdmin);
+  }
+
+  const prevUpdateAdminUIV46 = updateAdminUI;
+  updateAdminUI = function patchedUpdateAdminUIV46() {
+    prevUpdateAdminUIV46();
+    syncFloatingAdminButtonV46();
+  };
+
+  const button = document.getElementById("floatingAdminButton");
+  if (button && typeof adminFallbackLoginV46 === "function") {
+    button.onclick = adminFallbackLoginV46;
+    button.onmousedown = adminFallbackLoginV46;
+    button.ontouchstart = adminFallbackLoginV46;
+    button.addEventListener("pointerdown", adminFallbackLoginV46, true);
+    button.addEventListener("click", adminFallbackLoginV46, true);
+  }
+
+  syncFloatingAdminButtonV46();
+})();
