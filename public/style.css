@@ -6474,3 +6474,25 @@ body.design-edit-mode .tariff-text-block[data-design-key].is-design-selected {
   left: 370px !important;
   top: 291px !important;
 }
+
+
+/* ================================
+   V43: кнопка админа поверх и кликабельна
+   ================================ */
+
+#adminButton {
+  position: relative !important;
+  z-index: 6000 !important;
+  pointer-events: auto !important;
+}
+
+#adminButton span {
+  pointer-events: none !important;
+}
+
+/* редактор текста не должен мешать кнопке, пока скрыт */
+.design-editor-panel[hidden],
+#openDesignEditor[hidden] {
+  display: none !important;
+  pointer-events: none !important;
+}

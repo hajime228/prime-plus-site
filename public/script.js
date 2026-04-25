@@ -1170,3 +1170,63 @@ loadDesignSettings = async function patchedLoadDesignSettingsV40() {
 
   applyDesignSettings();
 };
+
+
+/* ================================
+   V43: фикс кнопки "Вход администратора"
+   ================================ */
+
+let adminLoginClickLock = false;
+
+async function handleAdminButtonClickV43(event) {
+  const button = event.target.closest?.("#adminButton");
+  if (!button) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  if (adminLoginClickLock) return;
+  adminLoginClickLock = true;
+
+  try {
+    if (!isAdmin) {
+      const password = prompt("Введите пароль администратора");
+      if (!password) return;
+
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ password })
+      });
+
+      if (res.ok) {
+        isAdmin = true;
+        updateAdminUI();
+        renderSlots();
+        alert("Режим администратора включён");
+      } else {
+        alert("Неверный пароль");
+      }
+    } else {
+      const res = await fetch("/api/admin/logout", {
+        method: "POST"
+      });
+
+      if (res.ok) {
+        isAdmin = false;
+        updateAdminUI();
+        renderSlots();
+        alert("Режим администратора выключен");
+      }
+    }
+  } finally {
+    setTimeout(() => {
+      adminLoginClickLock = false;
+    }, 250);
+  }
+}
+
+/* capture=true: обработчик сработает даже если что-то поверх/раньше мешает */
+document.addEventListener("click", handleAdminButtonClickV43, true);
