@@ -7980,3 +7980,246 @@ body {
     font-size: 34px !important;
   }
 }
+
+
+/* ================================
+   FINAL_V60: финальная правка визуала
+   1) без тавтологии в цене
+   2) верхние кнопки не превращаются в прямоугольники/обломки
+   3) мягче масштабирование на разных мониторах
+   ================================ */
+
+/* Цена в тарифах: убираем верхнюю строку "Цена за 1 колонку", чтобы не было тавтологии */
+.tariff-card__price::before {
+  content: none !important;
+  display: none !important;
+}
+
+.tariff-card__price {
+  min-height: 74px !important;
+  gap: 2px !important;
+  padding: 12px 18px !important;
+  font-size: 42px !important;
+}
+
+.tariff-card__price span {
+  display: block !important;
+  margin-top: 2px !important;
+  color: #0e6bb4 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1.08 !important;
+  text-align: center !important;
+}
+
+/* Если ранее добавлялся "/ месяц" через CSS — оставляем красиво и один раз */
+.tariff-card__price span::after {
+  content: " / месяц" !important;
+}
+
+/* Верхнее меню: фиксируем форму кнопок. Никаких превращений в прямоугольники/куски при наведении */
+.topbar__right .nav {
+  align-items: stretch !important;
+}
+
+.topbar__right .nav__item,
+.nav__item {
+  position: relative !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+  transform: skewX(-14deg) translateY(0) !important;
+  transform-origin: center !important;
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    box-shadow 0.18s ease !important;
+  will-change: transform !important;
+}
+
+.topbar__right .nav__item > *,
+.nav__item > * {
+  transform: skewX(14deg) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* hover как у нормального сайта: чуть поднялась, форма осталась */
+.topbar__right .nav__item:hover,
+.topbar__right .nav__item:focus-visible,
+.nav__item:hover,
+.nav__item:focus-visible {
+  transform: skewX(-14deg) translateY(-3px) !important;
+  filter: brightness(1.04) !important;
+  box-shadow:
+    0 14px 26px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.82) !important;
+}
+
+/* Содержимое не крутится и не ломает кнопку */
+.topbar__right .nav__item:hover > *,
+.topbar__right .nav__item:focus-visible > *,
+.nav__item:hover > *,
+.nav__item:focus-visible > * {
+  transform: skewX(14deg) !important;
+}
+
+/* Псевдоэлементы не должны менять геометрию кнопок */
+.topbar__right .nav__item::before,
+.topbar__right .nav__item::after,
+.nav__item::before,
+.nav__item::after,
+.topbar__right .nav__item:hover::before,
+.topbar__right .nav__item:hover::after,
+.nav__item:hover::before,
+.nav__item:hover::after {
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Если где-то старый класс active/hover делал скошенный текст — гасим */
+.nav__item.is-active,
+.nav__item.active {
+  transform: skewX(-14deg) translateY(-2px) !important;
+}
+
+.nav__item.is-active > *,
+.nav__item.active > * {
+  transform: skewX(14deg) !important;
+}
+
+/* Заголовок и кнопки: чуть объемнее, но без кислотности */
+.headline {
+  box-shadow:
+    0 12px 26px rgba(0,0,0,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.78) !important;
+}
+
+.nav__item {
+  box-shadow:
+    0 9px 18px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.76) !important;
+}
+
+/* Карта и сетка: более аккуратный блок, без серости */
+.map-wrap,
+.map-container,
+.leaflet-container,
+.slots-panel {
+  border: 2px solid rgba(255,255,255,0.55) !important;
+  box-shadow:
+    0 18px 38px rgba(0,0,0,0.30),
+    0 0 26px rgba(0, 210, 255, 0.13) !important;
+}
+
+/* Меньше разницы между большим и маленьким ПК: не слишком увеличиваем попапы */
+.popup__box {
+  max-width: min(96vw, 1320px) !important;
+}
+
+.popup__box--tariffs {
+  width: min(1280px, calc(100vw - 30px)) !important;
+  height: min(760px, calc(100vh - 28px)) !important;
+}
+
+/* Тарифные карточки: оставляем красивыми, но без чрезмерной огромности */
+.tariffs-modern-wrap {
+  width: min(1060px, 90%) !important;
+  margin-top: 44px !important;
+}
+
+.tariffs-modern {
+  gap: 18px !important;
+}
+
+.tariff-card {
+  min-height: 218px !important;
+  padding: 20px 18px 18px !important;
+}
+
+.tariffs-modern-title {
+  font-size: clamp(38px, 3vw, 50px) !important;
+  margin-bottom: 18px !important;
+}
+
+.tariff-card__name {
+  font-size: clamp(20px, 1.35vw, 24px) !important;
+}
+
+.tariff-card__size {
+  font-size: clamp(30px, 2.2vw, 40px) !important;
+}
+
+/* Контакты и дома: немного современнее, без резкой "плоскости" */
+.popup__box--contacts,
+.popup__box--houses {
+  background:
+    radial-gradient(circle at 22% 12%, rgba(255,255,255,0.14), transparent 34%),
+    linear-gradient(145deg, #1db2de 0%, #17a3cd 52%, #1186af 100%) !important;
+  box-shadow:
+    0 22px 58px rgba(0,0,0,0.43),
+    inset 0 1px 0 rgba(255,255,255,0.28) !important;
+}
+
+.contact-card,
+.contact-final,
+.houses-title-row,
+.house-row,
+.houses-search,
+#housesSearch {
+  box-shadow:
+    0 10px 22px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.20) !important;
+}
+
+/* Для экранов ноутбука/ПК не делаем резкий другой дизайн, только компактнее */
+@media (max-width: 1450px) {
+  .popup__box--tariffs {
+    width: min(1180px, calc(100vw - 24px)) !important;
+    height: min(720px, calc(100vh - 24px)) !important;
+  }
+
+  .tariffs-modern-wrap {
+    width: min(1010px, 90%) !important;
+    margin-top: 40px !important;
+  }
+
+  .tariffs-modern-title {
+    font-size: clamp(36px, 3.2vw, 48px) !important;
+  }
+
+  .tariff-card {
+    min-height: 206px !important;
+    padding: 18px 16px !important;
+  }
+}
+
+/* На узких экранах меню остается скошенным, но не ломается */
+@media (max-width: 780px) {
+  .topbar__right .nav__item,
+  .nav__item {
+    transform: skewX(-10deg) translateY(0) !important;
+  }
+
+  .topbar__right .nav__item > *,
+  .nav__item > * {
+    transform: skewX(10deg) !important;
+  }
+
+  .topbar__right .nav__item:hover,
+  .nav__item:hover {
+    transform: skewX(-10deg) translateY(-2px) !important;
+  }
+
+  .tariffs-modern-wrap {
+    width: 94% !important;
+  }
+
+  .tariffs-modern {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tariff-card__price {
+    font-size: 34px !important;
+  }
+}
