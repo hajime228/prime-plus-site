@@ -1,3 +1,3 @@
 git add .
-git commit -m "update"
+git commit -m "remove env"
 git push origin main
