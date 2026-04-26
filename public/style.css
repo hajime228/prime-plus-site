@@ -8609,115 +8609,351 @@ body::before {
 
 
 /* ==========================================================
-   FINAL_V64 — FIX адаптива и уехавших окон
-   Основа: стабильная V61, поверх только исправления.
+   FINAL_V62 — современный UI-слой, фикс масштаба и попапов
    ========================================================== */
 
-/* 0. Отменяем жесткие min-width/width из прошлых версий */
+/* 1) Стабильный масштаб: сайт не должен радикально менять композицию на ПК/ноуте */
 html,
 body {
-  min-width: 0 !important;
-  width: 100% !important;
-  overflow-x: hidden !important;
+  min-width: 1180px;
+  overflow-x: auto !important;
 }
 
 .page {
-  width: min(100%, 1700px) !important;
-  max-width: 1700px !important;
-  min-width: 0 !important;
-  margin-inline: auto !important;
-  padding-inline: clamp(16px, 2.6vw, 54px) !important;
+  width: 1400px !important;
+  max-width: 1400px !important;
+  min-width: 1400px !important;
+  margin: 0 auto !important;
+  padding-left: 32px !important;
+  padding-right: 32px !important;
   box-sizing: border-box !important;
 }
 
-/* 1. Попапы: базовое правило — всегда помещаются в экран */
+/* На совсем узких экранах оставляем горизонтальную прокрутку, зато дизайн не ломается */
+@media (max-width: 1180px) {
+  html,
+  body {
+    min-width: 1180px;
+  }
+}
+
+/* 2) Общий фон: технологичный, но в фирменной синей гамме */
+body {
+  background:
+    radial-gradient(circle at 18% 14%, rgba(64, 219, 255, 0.17), transparent 28%),
+    radial-gradient(circle at 88% 38%, rgba(255,255,255,0.08), transparent 30%),
+    linear-gradient(135deg, #04171d 0%, #052f3a 42%, #087fa2 100%) !important;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 78px 78px;
+  mask-image: radial-gradient(circle at center, rgba(0,0,0,0.55), transparent 72%);
+  z-index: -1;
+}
+
+/* 3) Шапка современнее, но без смены логики */
+.headline {
+  background:
+    linear-gradient(180deg, #ffffff 0%, #edf6fb 100%) !important;
+  border: 2px solid #c79913 !important;
+  color: #0b65ad !important;
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
+  text-shadow: none !important;
+}
+
+.nav__item {
+  background:
+    linear-gradient(180deg, #ffffff 0%, #edf6fb 100%) !important;
+  border: 2px solid #c79913 !important;
+  color: #0b65ad !important;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,0.21),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
+  transform: skewX(-13deg) translateY(0) !important;
+  transition: transform .18s ease, filter .18s ease, box-shadow .18s ease !important;
+  overflow: hidden !important;
+}
+
+.nav__item > * {
+  transform: skewX(13deg) !important;
+}
+
+.nav__item::before,
+.nav__item::after,
+.nav__item:hover::before,
+.nav__item:hover::after {
+  content: none !important;
+  display: none !important;
+}
+
+.nav__item:hover,
+.nav__item:focus-visible {
+  transform: skewX(-13deg) translateY(-3px) !important;
+  filter: brightness(1.04) !important;
+  box-shadow:
+    0 16px 32px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.98) !important;
+}
+
+.nav__item:hover > *,
+.nav__item:focus-visible > * {
+  transform: skewX(13deg) !important;
+}
+
+/* 4) Главный экран: больше современного SaaS-ощущения */
+.hero__lead,
+.hero__subhead,
+.coverage__title {
+  text-shadow:
+    0 3px 0 rgba(0,0,0,0.30),
+    0 0 18px rgba(255,255,255,0.12) !important;
+}
+
+.hero__subhead {
+  width: fit-content !important;
+  padding-bottom: 10px !important;
+  border-bottom: 3px solid rgba(73,214,255,0.28) !important;
+}
+
+.slots-panel,
+.map-wrap,
+.map-container,
+.leaflet-container,
+.mini-ad {
+  border-radius: 18px !important;
+  border: 2px solid rgba(255,255,255,0.55) !important;
+  box-shadow:
+    0 22px 48px rgba(0,0,0,0.34),
+    0 0 34px rgba(29,180,223,0.17),
+    inset 0 1px 0 rgba(255,255,255,0.20) !important;
+}
+
+/* 5) Модальные окна — фиксированные и аккуратные, без резкого масштабирования */
 .popup__box {
-  box-sizing: border-box !important;
-  width: min(92vw, 1180px) !important;
-  max-width: min(92vw, 1180px) !important;
-  min-width: 0 !important;
-  max-height: min(88vh, 820px) !important;
+  width: 1040px !important;
+  max-width: 1040px !important;
+  min-width: 1040px !important;
+  max-height: 82vh !important;
   overflow-y: auto !important;
-  overflow-x: hidden !important;
-  border-radius: clamp(22px, 2.2vw, 34px) !important;
+  border-radius: 34px !important;
+  border: 4px solid rgba(62,113,143,0.95) !important;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,255,255,0.15), transparent 34%),
+    radial-gradient(circle at 86% 88%, rgba(7,70,105,0.22), transparent 32%),
+    linear-gradient(145deg, #1eb3df 0%, #18a4cf 52%, #1087b0 100%) !important;
+  box-shadow:
+    0 34px 90px rgba(0,0,0,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.28) !important;
 }
 
-/* Тарифы шире, но тоже только в пределах экрана */
+/* Тарифы шире остальных, но стабильно */
 .popup__box--tariffs {
-  width: min(94vw, 1360px) !important;
-  max-width: min(94vw, 1360px) !important;
-  min-width: 0 !important;
-  height: min(88vh, 820px) !important;
-  max-height: min(88vh, 820px) !important;
+  width: 1200px !important;
+  max-width: 1200px !important;
+  min-width: 1200px !important;
+  height: 760px !important;
+  max-height: 760px !important;
   overflow-y: auto !important;
-  overflow-x: hidden !important;
-  padding: clamp(24px, 2.3vw, 42px) !important;
 }
 
-/* Важно: все внутренности попапа должны считаться по border-box */
-.popup__box--tariffs,
-.popup__box--tariffs * {
-  box-sizing: border-box !important;
+/* 6) Попап "О компании" и текстовые блоки — стеклянные карточки */
+.popup__box--about p,
+.popup__box--about .about-text,
+.popup__box--about .about-card,
+.popup__box--company p,
+.popup__box--company .about-text,
+.popup__box--company .about-card {
+  background: rgba(255,255,255,0.12) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  border-radius: 22px !important;
+  padding: 16px 18px !important;
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.18) !important;
 }
 
-/* 2. ТАРИФЫ ВВЕРХУ: не должны уезжать вправо */
+/* 7) Контакты — более актуальный карточный вид */
+.popup__box--contacts {
+  width: 760px !important;
+  min-width: 760px !important;
+  max-width: 760px !important;
+}
+
+.popup__box--contacts .contact-card,
+.popup__box--contacts .contact-final,
+.contact-card,
+.contact-final {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,255,255,0.16), transparent 34%),
+    linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05)) !important;
+  border: 1px solid rgba(255,255,255,0.28) !important;
+  border-radius: 28px !important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.22) !important;
+}
+
+.contact-card__phone,
+.contact-final__phone {
+  background: linear-gradient(180deg, #ffffff, #eef7ff) !important;
+  color: #0b65ad !important;
+  border-radius: 24px !important;
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.20),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
+}
+
+/* 8) Дома с щитами — таблица как современный список */
+.popup__box--houses {
+  width: 980px !important;
+  min-width: 980px !important;
+  max-width: 980px !important;
+}
+
+.houses-title-row {
+  border-radius: 18px !important;
+  background: rgba(6, 111, 154, 0.82) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.26) !important;
+  box-shadow:
+    0 14px 28px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.18) !important;
+}
+
+#housesSearch,
+.houses-search {
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,0.45) !important;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.86) !important;
+}
+
+.house-row {
+  margin: 6px 0 !important;
+  border-radius: 16px !important;
+  background: rgba(255,255,255,0.10) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.12) !important;
+  transition: transform .16s ease, background .16s ease !important;
+}
+
+.house-row:hover {
+  transform: translateX(4px) !important;
+  background: rgba(255,255,255,0.16) !important;
+}
+
+/* 9) Тарифы: фикс композиции */
 .popup__box--tariffs .tariffs-final {
-  width: 100% !important;
   display: grid !important;
-  grid-template-columns: minmax(360px, 520px) minmax(0, 1fr) !important;
-  gap: 22px clamp(24px, 3vw, 42px) !important;
+  grid-template-columns: 460px 1fr !important;
+  gap: 22px 34px !important;
   align-items: start !important;
 }
 
-/* Схема стабильная и не огромная */
 .popup__box--tariffs .tariff-demo-grid--final {
-  width: min(100%, 520px) !important;
-  max-width: 520px !important;
-  aspect-ratio: 1.08 / 1 !important;
-  height: auto !important;
+  width: 460px !important;
+  height: 420px !important;
+  max-width: 460px !important;
+  max-height: 420px !important;
   margin: 0 auto !important;
+  border: 4px solid rgba(185,229,248,0.92) !important;
+  background: rgba(188,224,242,0.84) !important;
+  box-shadow:
+    0 18px 34px rgba(0,0,0,0.22),
+    0 0 24px rgba(255,255,255,0.15) !important;
 }
 
-/* Текстовая колонка не выходит за экран и не режется справа */
-.popup__box--tariffs .tariff-texts,
-.popup__box--tariffs .tariff-text-column,
-.popup__box--tariffs .tariff-description,
-.popup__box--tariffs .tariff-text-block {
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: visible !important;
-}
-
-/* Заголовки тарифов — переносим красиво, если места мало */
 .popup__box--tariffs .tariff-text-block h3 {
-  max-width: 100% !important;
-  white-space: normal !important;
-  overflow-wrap: break-word !important;
-  word-break: normal !important;
-  line-height: 1.08 !important;
+  color: var(--pp-red, #e60012) !important;
+  text-shadow:
+    0 2px 0 rgba(255,255,255,0.28),
+    0 0 10px rgba(255,255,255,0.18) !important;
 }
 
-/* Убираем возможное смещение title/arrow за счет старых absolute-правил */
-.popup__box--tariffs .tariff-text-block {
-  position: relative !important;
+.popup__box--tariffs .tariff-text-block p {
+  color: #071d26 !important;
+  font-weight: 500 !important;
 }
 
-/* 3. БЛОК СТОИМОСТИ: не должен вылезать под низ окна */
+/* 10) Современные карточки тарифов */
 .tariffs-modern-wrap {
-  width: min(100%, 1060px) !important;
+  width: 1060px !important;
   max-width: 1060px !important;
   margin: 48px auto 0 !important;
 }
 
+.tariffs-modern-title {
+  color: #fff !important;
+  font-size: 48px !important;
+  line-height: 1 !important;
+  margin-bottom: 20px !important;
+  text-align: center !important;
+  text-shadow:
+    0 4px 0 rgba(0,0,0,0.28),
+    0 0 22px rgba(255,255,255,0.24) !important;
+}
+
 .tariffs-modern {
-  width: 100% !important;
   display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-template-columns: repeat(3, 1fr) !important;
   gap: 18px !important;
 }
 
 .tariff-card {
-  min-width: 0 !important;
+  min-height: 220px !important;
+  padding: 20px 18px 18px !important;
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  border: 2px solid rgba(255,255,255,0.42) !important;
+  box-shadow:
+    0 22px 48px rgba(0,0,0,0.33),
+    inset 0 1px 0 rgba(255,255,255,0.42),
+    inset 0 -18px 28px rgba(0,0,0,0.10) !important;
+  transition: transform .22s ease, filter .22s ease, box-shadow .22s ease !important;
+}
+
+.tariff-card:hover {
+  transform: translateY(-4px) !important;
+  filter: brightness(1.04) !important;
+}
+
+.tariff-card::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: -70% -85% !important;
+  background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.28) 49%, transparent 58%) !important;
+  transform: translateX(-60%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.tariff-card:hover::after {
+  animation: ppTariffShineV62 1.05s ease forwards !important;
+}
+
+@keyframes ppTariffShineV62 {
+  0% { transform: translateX(-60%); opacity: 0; }
+  18% { opacity: 1; }
+  100% { transform: translateX(60%); opacity: 0; }
+}
+
+.tariff-card > * {
+  position: relative !important;
+  z-index: 2 !important;
 }
 
 .tariff-card__price::before {
@@ -8726,178 +8962,51 @@ body {
 }
 
 .tariff-card__price {
-  width: min(100%, 310px) !important;
-  min-height: 78px !important;
-  margin-inline: auto !important;
+  width: 300px !important;
+  min-height: 82px !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  justify-items: center !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 12px 16px !important;
+  border-radius: 26px !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(237,248,255,0.96)) !important;
+  color: #0b65ad !important;
+  font-size: 42px !important;
+  line-height: 1 !important;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
 }
 
 .tariff-card__price span {
   display: block !important;
+  color: #0b65ad !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
   text-align: center !important;
-  white-space: normal !important;
 }
 
 .tariff-card__price span::after {
   content: " / месяц" !important;
 }
 
-/* 4. Контакты: номер на большом экране должен быть в одну строку */
-.popup__box--contacts {
-  width: min(92vw, 820px) !important;
-  max-width: min(92vw, 820px) !important;
-  min-width: 0 !important;
-}
-
-.contact-card__phone,
-.contact-final__phone,
-.popup__box--contacts .contact-card__phone,
-.popup__box--contacts .contact-final__phone {
-  white-space: nowrap !important;
-  word-break: keep-all !important;
-  overflow-wrap: normal !important;
-  font-size: clamp(38px, 4vw, 58px) !important;
-  line-height: 1.02 !important;
-  letter-spacing: 1px !important;
-  padding-inline: clamp(18px, 3vw, 34px) !important;
-}
-
-/* Внутренняя карточка контактов не должна сжимать номер */
-.popup__box--contacts .contact-card,
-.popup__box--contacts .contact-final {
-  width: min(100%, 720px) !important;
-  margin-inline: auto !important;
-}
-
-/* 5. Дома с щитами: не ломаем таблицу на ноутбуке */
-.popup__box--houses {
-  width: min(92vw, 1040px) !important;
-  max-width: min(92vw, 1040px) !important;
-  min-width: 0 !important;
-}
-
-/* 6. Современный, но безопасный визуал */
-.popup__box {
-  background:
-    radial-gradient(circle at 20% 12%, rgba(255,255,255,0.14), transparent 34%),
-    radial-gradient(circle at 88% 88%, rgba(7,70,105,0.20), transparent 32%),
-    linear-gradient(145deg, #1eb3df 0%, #18a4cf 52%, #1087b0 100%) !important;
+/* 11) Кнопка админа аккуратнее */
+.floating-admin-panel,
+#floatingAdminButton {
+  border-radius: 999px !important;
   box-shadow:
-    0 34px 90px rgba(0,0,0,0.50),
-    inset 0 1px 0 rgba(255,255,255,0.28) !important;
+    0 16px 36px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.90) !important;
 }
 
-.house-row,
-.houses-title-row,
-#housesSearch,
-.houses-search,
-.contact-card,
-.contact-final {
-  backdrop-filter: blur(6px);
-}
-
-/* 7. Большой монитор: красиво и просторно */
-@media (min-width: 1500px) {
-  .popup__box--tariffs {
-    width: min(90vw, 1360px) !important;
-  }
-
-  .popup__box--tariffs .tariffs-final {
-    grid-template-columns: minmax(460px, 560px) minmax(0, 1fr) !important;
-  }
-
-  .popup__box--tariffs .tariff-demo-grid--final {
-    max-width: 560px !important;
-  }
-
-  .contact-card__phone,
-  .contact-final__phone,
-  .popup__box--contacts .contact-card__phone,
-  .popup__box--contacts .contact-final__phone {
-    font-size: 58px !important;
-  }
-}
-
-/* 8. Ноутбук / маленький монитор: компактнее, но НЕ ломается */
-@media (max-width: 1366px) {
+/* Сохраняем вид на ноуте, но не делаем другой масштаб */
+@media (max-width: 1450px) {
   .page {
-    padding-inline: 18px !important;
-  }
-
-  .popup__box--tariffs {
-    width: calc(100vw - 34px) !important;
-    max-width: calc(100vw - 34px) !important;
-    height: calc(100vh - 34px) !important;
-    max-height: calc(100vh - 34px) !important;
-    padding: 22px !important;
-  }
-
-  .popup__box--tariffs .tariffs-final {
-    grid-template-columns: minmax(360px, 470px) minmax(0, 1fr) !important;
-    gap: 20px 24px !important;
-  }
-
-  .popup__box--tariffs .tariff-demo-grid--final {
-    max-width: 470px !important;
-  }
-
-  .popup__box--tariffs .tariff-text-block h3 {
-    font-size: clamp(22px, 2vw, 30px) !important;
-  }
-
-  .popup__box--tariffs .tariff-text-block p {
-    font-size: clamp(16px, 1.5vw, 20px) !important;
-    line-height: 1.18 !important;
-  }
-
-  .tariffs-modern-wrap {
-    margin-top: 38px !important;
-  }
-
-  .tariffs-modern-title {
-    font-size: clamp(34px, 4vw, 46px) !important;
-  }
-
-  .tariff-card {
-    padding: 16px 14px !important;
-  }
-
-  .tariff-card__size {
-    font-size: clamp(28px, 3vw, 38px) !important;
-  }
-}
-
-/* 9. Совсем узко: попап тарифов становится в одну колонку */
-@media (max-width: 980px) {
-  .popup__box,
-  .popup__box--tariffs,
-  .popup__box--contacts,
-  .popup__box--houses {
-    width: calc(100vw - 22px) !important;
-    max-width: calc(100vw - 22px) !important;
-    height: auto !important;
-    max-height: calc(100vh - 22px) !important;
-    padding: 18px !important;
-  }
-
-  .popup__box--tariffs .tariffs-final {
-    display: block !important;
-  }
-
-  .popup__box--tariffs .tariff-demo-grid--final {
-    width: min(100%, 460px) !important;
-    max-width: 460px !important;
-    margin-bottom: 22px !important;
-  }
-
-  .tariffs-modern {
-    grid-template-columns: 1fr !important;
-  }
-
-  .contact-card__phone,
-  .contact-final__phone,
-  .popup__box--contacts .contact-card__phone,
-  .popup__box--contacts .contact-final__phone {
-    white-space: normal !important;
-    font-size: clamp(34px, 9vw, 48px) !important;
+    width: 1360px !important;
+    max-width: 1360px !important;
+    min-width: 1360px !important;
   }
 }
