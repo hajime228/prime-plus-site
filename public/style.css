@@ -7122,3 +7122,265 @@ body.modal-open #adminButton {
     white-space: normal !important;
   }
 }
+
+
+/* ================================
+   FINAL_V56: правки заказчика
+   1) визитница A6 лежит
+   2) тарифы ярче, не как Excel
+   ================================ */
+
+/* Старую Excel-таблицу скрываем, если она где-то осталась */
+.tariff-table,
+.tariff-table-wrap .tariff-table {
+  display: none !important;
+}
+
+/* Новый яркий блок тарифов */
+.tariffs-modern-wrap {
+  grid-area: table;
+  width: min(980px, 92%);
+  margin: 20px auto 0;
+}
+
+.tariffs-modern-title {
+  margin: 0 0 12px;
+  color: #ffffff;
+  text-align: center;
+  font: 900 30px/1.1 Tahoma, Verdana, Arial, sans-serif;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-shadow:
+    0 3px 0 rgba(0,0,0,0.25),
+    0 0 18px rgba(255,255,255,0.38);
+}
+
+.tariffs-modern {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.tariff-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 205px;
+  padding: 18px 16px 16px;
+  border-radius: 22px;
+  color: #fff;
+  text-align: center;
+  border: 2px solid rgba(255,255,255,0.42);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.35), transparent 28%),
+    linear-gradient(145deg, #092c43 0%, #0d79a4 55%, #21c2f2 100%);
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.42);
+}
+
+.tariff-card::before {
+  content: "";
+  position: absolute;
+  inset: -45% -70%;
+  z-index: -1;
+  background:
+    linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.28) 48%, transparent 58%);
+  transform: translateX(-30%);
+}
+
+.tariff-card:hover::before {
+  animation: tariffCardShine 1.15s ease;
+}
+
+@keyframes tariffCardShine {
+  from { transform: translateX(-45%); }
+  to { transform: translateX(45%); }
+}
+
+.tariff-card--a4 {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.36), transparent 28%),
+    linear-gradient(145deg, #092d4a 0%, #0d6ea7 54%, #18bdf4 100%);
+}
+
+.tariff-card--a5 {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.36), transparent 28%),
+    linear-gradient(145deg, #083943 0%, #0a8897 54%, #16cedc 100%);
+}
+
+.tariff-card--a6 {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.36), transparent 28%),
+    linear-gradient(145deg, #0a334b 0%, #1276a7 54%, #58d7ff 100%);
+}
+
+.tariff-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tariff-card__name {
+  min-width: 0;
+  color: #fff;
+  text-align: left;
+  font: 900 21px/1.05 Tahoma, Verdana, Arial, sans-serif;
+  text-shadow:
+    0 2px 0 rgba(0,0,0,0.28),
+    0 0 12px rgba(255,255,255,0.25);
+}
+
+.tariff-card__format {
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  color: #0e6bb4;
+  background: rgba(255,255,255,0.96);
+  font: 900 25px/1 Tahoma, Verdana, Arial, sans-serif;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.24);
+}
+
+.tariff-card__size {
+  margin: 4px 0 8px;
+  color: #fff7b8;
+  font: 900 28px/1 Tahoma, Verdana, Arial, sans-serif;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.28);
+}
+
+.tariff-card__desc {
+  font: 800 16px/1.2 Tahoma, Verdana, Arial, sans-serif;
+}
+
+.tariff-card__meta {
+  margin-top: 6px;
+  font: 800 15px/1.2 Tahoma, Verdana, Arial, sans-serif;
+  opacity: 0.96;
+}
+
+.tariff-card__price {
+  width: fit-content;
+  margin: 14px auto 7px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: #0e6bb4;
+  background: rgba(255,255,255,0.96);
+  font: 900 28px/1 Tahoma, Verdana, Arial, sans-serif;
+  box-shadow: 0 7px 16px rgba(0,0,0,0.22);
+}
+
+.tariff-card__price span {
+  font-size: 15px;
+}
+
+.tariff-card__total {
+  font: 900 14px/1.2 Tahoma, Verdana, Arial, sans-serif;
+}
+
+/* Примечание под новым блоком */
+.popup__box--tariffs .tariff-note {
+  width: min(980px, 92%) !important;
+  min-width: 0 !important;
+  margin: 10px auto 0 !important;
+  color: rgba(0,0,0,0.88) !important;
+  text-align: left !important;
+  font: 800 15px/1.3 Tahoma, Verdana, Arial, sans-serif !important;
+}
+
+/* A6 в схеме: ячейка остаётся целой, а выделение становится лежачим */
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover {
+  grid-column: 4 !important;
+  grid-row: 4 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  position: relative !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6::before,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: auto !important;
+  left: 13% !important;
+  right: auto !important;
+  bottom: 10px !important;
+  width: 74% !important;
+  height: 38% !important;
+  background: transparent !important;
+  transform: none !important;
+  animation: none !important;
+  opacity: 1 !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 5px #f10000 !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6::after,
+.popup__box--tariffs .tariff-demo-grid--final .tariff-a6:hover::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Убираем желтую фразу из тарифа, чтобы не мешала финальному виду */
+.popup__box--tariffs .tariff-note-yellow {
+  display: none !important;
+}
+
+/* Адаптив внутри окна тарифов */
+@media (max-width: 980px) {
+  .tariffs-modern {
+    grid-template-columns: 1fr;
+  }
+
+  .tariff-card {
+    min-height: 0;
+  }
+
+  .tariff-card__top {
+    justify-content: center;
+  }
+
+  .tariff-card__name {
+    text-align: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .tariffs-modern-wrap {
+    width: 100%;
+  }
+
+  .tariffs-modern-title {
+    font-size: 22px;
+  }
+
+  .tariff-card {
+    border-radius: 18px;
+    padding: 16px 12px;
+  }
+
+  .tariff-card__name {
+    font-size: 18px;
+  }
+
+  .tariff-card__format {
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+  }
+
+  .tariff-card__size,
+  .tariff-card__price {
+    font-size: 23px;
+  }
+}
