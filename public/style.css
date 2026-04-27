@@ -8937,7 +8937,7 @@ body::before {
 
 @media (min-width: 781px) {
   .popup__box--tariffs .tariffs-modern-wrap {
-    margin-top: 190px !important;
+    margin-top: 205px !important;
   }
 
   .popup__box--tariffs .tariffs-modern-title {
@@ -8963,22 +8963,4 @@ body::before {
     font-size: clamp(30px, 10vw, 42px) !important;
     line-height: 1.04 !important;
   }
-}
-/* ===== ЖЁСТКИЙ ПОДЪЁМ БЛОКА ТАРИФОВ ===== */
-
-#popup-tariffs h2 {
-  margin-top: 0 !important;
-  margin-bottom: 15px !important;
-}
-
-/* поднимаем сам блок с тарифами */
-#popup-tariffs .tariff-cards,
-#popup-tariffs .tariffs,
-#popup-tariffs .cards {
-  margin-top: -60px !important;
-}
-
-/* если есть контейнер-обёртка */
-#popup-tariffs .popup-content {
-  padding-top: 10px !important;
 }
