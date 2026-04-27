@@ -8608,555 +8608,241 @@ body::before {
 }
 
 /* =========================================================
-   V51 FINAL ADAPTIVE LAYER
-   Основа: текущий вид на ~12" оставлен как эталон.
-   Ниже — отдельные устойчивые режимы под телефон / 13 / 14 / 15 / 16+.
-   Этот блок стоит в самом конце файла и перебивает старые накопленные правки.
+   FINAL HARD FIX: фиксированные модальные окна как на 12"
+   Этот слой специально стоит в самом конце, чтобы перебить
+   старые V-блоки и правки выше.
    ========================================================= */
 
-html {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-body {
-  min-width: 320px;
-}
-
-img,
-svg,
-canvas,
-video,
-iframe {
-  max-width: 100%;
-}
-
-.page {
-  width: min(var(--adaptive-page, 1180px), calc(100% - var(--adaptive-edge, 16px))) !important;
-  max-width: var(--adaptive-page, 1180px) !important;
-  min-height: calc(100vh - 4px) !important;
-  padding: var(--adaptive-page-pad-y, 14px) var(--adaptive-page-pad-x, 16px) 22px !important;
-  margin: 2px auto !important;
-}
-
-.topbar {
-  grid-template-columns: var(--adaptive-logo-col, 220px) minmax(0, 1fr) !important;
-  gap: var(--adaptive-top-gap, 20px) !important;
-  align-items: start !important;
-}
-
-.brand__logo {
-  width: var(--adaptive-logo, 205px) !important;
-  max-width: 100% !important;
-  max-height: var(--adaptive-logo-h, 165px) !important;
-  object-fit: contain !important;
-}
-
-.headline {
-  padding: var(--adaptive-headline-pad, 9px 14px) !important;
-  font-size: var(--adaptive-headline-size, 25px) !important;
-  line-height: 1.05 !important;
-}
-
-.topbar__right .nav {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: var(--adaptive-nav-gap, 10px) !important;
-  width: 100% !important;
-}
-
-.nav__item {
-  min-width: 0 !important;
-  width: 100% !important;
-  padding: var(--adaptive-nav-pad, 9px 12px) !important;
-  font-size: var(--adaptive-nav-size, 17px) !important;
-  white-space: nowrap !important;
-}
-
-.hero {
-  margin-top: var(--adaptive-hero-top, -8px) !important;
-  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.92fr) !important;
-  gap: var(--adaptive-hero-gap, 20px) !important;
-}
-
-.hero__lead,
-.hero__subhead,
-.coverage__title {
-  overflow-wrap: anywhere;
-}
-
-.hero__lead {
-  max-width: var(--adaptive-lead-w, 700px) !important;
-  font-size: var(--adaptive-lead-size, 31px) !important;
-  line-height: 1.15 !important;
-  margin: 0 0 var(--adaptive-lead-bottom, 18px) 18px !important;
-}
-
-.hero__subhead {
-  font-size: var(--adaptive-subhead-size, 29px) !important;
-  line-height: 1.1 !important;
-  margin: 0 0 12px 18px !important;
-}
-
-.coverage {
-  min-width: 0 !important;
+.popup {
+  padding: 18px !important;
+  align-items: center !important;
   justify-content: center !important;
 }
 
-.coverage__title {
-  font-size: var(--adaptive-coverage-size, 31px) !important;
-  line-height: 1.06 !important;
-  transform: var(--adaptive-coverage-transform, translate(-38px, 0)) !important;
-}
-
-.showcase {
-  margin-top: var(--adaptive-showcase-top, -118px) !important;
-  padding: 0 var(--adaptive-showcase-pad, 18px) !important;
-  grid-template-columns: minmax(440px, 1fr) minmax(420px, var(--adaptive-map-col, 560px)) !important;
-  gap: var(--adaptive-showcase-gap, 26px) !important;
-  align-items: end !important;
-}
-
-.showcase__left {
-  gap: var(--adaptive-showcase-left-gap, 18px) !important;
-  align-items: flex-end !important;
-  min-width: 0 !important;
-}
-
-.mini-ad {
-  width: var(--adaptive-mini-ad, 150px) !important;
-  min-width: var(--adaptive-mini-ad, 150px) !important;
-  margin-top: var(--adaptive-mini-ad-top, 190px) !important;
-}
-
-.slots-panel {
-  width: var(--adaptive-slots-panel, 430px) !important;
-  max-width: 100% !important;
-  padding: var(--adaptive-slots-pad, 12px) !important;
-}
-
-.slots-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: var(--adaptive-slots-gap, 8px) !important;
-}
-
-.slot {
-  width: 100% !important;
-  min-width: 0 !important;
-  aspect-ratio: 1 / 0.73 !important;
-}
-
-.showcase__right {
-  justify-content: flex-end !important;
-  min-width: 0 !important;
-}
-
-.map-frame {
-  width: min(100%, var(--adaptive-map, 575px)) !important;
-  max-width: var(--adaptive-map, 575px) !important;
-  aspect-ratio: 1.18 / 1 !important;
-  min-height: 0 !important;
-}
-
-.footer {
-  padding-inline: var(--adaptive-showcase-pad, 18px) !important;
-}
-
-/* Модальные окна: общий защитный слой, чтобы не вылезали за экран */
-.popup {
-  padding: var(--adaptive-popup-pad, 18px) !important;
-}
-
 .popup__box {
-  max-width: calc(100vw - var(--adaptive-popup-safe, 36px)) !important;
-  max-height: calc(100vh - var(--adaptive-popup-safe, 36px)) !important;
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  transform: none !important;
+  max-width: calc(100vw - 36px) !important;
+  max-height: calc(100vh - 36px) !important;
+  overflow: hidden !important;
 }
 
 .popup__content {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
 }
 
+/* Главное: на больших мониторах окна НЕ растут больше 12-дюймового вида */
 .popup__box--about {
-  width: min(var(--adaptive-about-w, 1080px), calc(100vw - var(--adaptive-popup-safe, 36px))) !important;
-  height: min(var(--adaptive-about-h, 600px), calc(100vh - var(--adaptive-popup-safe, 36px))) !important;
+  width: 980px !important;
+  height: 560px !important;
 }
 
 .popup__box--contacts {
-  width: min(var(--adaptive-contacts-w, 720px), calc(100vw - var(--adaptive-popup-safe, 36px))) !important;
-  min-height: 0 !important;
-  height: auto !important;
-  max-height: calc(100vh - var(--adaptive-popup-safe, 36px)) !important;
+  width: 760px !important;
+  height: 475px !important;
 }
 
 .popup__box--tariffs {
-  width: min(var(--adaptive-tariffs-w, 1180px), calc(100vw - var(--adaptive-popup-safe, 36px))) !important;
-  height: min(var(--adaptive-tariffs-h, 760px), calc(100vh - var(--adaptive-popup-safe, 36px))) !important;
+  width: 980px !important;
+  height: 690px !important;
 }
 
 .popup__box--houses {
-  width: min(var(--adaptive-houses-w, 1080px), calc(100vw - var(--adaptive-popup-safe, 36px))) !important;
-  height: min(var(--adaptive-houses-h, 640px), calc(100vh - var(--adaptive-popup-safe, 36px))) !important;
+  width: 980px !important;
+  height: 600px !important;
 }
 
-/* Тарифы: новая карточная часть должна ужиматься предсказуемо */
-.tariffs-modern-wrap {
-  width: min(100%, var(--adaptive-tariffs-cards-w, 980px)) !important;
-  margin: var(--adaptive-tariffs-cards-top, 42px) auto 0 !important;
+.popup__content--tariffs {
+  padding: 28px 34px 24px !important;
 }
 
-.tariffs-modern {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: var(--adaptive-tariffs-card-gap, 18px) !important;
+/* Тарифы: запрещаем внутреннему гриду быть шире окна */
+.popup__box--tariffs .tariffs-final {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 390px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "scheme text"
+    "cards cards" !important;
+  gap: 16px 24px !important;
+  align-items: start !important;
+  overflow: visible !important;
 }
 
-.tariff-card {
+.popup__box--tariffs .tariffs-scheme {
+  grid-area: scheme !important;
+  width: 390px !important;
+  max-width: 390px !important;
+}
+
+.popup__box--tariffs .tariff-demo-grid,
+.popup__box--tariffs .tariff-demo-grid--final {
+  width: 390px !important;
+  max-width: 390px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+.popup__box--tariffs .tariffs-text {
+  grid-area: text !important;
   min-width: 0 !important;
-  min-height: var(--adaptive-tariff-card-h, 210px) !important;
-}
-
-.tariff-card__price {
-  width: min(100%, 315px) !important;
-  font-size: var(--adaptive-tariff-price, clamp(34px, 2.5vw, 44px)) !important;
-}
-
-/* Дома: защита таблицы от наложений */
-.houses-title-row,
-.house-row {
-  grid-template-columns: minmax(260px, 1fr) minmax(130px, 170px) minmax(120px, 160px) !important;
-  min-width: 0 !important;
-}
-
-.house-address,
-.house-address__btn,
-.house-center,
-.houses-title-row > div {
-  min-width: 0 !important;
+  max-width: 100% !important;
   overflow-wrap: anywhere !important;
 }
 
-/* 16+ — не растягиваем бесконечно, оставляем аккуратный 15-дюймовый максимум */
-@media (min-width: 1537px) {
-  :root {
-    --adaptive-page: 1420px;
-    --adaptive-edge: 20px;
-    --adaptive-logo-col: 245px;
-    --adaptive-logo: 225px;
-    --adaptive-logo-h: 180px;
-    --adaptive-top-gap: 24px;
-    --adaptive-headline-size: 28px;
-    --adaptive-nav-size: 19px;
-    --adaptive-hero-top: -10px;
-    --adaptive-lead-size: 34px;
-    --adaptive-subhead-size: 32px;
-    --adaptive-coverage-size: 34px;
-    --adaptive-coverage-transform: translate(-55px, 0);
-    --adaptive-showcase-top: -140px;
-    --adaptive-showcase-gap: 34px;
-    --adaptive-mini-ad: 160px;
-    --adaptive-mini-ad-top: 205px;
-    --adaptive-slots-panel: 450px;
-    --adaptive-map: 620px;
-    --adaptive-map-col: 620px;
-    --adaptive-tariffs-w: 1240px;
-    --adaptive-tariffs-h: 760px;
+.popup__box--tariffs .tariff-text-block {
+  margin-bottom: 15px !important;
+}
+
+.popup__box--tariffs .tariff-text-block h3 {
+  font-size: 21px !important;
+  line-height: 1.08 !important;
+  margin: 0 0 7px !important;
+}
+
+.popup__box--tariffs .tariff-text-block p {
+  font-size: 16px !important;
+  line-height: 1.18 !important;
+  margin: 0 !important;
+}
+
+/* Старые стрелки часто ломали ширину — держим их внутри, без влияния на окно */
+.popup__box--tariffs .tariff-arrow {
+  display: none !important;
+}
+
+/* Карточки стоимости всегда внутри окна */
+.popup__box--tariffs .tariffs-modern-wrap {
+  grid-area: cards !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 18px 0 0 !important;
+  box-sizing: border-box !important;
+}
+
+.popup__box--tariffs .tariffs-modern-title {
+  font-size: 48px !important;
+  line-height: 0.95 !important;
+  margin: 0 0 16px !important;
+  text-align: center !important;
+  white-space: normal !important;
+}
+
+.popup__box--tariffs .tariffs-modern {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+.popup__box--tariffs .tariff-card {
+  min-width: 0 !important;
+  min-height: 172px !important;
+  padding: 15px 14px 13px !important;
+  border-radius: 24px !important;
+  box-sizing: border-box !important;
+}
+
+.popup__box--tariffs .tariff-card__top {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+}
+
+.popup__box--tariffs .tariff-card__name {
+  font-size: 18px !important;
+  line-height: 1.05 !important;
+}
+
+.popup__box--tariffs .tariff-card__format {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  font-size: 22px !important;
+}
+
+.popup__box--tariffs .tariff-card__size {
+  font-size: 24px !important;
+  line-height: 1.05 !important;
+  margin-top: 10px !important;
+}
+
+.popup__box--tariffs .tariff-card__desc,
+.popup__box--tariffs .tariff-card__meta,
+.popup__box--tariffs .tariff-card__total {
+  font-size: 14px !important;
+  line-height: 1.15 !important;
+}
+
+.popup__box--tariffs .tariff-card__price {
+  min-height: 0 !important;
+  padding: 9px 10px !important;
+  font-size: 30px !important;
+  border-radius: 18px !important;
+}
+
+.popup__box--tariffs .tariff-card__price span {
+  font-size: 12px !important;
+}
+
+/* Контакты: размер как на 12", без увеличения на 16–17" */
+.popup__box--contacts .popup__content,
+.popup__content--contacts {
+  padding: 28px 34px !important;
+}
+
+.popup__box--contacts .contact-final__small,
+.popup__box--contacts .contact-final__title {
+  font-size: 30px !important;
+}
+
+.popup__box--contacts .contact-final__phone,
+.popup__box--contacts .contact-card__phone {
+  font-size: 54px !important;
+  line-height: 1 !important;
+  white-space: normal !important;
+  max-width: 100% !important;
+}
+
+.popup__box--contacts .contact-final__time,
+.popup__box--contacts .contact-final__slogan {
+  font-size: 23px !important;
+}
+
+/* Если экран физически/по viewport меньше — окно уменьшается только чтобы влезть, а не ломается */
+@media (max-width: 1040px), (max-height: 760px) {
+  .popup__box--about {
+    width: min(980px, calc(100vw - 24px)) !important;
+    height: min(560px, calc(100vh - 24px)) !important;
+  }
+
+  .popup__box--contacts {
+    width: min(760px, calc(100vw - 24px)) !important;
+    height: min(475px, calc(100vh - 24px)) !important;
+  }
+
+  .popup__box--tariffs {
+    width: min(980px, calc(100vw - 24px)) !important;
+    height: min(690px, calc(100vh - 24px)) !important;
+  }
+
+  .popup__box--houses {
+    width: min(980px, calc(100vw - 24px)) !important;
+    height: min(600px, calc(100vh - 24px)) !important;
   }
 }
 
-/* 15 дюймов: основной широкий вариант, но без бесконечного растяжения */
-@media (min-width: 1441px) and (max-width: 1536px) {
-  :root {
-    --adaptive-page: 1380px;
-    --adaptive-edge: 18px;
-    --adaptive-logo-col: 235px;
-    --adaptive-logo: 215px;
-    --adaptive-logo-h: 172px;
-    --adaptive-top-gap: 22px;
-    --adaptive-headline-size: 27px;
-    --adaptive-nav-size: 18px;
-    --adaptive-lead-size: 33px;
-    --adaptive-subhead-size: 31px;
-    --adaptive-coverage-size: 33px;
-    --adaptive-coverage-transform: translate(-50px, 0);
-    --adaptive-showcase-top: -132px;
-    --adaptive-mini-ad: 155px;
-    --adaptive-mini-ad-top: 198px;
-    --adaptive-slots-panel: 440px;
-    --adaptive-map: 600px;
-    --adaptive-map-col: 600px;
-    --adaptive-tariffs-w: 1220px;
-    --adaptive-tariffs-h: 750px;
-  }
-}
-
-/* 14 дюймов и 14.5: отдельный режим, не берём 15-дюймовую растяжку */
-@media (min-width: 1361px) and (max-width: 1440px) {
-  :root {
-    --adaptive-page: 1300px;
-    --adaptive-edge: 16px;
-    --adaptive-logo-col: 225px;
-    --adaptive-logo: 205px;
-    --adaptive-logo-h: 165px;
-    --adaptive-top-gap: 20px;
-    --adaptive-headline-size: 26px;
-    --adaptive-nav-size: 17px;
-    --adaptive-nav-gap: 9px;
-    --adaptive-lead-size: 31px;
-    --adaptive-subhead-size: 29px;
-    --adaptive-coverage-size: 31px;
-    --adaptive-coverage-transform: translate(-42px, 0);
-    --adaptive-showcase-top: -120px;
-    --adaptive-showcase-gap: 26px;
-    --adaptive-mini-ad: 150px;
-    --adaptive-mini-ad-top: 188px;
-    --adaptive-slots-panel: 420px;
-    --adaptive-map: 575px;
-    --adaptive-map-col: 575px;
-    --adaptive-tariffs-w: 1160px;
-    --adaptive-tariffs-h: 730px;
-    --adaptive-tariffs-cards-w: 930px;
-  }
-}
-
-/* 13 дюймов: компактнее, чтобы не ломались карта/слоты/шапка */
-@media (min-width: 1201px) and (max-width: 1360px) {
-  :root {
-    --adaptive-page: 1180px;
-    --adaptive-edge: 14px;
-    --adaptive-page-pad-x: 14px;
-    --adaptive-logo-col: 205px;
-    --adaptive-logo: 190px;
-    --adaptive-logo-h: 152px;
-    --adaptive-top-gap: 18px;
-    --adaptive-headline-size: 24px;
-    --adaptive-nav-size: 16px;
-    --adaptive-nav-gap: 8px;
-    --adaptive-nav-pad: 8px 10px;
-    --adaptive-hero-top: -6px;
-    --adaptive-lead-size: 29px;
-    --adaptive-subhead-size: 27px;
-    --adaptive-coverage-size: 29px;
-    --adaptive-coverage-transform: translate(-28px, 0);
-    --adaptive-showcase-top: -104px;
-    --adaptive-showcase-gap: 20px;
-    --adaptive-showcase-pad: 12px;
-    --adaptive-mini-ad: 140px;
-    --adaptive-mini-ad-top: 172px;
-    --adaptive-slots-panel: 395px;
-    --adaptive-slots-gap: 7px;
-    --adaptive-map: 535px;
-    --adaptive-map-col: 535px;
-    --adaptive-tariffs-w: 1100px;
-    --adaptive-tariffs-h: 710px;
-    --adaptive-tariffs-cards-w: 890px;
-    --adaptive-tariff-card-h: 198px;
-  }
-}
-
-/* 12 дюймов / маленький ноутбук: сохраняем текущий лучший вид, только защищаем от переполнений */
-@media (min-width: 981px) and (max-width: 1200px) {
-  :root {
-    --adaptive-page: 1080px;
-    --adaptive-edge: 12px;
-    --adaptive-page-pad-x: 12px;
-    --adaptive-logo-col: 190px;
-    --adaptive-logo: 175px;
-    --adaptive-logo-h: 142px;
-    --adaptive-top-gap: 16px;
-    --adaptive-headline-size: 22px;
-    --adaptive-nav-size: 15px;
-    --adaptive-nav-gap: 8px;
-    --adaptive-nav-pad: 8px 8px;
-    --adaptive-lead-size: 27px;
-    --adaptive-subhead-size: 25px;
-    --adaptive-coverage-size: 27px;
-    --adaptive-coverage-transform: translate(-18px, 0);
-    --adaptive-showcase-top: -90px;
-    --adaptive-showcase-gap: 16px;
-    --adaptive-showcase-pad: 8px;
-    --adaptive-mini-ad: 130px;
-    --adaptive-mini-ad-top: 152px;
-    --adaptive-slots-panel: 360px;
-    --adaptive-slots-gap: 6px;
-    --adaptive-map: 485px;
-    --adaptive-map-col: 485px;
-    --adaptive-tariffs-w: 980px;
-    --adaptive-tariffs-h: 700px;
-  }
-}
-
-/* Планшет / очень узкий ноутбук: уводим блоки в одну колонку, без наложений */
-@media (min-width: 781px) and (max-width: 980px) {
-  :root {
-    --adaptive-page: 900px;
-    --adaptive-edge: 14px;
-    --adaptive-page-pad-x: 14px;
-    --adaptive-logo-col: 170px;
-    --adaptive-logo: 160px;
-    --adaptive-headline-size: 21px;
-    --adaptive-nav-size: 14px;
-    --adaptive-nav-gap: 8px;
-    --adaptive-nav-pad: 8px 7px;
-    --adaptive-lead-size: 25px;
-    --adaptive-subhead-size: 23px;
-    --adaptive-coverage-size: 25px;
-    --adaptive-showcase-top: 14px;
-    --adaptive-map: 620px;
-    --adaptive-slots-panel: 380px;
-  }
-
-  .hero {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-
-  .coverage {
-    justify-content: flex-start !important;
-    padding-left: 18px !important;
-  }
-
-  .coverage__title {
-    transform: none !important;
-  }
-
-  .showcase {
-    grid-template-columns: 1fr !important;
-    margin-top: 16px !important;
-    gap: 20px !important;
-  }
-
-  .showcase__right {
-    justify-content: center !important;
-  }
-
-  .showcase__left {
-    justify-content: center !important;
-  }
-
-  .mini-ad {
-    margin-top: 0 !important;
-  }
-}
-
-/* Телефон средний/большой */
-@media (min-width: 391px) and (max-width: 780px) {
-  :root {
-    --adaptive-edge: 12px;
-    --adaptive-popup-safe: 20px;
-  }
-
-  .page {
-    width: calc(100% - 12px) !important;
-    padding: 12px 10px 18px !important;
-  }
-
-  .topbar {
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
-  }
-
-  .brand {
-    justify-content: center !important;
-  }
-
-  .brand__logo {
-    width: min(220px, 68vw) !important;
-    max-height: 160px !important;
-    margin: 0 auto !important;
-  }
-
-  .headline {
-    font-size: clamp(17px, 4.4vw, 21px) !important;
-    line-height: 1.15 !important;
-    padding: 9px 10px !important;
-  }
-
-  .topbar__right .nav {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 9px !important;
-  }
-
-  .nav__item {
-    font-size: clamp(13px, 3.4vw, 16px) !important;
-    padding: 9px 7px !important;
-    white-space: normal !important;
-    min-height: 44px !important;
-  }
-
-  .hero {
-    grid-template-columns: 1fr !important;
-    margin-top: 12px !important;
-    gap: 12px !important;
-  }
-
-  .hero__lead,
-  .hero__subhead,
-  .coverage__title {
-    margin-left: 0 !important;
-    transform: none !important;
-  }
-
-  .hero__lead {
-    font-size: clamp(20px, 5.1vw, 24px) !important;
-    line-height: 1.18 !important;
-    margin-bottom: 12px !important;
-  }
-
-  .hero__subhead,
-  .coverage__title {
-    font-size: clamp(18px, 4.8vw, 22px) !important;
-    line-height: 1.12 !important;
-  }
-
-  .coverage {
-    justify-content: flex-start !important;
-    padding-left: 0 !important;
-  }
-
-  .showcase {
-    grid-template-columns: 1fr !important;
-    margin-top: 14px !important;
-    padding: 0 !important;
-    gap: 16px !important;
-  }
-
-  .showcase__left {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 12px !important;
-  }
-
-  .mini-ad {
-    width: min(150px, 42vw) !important;
-    min-width: 0 !important;
-    margin-top: 0 !important;
-  }
-
-  .slots-panel {
-    width: min(100%, 370px) !important;
-    padding: 9px !important;
-  }
-
-  .slot {
-    aspect-ratio: 1 / 0.86 !important;
-  }
-
-  .showcase__right {
-    justify-content: center !important;
-  }
-
-  .map-frame {
-    width: min(100%, 390px) !important;
-    max-width: 390px !important;
-    aspect-ratio: 1.05 / 1 !important;
-    min-height: 245px !important;
-  }
-
-  .footer {
-    flex-direction: column !important;
-    padding: 10px 0 0 !important;
-  }
-
+/* Планшеты и телефоны: тут уже не фиксируем 12", а делаем нормальную мобильную раскладку */
+@media (max-width: 820px) {
   .popup {
     padding: 10px !important;
   }
@@ -9167,46 +8853,24 @@ iframe {
   .popup__box--tariffs,
   .popup__box--houses {
     width: calc(100vw - 20px) !important;
+    height: min(86vh, 720px) !important;
     max-width: 430px !important;
-    height: auto !important;
-    max-height: 84vh !important;
-    border-radius: 22px !important;
+    border-radius: 26px !important;
   }
 
   .popup__content,
-  .popup__content--about,
-  .popup__content--contacts,
   .popup__content--tariffs,
+  .popup__content--contacts,
+  .popup__content--about,
   .popup__content--houses {
-    max-height: 84vh !important;
-    height: auto !important;
-    padding: 34px 14px 16px !important;
+    padding: 54px 16px 20px !important;
   }
 
-  .about-panel {
-    font-size: clamp(15px, 4vw, 18px) !important;
-    padding: 0 !important;
-  }
-
-  .about-contact-row {
-    grid-template-columns: 36px minmax(0, 1fr) !important;
-    gap: 8px !important;
-    font-size: clamp(13px, 3.7vw, 16px) !important;
-  }
-
-  .contact-card {
-    min-height: 0 !important;
-    padding: 18px 12px !important;
-    gap: 12px !important;
-  }
-
-  .contact-card__phone {
-    min-height: 56px !important;
-    font-size: clamp(27px, 7.4vw, 34px) !important;
-  }
-
-  .contact-card__actions {
-    flex-direction: column !important;
+  .popup__close {
+    top: 10px !important;
+    right: 10px !important;
+    width: 36px !important;
+    height: 36px !important;
   }
 
   .popup__box--tariffs .tariffs-final {
@@ -9214,373 +8878,37 @@ iframe {
   }
 
   .popup__box--tariffs .tariffs-scheme,
+  .popup__box--tariffs .tariff-demo-grid,
   .popup__box--tariffs .tariff-demo-grid--final {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  .popup__box--tariffs .tariff-demo-grid--final {
-    grid-auto-rows: minmax(44px, 13vw) !important;
-    gap: 6px !important;
-    padding: 8px !important;
+    width: min(100%, 330px) !important;
+    max-width: 330px !important;
+    margin-inline: auto !important;
   }
 
   .popup__box--tariffs .tariffs-text {
-    position: static !important;
-    width: 100% !important;
-    margin-top: 16px !important;
-  }
-
-  .popup__box--tariffs .tariff-text-block {
-    position: static !important;
-    width: 100% !important;
-    margin: 0 0 16px !important;
-    transform: none !important;
-    max-width: 100% !important;
-  }
-
-  .popup__box--tariffs .tariff-text-block h3 {
-    font-size: clamp(18px, 4.8vw, 22px) !important;
-  }
-
-  .popup__box--tariffs .tariff-text-block p {
-    font-size: clamp(14px, 3.8vw, 16px) !important;
-  }
-
-  .tariff-editor-layer,
-  .manual-arrow {
-    display: none !important;
-  }
-
-  .tariffs-modern-wrap {
-    width: 100% !important;
     margin-top: 18px !important;
   }
 
-  .tariffs-modern {
+  .popup__box--tariffs .tariff-text-block h3 {
+    font-size: 18px !important;
+  }
+
+  .popup__box--tariffs .tariff-text-block p {
+    font-size: 14px !important;
+  }
+
+  .popup__box--tariffs .tariffs-modern-title {
+    font-size: 32px !important;
+  }
+
+  .popup__box--tariffs .tariffs-modern {
     grid-template-columns: 1fr !important;
     gap: 12px !important;
   }
 
-  .tariff-card {
-    min-height: auto !important;
-  }
-
-  .tariff-card__price {
-    min-height: 64px !important;
-    font-size: clamp(30px, 8vw, 38px) !important;
-  }
-
-  .popup__box--tariffs .tariff-table-wrap,
-  .popup__box--tariffs .tariff-note {
-    width: 100% !important;
-    min-width: 0 !important;
-    margin: 14px 0 0 !important;
-  }
-
-  .houses-title-row,
-  .house-row {
-    grid-template-columns: minmax(132px, 1fr) 86px 68px !important;
-    gap: 4px !important;
-    padding-inline: 6px !important;
-  }
-
-  .houses-title-row {
-    font-size: 10.5px !important;
-  }
-
-  .house-row,
-  .house-center {
-    font-size: 13px !important;
-  }
-}
-
-/* Маленький телефон */
-@media (max-width: 390px) {
-  .page {
-    width: calc(100% - 8px) !important;
-    padding: 10px 8px 16px !important;
-  }
-
-  .brand__logo {
-    width: min(200px, 72vw) !important;
-    max-height: 145px !important;
-  }
-
-  .headline {
-    font-size: 16px !important;
-    padding: 8px 9px !important;
-  }
-
-  .nav__item {
-    font-size: 12.5px !important;
-    padding: 8px 6px !important;
-    min-height: 42px !important;
-  }
-
-  .hero__lead {
-    font-size: 19px !important;
-  }
-
-  .hero__subhead,
-  .coverage__title {
-    font-size: 17px !important;
-  }
-
-  .slots-panel {
-    width: 100% !important;
-    padding: 8px !important;
-  }
-
-  .slots-grid {
-    gap: 5px !important;
-  }
-
-  .slot {
-    min-height: 42px !important;
-  }
-
-  .map-frame {
-    min-height: 225px !important;
-  }
-
-  .popup__box,
-  .popup__box--about,
-  .popup__box--contacts,
-  .popup__box--tariffs,
-  .popup__box--houses {
-    width: calc(100vw - 16px) !important;
-    max-width: 374px !important;
-    max-height: 86vh !important;
-    border-radius: 18px !important;
-  }
-
-  .popup__content,
-  .popup__content--about,
-  .popup__content--contacts,
-  .popup__content--tariffs,
-  .popup__content--houses {
-    max-height: 86vh !important;
-    padding: 34px 10px 14px !important;
-  }
-
-  .contact-card__phone {
-    font-size: 26px !important;
-    letter-spacing: 0 !important;
-  }
-
-  .contact-card__row {
-    grid-template-columns: 30px minmax(0, 1fr) !important;
-    font-size: 14px !important;
-  }
-
-  .houses-title-row,
-  .house-row {
-    grid-template-columns: minmax(116px, 1fr) 76px 58px !important;
-  }
-
-  .houses-title-row {
-    font-size: 9.5px !important;
-  }
-
-  .house-row,
-  .house-center {
-    font-size: 12px !important;
-  }
-
-  .house-pin {
-    width: 22px !important;
-    min-width: 22px !important;
-    height: 22px !important;
-  }
-}
-
-/* =========================================================
-   FINAL_V63: ОТКАТ СЛОМАННОГО ФИКСА + фиксированные окна как на ~12".
-   Не меняет главный экран. Фиксирует именно модальные окна на больших
-   мониторах и не дает тарифам вылезать за правый край.
-   ========================================================= */
-@media (min-width: 981px) {
-  .popup {
-    padding: 18px !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .popup__box {
-    width: 980px !important;
-    max-width: calc(100vw - 36px) !important;
-    height: auto !important;
-    max-height: calc(100vh - 36px) !important;
-    overflow: hidden !important;
-  }
-
-  .popup__content {
-    max-height: calc(100vh - 36px) !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  .popup__close {
-    top: 12px !important;
-    right: 16px !important;
-    z-index: 20 !important;
-  }
-
-  /* Контакты: всегда как на хорошем варианте 12", не растягиваются на 17" */
-  .popup__box--contacts {
-    width: 760px !important;
-    max-width: calc(100vw - 36px) !important;
-    min-height: 0 !important;
-    height: auto !important;
-    max-height: calc(100vh - 36px) !important;
-  }
-
-  .popup__content--contacts {
-    padding: 36px 34px 28px !important;
-  }
-
-  .contact-card,
-  .contacts-card,
-  .contacts-inner {
-    max-width: 590px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    box-sizing: border-box !important;
-  }
-
-  .contact-card__phone {
-    font-size: 58px !important;
-    line-height: .9 !important;
-    letter-spacing: 1px !important;
-    max-width: 100% !important;
-    overflow-wrap: anywhere !important;
-  }
-
-  /* Тарифы: фиксированный размер окна + ужатый внутренний макет, чтобы не было обрезания справа */
-  .popup__box--tariffs {
-    width: 980px !important;
-    max-width: calc(100vw - 36px) !important;
-    height: 700px !important;
-    max-height: calc(100vh - 36px) !important;
-    overflow: hidden !important;
-  }
-
-  .popup__content--tariffs {
-    height: 100% !important;
-    max-height: 100% !important;
-    padding: 44px 34px 24px !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  .popup__box--tariffs .tariffs-final {
-    display: grid !important;
-    grid-template-columns: 390px minmax(0, 1fr) !important;
-    gap: 18px 24px !important;
-    align-items: start !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  .popup__box--tariffs .tariffs-scheme,
-  .popup__box--tariffs .tariff-demo-grid--final {
-    width: 100% !important;
-    max-width: 390px !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  .popup__box--tariffs .tariffs-text {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  .popup__box--tariffs .tariff-text-block {
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin: 0 0 22px !important;
-    box-sizing: border-box !important;
-  }
-
-  .popup__box--tariffs .tariff-text-block h3 {
-    font-size: 26px !important;
-    line-height: 1.04 !important;
-    margin: 0 0 8px !important;
-    max-width: 100% !important;
-    overflow-wrap: break-word !important;
-  }
-
-  .popup__box--tariffs .tariff-text-block p {
-    font-size: 17px !important;
-    line-height: 1.15 !important;
-    max-width: 100% !important;
-    overflow-wrap: break-word !important;
-  }
-
-  .popup__box--tariffs .tariffs-modern-wrap {
-    grid-column: 1 / -1 !important;
-    width: 100% !important;
-    max-width: 900px !important;
-    margin: 20px auto 0 !important;
-    min-width: 0 !important;
-  }
-
-  .popup__box--tariffs .tariffs-modern-title,
-  .tariffs-modern-title {
-    font-size: 46px !important;
-    line-height: .96 !important;
-    margin: 0 0 14px !important;
-    white-space: normal !important;
-  }
-
-  .popup__box--tariffs .tariffs-modern {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 14px !important;
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  .popup__box--tariffs .tariff-card {
-    min-width: 0 !important;
-    min-height: 164px !important;
-    padding: 16px 14px !important;
-    box-sizing: border-box !important;
-  }
-
-  .popup__box--tariffs .tariff-card__name {
-    font-size: 22px !important;
-    line-height: 1.02 !important;
-  }
-
-  .popup__box--tariffs .tariff-card__price {
-    width: 100% !important;
-    max-width: 250px !important;
+  .popup__box--contacts .contact-final__phone,
+  .popup__box--contacts .contact-card__phone {
     font-size: 38px !important;
-    line-height: .95 !important;
-  }
-
-  .popup__box--tariffs .tariff-card__size {
-    font-size: 18px !important;
-  }
-
-  /* Остальные окна тоже не раздуваются на 16/17", но остаются шире контактов */
-  .popup__box--about {
-    width: 1060px !important;
-    max-width: calc(100vw - 36px) !important;
-    max-height: calc(100vh - 36px) !important;
-  }
-
-  .popup__box--houses {
-    width: 1080px !important;
-    max-width: calc(100vw - 36px) !important;
-    max-height: calc(100vh - 36px) !important;
+    word-break: break-word !important;
   }
 }
