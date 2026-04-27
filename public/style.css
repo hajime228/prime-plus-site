@@ -9394,3 +9394,91 @@ iframe {
     height: 22px !important;
   }
 }
+
+/* =========================================================
+   FINAL_V62: фикс модальных окон под размер ~12".
+   Главный экран не трогаем. На ноутбуках/мониторах окна больше
+   не растягиваются после 16" и остаются примерно как на 12".
+   ========================================================= */
+@media (min-width: 981px) {
+  .popup {
+    padding: 18px !important;
+  }
+
+  .popup__box {
+    width: min(980px, calc(100vw - 36px)) !important;
+    height: min(560px, calc(100vh - 36px)) !important;
+    max-width: 980px !important;
+    max-height: 560px !important;
+    border-radius: 40px !important;
+  }
+
+  .popup__content {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 30px 32px 24px !important;
+  }
+
+  .popup__box--about {
+    width: min(1060px, calc(100vw - 36px)) !important;
+    height: min(580px, calc(100vh - 36px)) !important;
+    max-width: 1060px !important;
+    max-height: 580px !important;
+  }
+
+  .popup__box--contacts {
+    width: min(760px, calc(100vw - 36px)) !important;
+    height: min(480px, calc(100vh - 36px)) !important;
+    max-width: 760px !important;
+    max-height: 480px !important;
+  }
+
+  .popup__box--tariffs {
+    width: min(980px, calc(100vw - 36px)) !important;
+    height: min(700px, calc(100vh - 36px)) !important;
+    max-width: 980px !important;
+    max-height: 700px !important;
+  }
+
+  .popup__box--houses {
+    width: min(1080px, calc(100vw - 36px)) !important;
+    height: min(640px, calc(100vh - 36px)) !important;
+    max-width: 1080px !important;
+    max-height: 640px !important;
+  }
+
+  .popup__close {
+    top: 12px !important;
+    right: 16px !important;
+  }
+}
+
+/* На очень широких экранах оставляем окна такими же, как на 12", только центрируем. */
+@media (min-width: 1537px) {
+  .popup__box {
+    width: 980px !important;
+    height: min(560px, calc(100vh - 36px)) !important;
+  }
+
+  .popup__box--about {
+    width: 1060px !important;
+    height: min(580px, calc(100vh - 36px)) !important;
+  }
+
+  .popup__box--contacts {
+    width: 760px !important;
+    height: min(480px, calc(100vh - 36px)) !important;
+  }
+
+  .popup__box--tariffs {
+    width: 980px !important;
+    height: min(700px, calc(100vh - 36px)) !important;
+  }
+
+  .popup__box--houses {
+    width: 1080px !important;
+    height: min(640px, calc(100vh - 36px)) !important;
+  }
+}
