@@ -8926,3 +8926,41 @@ body::before {
     gap: 12px !important;
   }
 }
+
+/* ==========================================================
+   FINAL_POINT_FIX_12_13_MODAL
+   Точечная правка после фикса окон:
+   1) поднимаем заголовок «Стоимость размещения»;
+   2) номер менеджера держим в одну строку на ПК/ноутбуках.
+   Главный экран не затрагивается.
+   ========================================================== */
+
+@media (min-width: 781px) {
+  .popup__box--tariffs .tariffs-modern-wrap {
+    margin-top: 315px !important;
+  }
+
+  .popup__box--tariffs .tariffs-modern-title {
+    margin-bottom: 14px !important;
+  }
+
+  .popup__box--contacts .contact-final__phone,
+  .popup__box--contacts .contact-card__phone {
+    white-space: nowrap !important;
+    font-size: 46px !important;
+    line-height: 1 !important;
+    letter-spacing: -1px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 780px) {
+  .popup__box--contacts .contact-final__phone,
+  .popup__box--contacts .contact-card__phone {
+    white-space: normal !important;
+    font-size: clamp(30px, 10vw, 42px) !important;
+    line-height: 1.04 !important;
+  }
+}
