@@ -448,30 +448,12 @@ document.querySelectorAll("img").forEach((img) => {
 */
 
 const defaultTariffPositions = {
-  "titleA4": {
-    "x": 0,
-    "y": 24
-  },
-  "titleA5": {
-    "x": 0,
-    "y": 162
-  },
-  "titleA6": {
-    "x": 0,
-    "y": 246
-  },
-  "arrowA4": {
-    "x": 370,
-    "y": 36
-  },
-  "arrowA5": {
-    "x": 370,
-    "y": 206
-  },
-  "arrowA6": {
-    "x": 370,
-    "y": 331
-  }
+  titleA4: { x: 0, y: 0 },
+  titleA5: { x: 0, y: 0 },
+  titleA6: { x: 0, y: 0 },
+  arrowA4: { x: 410, y: 86 },
+  arrowA5: { x: 410, y: 176 },
+  arrowA6: { x: 410, y: 246 }
 };
 
 let tariffPositions = JSON.parse(JSON.stringify(defaultTariffPositions));
@@ -673,53 +655,53 @@ loadTariffPositions();
    ================================ */
 
 const designDefaults = {
-  "heroLead": {
-    "text": "Заявите о себе и раскрутите свой бренд или товары.\nПродвигайте услуги быстро и эффективно среди широкой аудитории.",
-    "x": 0,
-    "y": 0,
-    "fontSize": "24",
-    "width": "192.5",
-    "fontFamily": ""
+  heroLead: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
   },
-  "heroSubhead": {
-    "text": "Формат рекламы: в наличии 16 слотов формата A5",
-    "x": 0,
-    "y": 0,
-    "fontSize": "23",
-    "width": "192.5",
-    "fontFamily": ""
+  heroSubhead: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
   },
-  "coverageTitle": {
-    "text": "Мы располагаемся более чем в\n600 подъездах",
-    "x": -60,
-    "y": 0,
-    "fontSize": "25",
-    "width": "192.5",
-    "fontFamily": ""
+  coverageTitle: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
   },
-  "tariffA4": {
-    "text": "ТАРИФ «ОБЪЕМНЫЙ». Колонка формата A4\nЭтот формат в точности равен целому листу A4.\nРазмер бумаги формата A4 по стандарту ISO 216 составляет\n210 × 297 мм.",
-    "x": 0,
-    "y": 24,
-    "fontSize": "16",
-    "width": "590",
-    "fontFamily": ""
+  tariffA4: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
   },
-  "tariffA5": {
-    "text": "ТАРИФ «ВЕСЬ ГОРОД». Колонка формата A5\nЭтот формат в точности равен половине листа A4.\nРазмер бумаги формата A5 по стандарту ISO 216 составляет\n148 × 210 мм.",
-    "x": 0,
-    "y": 162,
-    "fontSize": "16",
-    "width": "590",
-    "fontFamily": ""
+  tariffA5: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
   },
-  "tariffA6": {
-    "text": "ТАРИФ «ЛАЙТ». Колонка формата A6\nЭтот формат равен половине листа A5.\nРазмер бумаги формата A6 составляет\n148 × 105 мм.",
-    "x": 0,
-    "y": 246,
-    "fontSize": "16",
-    "width": "580",
-    "fontFamily": ""
+  tariffA6: {
+    text: "",
+    x: 0,
+    y: 0,
+    fontSize: "",
+    width: "",
+    fontFamily: ""
   }
 };
 
