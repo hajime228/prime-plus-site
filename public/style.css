@@ -8937,7 +8937,7 @@ body::before {
 
 @media (min-width: 781px) {
   .popup__box--tariffs .tariffs-modern-wrap {
-    margin-top: 315px !important;
+    margin-top: 115px !important;
   }
 
   .popup__box--tariffs .tariffs-modern-title {
@@ -8963,14 +8963,4 @@ body::before {
     font-size: clamp(30px, 10vw, 42px) !important;
     line-height: 1.04 !important;
   }
-}
-
-
-/* FORCE MOVE COST BLOCK UP */
-#popup-tariffs .popup-content{
-  padding-top:0 !important;
-  margin-top:0 !important;
-}
-#popup-tariffs h2{
-  margin-top:-120px !important;
 }
