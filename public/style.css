@@ -8786,7 +8786,7 @@ body::before {
   .popup__box--tariffs .tariffs-modern-wrap {
     position: relative !important;
     width: min(100%, 980px) !important;
-    margin: 220px auto 0 !important;
+    margin: 365px auto 0 !important;
   }
 
   .popup__box--tariffs .tariffs-modern-title {
@@ -8937,7 +8937,8 @@ body::before {
 
 @media (min-width: 781px) {
   .popup__box--tariffs .tariffs-modern-wrap {
-    margin-top: 220px !important;
+    /* поднимаем блок стоимости почти вплотную к описанию тарифов */
+    margin-top: 185px !important;
   }
 
   .popup__box--tariffs .tariffs-modern-title {
