@@ -8975,7 +8975,7 @@ body::before {
 #popup-tariffs .tariff-cards,
 #popup-tariffs .tariffs,
 #popup-tariffs .cards {
-  margin-top: -40px !important;
+  margin-top: -60px !important;
 }
 
 /* если есть контейнер-обёртка */
